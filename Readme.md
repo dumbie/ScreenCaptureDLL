@@ -1,5 +1,5 @@
 ## Description
-Screen Capture DLL Import, capture you screen to an image.
+ScreenCaptureDLL, capture you screen to an image.
 
 ## Features
 - Save screen capture as BMP, JPG, PNG or JXR.
