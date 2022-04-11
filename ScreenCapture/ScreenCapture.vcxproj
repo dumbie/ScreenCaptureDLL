@@ -26,6 +26,7 @@
     <ClCompile Include="CaptureClasses.h" />
     <ClCompile Include="CaptureInitialize.cpp" />
     <ClCompile Include="CaptureDetails.cpp" />
+    <ClCompile Include="CaptureReset.cpp" />
     <ClCompile Include="CaptureScreen.cpp" />
     <ClCompile Include="CaptureTexture.cpp" />
   </ItemGroup>

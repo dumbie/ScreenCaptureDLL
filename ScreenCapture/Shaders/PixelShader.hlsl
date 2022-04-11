@@ -2,7 +2,7 @@ Texture2D _texture2D : register(t0);
 SamplerState _samplerState : register(s0);
 cbuffer _shaderVariables : register(b0)
 {
-	bool HDREnabled;
+	bool HDRtoSDR;
 	float SDRWhiteLevel;
 };
 
@@ -19,10 +19,15 @@ float4 AdjustSDRWhiteLevel(float4 color)
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
+	//Get texture colors
 	float4 color = _texture2D.Sample(_samplerState, input.TexCoord);
-	if (HDREnabled)
+
+	//Apply HDR to SDR tonemapping
+	if (HDRtoSDR)
 	{
 		color = AdjustSDRWhiteLevel(color);
 	}
+
+	//Return updated colors
 	return color;
 }

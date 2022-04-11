@@ -2,12 +2,13 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "gdiplus.lib")
+#pragma comment(lib, "windowscodecs.lib")
 #include "CaptureClasses.h"
 #include <dxgi1_6.h>
 #include <d3d11_4.h>
-#include <directxmath.h>
 #include <d3dcompiler.h>
 #include <gdiplus.h>
+#include <wincodec.h>
 #include <atlbase.h>
 
 namespace
@@ -16,12 +17,16 @@ namespace
 	HRESULT hResult;
 
 	//Capture
+	UINT vCaptureMonitorId;
 	UINT vCaptureWidth;
 	UINT vCaptureHeight;
+	UINT vCaptureMaxPixelDimension;
 	UINT vCapturePixelByteSize;
 	UINT vCaptureWidthByteSize;
 	UINT vCaptureTotalByteSize;
+	DXGI_FORMAT vCaptureDxgiFormat;
 	BOOL vCaptureHDREnabled;
+	BOOL vCaptureHDRtoSDR;
 	FLOAT vCaptureSDRWhiteLevel;
 
 	//Devices
@@ -52,6 +57,14 @@ namespace
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1CpuRead;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Capture;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1RenderTargetView;
+
+	//Bitmap
+	CComPtr<IPropertyBag2> iPropertyBag2;
+	CComPtr<IWICImagingFactory> iWICImagingFactory;
+	CComPtr<IWICStream> iWICStream;
+	CComPtr<IWICBitmapEncoder> iWICBitmapEncoder;
+	CComPtr<IWICBitmapFrameEncode> iWICBitmapFrameEncode;
+	CComPtr<IWICMetadataQueryWriter> iWICMetadataQueryWriter;
 
 	//Arrays
 	FLOAT ColorRgbaBlack[] = { 0.0f, 0.0f, 0.0f, 0.0f };

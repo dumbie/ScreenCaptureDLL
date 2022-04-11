@@ -6,7 +6,7 @@ namespace ScreenCapturePreview
     class AppImport
     {
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureInitialize(int CaptureMonitorId, out int OutputWidth, out int OutputHeight, out int OutputTotalByteSize, out bool OutputHDREnabled, int MaxPixelDimension);
+        public static extern bool CaptureInitialize(int CaptureMonitorId, int MaxPixelDimension, bool HDRtoSDR, out int OutputWidth, out int OutputHeight, out int OutputTotalByteSize, out bool OutputHDREnabled);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CaptureReset();
@@ -22,6 +22,9 @@ namespace ScreenCapturePreview
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CaptureSaveFilePng(IntPtr BitmapData, [MarshalAs(UnmanagedType.LPWStr)] string FilePath);
+
+        [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool CaptureSaveFileJxr(IntPtr BitmapData, [MarshalAs(UnmanagedType.LPWStr)] string FilePath);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr CaptureScreenshot();

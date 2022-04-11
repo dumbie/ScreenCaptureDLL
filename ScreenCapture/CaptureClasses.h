@@ -5,7 +5,7 @@ namespace
 {
 	typedef struct ShaderVariables
 	{
-		bool HDREnabled;
+		bool HDRtoSDR;
 		float SDRWhiteLevel;
 		float Saturation;
 		float Brightness;

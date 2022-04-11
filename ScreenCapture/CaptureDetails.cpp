@@ -1,8 +1,9 @@
+#pragma once
 #include "CaptureVariables.h"
 
 namespace
 {
-	FLOAT GetMonitorSDRWhiteLevel(UINT CaptureMonitorId)
+	FLOAT GetMonitorSDRWhiteLevel()
 	{
 		try
 		{
@@ -22,7 +23,7 @@ namespace
 				return 240.0F;
 			}
 
-			DISPLAYCONFIG_PATH_INFO pathInfo = pathInfos[CaptureMonitorId];
+			DISPLAYCONFIG_PATH_INFO pathInfo = pathInfos[vCaptureMonitorId];
 
 			DISPLAYCONFIG_SDR_WHITE_LEVEL sdrWhiteLevel{};
 			sdrWhiteLevel.header.size = sizeof(sdrWhiteLevel);

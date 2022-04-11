@@ -1,3 +1,4 @@
+#pragma once
 #include "CaptureVariables.h"
 #include "CaptureBitmap.cpp"
 #include "CaptureInitialize.cpp"
@@ -7,7 +8,7 @@ namespace
 {
 	extern "C"
 	{
-		__declspec(dllexport) BOOL CaptureInitialize(UINT CaptureMonitorId, UINT* OutputWidth, UINT* OutputHeight, UINT* OutputTotalByteSize, UINT* OutputHDREnabled, UINT MaxPixelDimension)
+		__declspec(dllexport) BOOL CaptureInitialize(UINT CaptureMonitorId, UINT MaxPixelDimension, BOOL HDRtoSDR, UINT* OutputWidth, UINT* OutputHeight, UINT* OutputTotalByteSize, UINT* OutputHDREnabled)
 		{
 			try
 			{
@@ -17,8 +18,13 @@ namespace
 				//Reset all used variables
 				CaptureResetVariablesAll();
 
+				//Update capture variables
+				vCaptureMonitorId = CaptureMonitorId;
+				vCaptureMaxPixelDimension = MaxPixelDimension;
+				vCaptureHDRtoSDR = HDRtoSDR;
+
 				//Initialize DirectX
-				if (!InitializeDirectX(CaptureMonitorId, MaxPixelDimension)) { return false; }
+				if (!InitializeDirectX()) { return false; }
 
 				//Initialize render target view
 				if (!InitializeRenderTargetView()) { return false; }
@@ -99,6 +105,18 @@ namespace
 			try
 			{
 				return BitmapDataSaveFilePng(bitmapData, filePath);
+			}
+			catch (...)
+			{
+				return false;
+			}
+		}
+
+		__declspec(dllexport) BOOL CaptureSaveFileJxr(BYTE* bitmapData, WCHAR* filePath)
+		{
+			try
+			{
+				return BitmapDataSaveFileJxr(bitmapData, filePath);
 			}
 			catch (...)
 			{

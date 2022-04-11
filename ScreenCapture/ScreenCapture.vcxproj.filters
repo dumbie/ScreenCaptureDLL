@@ -33,6 +33,9 @@
     <ClCompile Include="CaptureDetails.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="CaptureReset.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AssemblyInfo.rc">
