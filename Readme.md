@@ -1,8 +1,8 @@
 ## Description
-ScreenCaptureDLL, capture you screen to an image.
+ScreenCaptureDLL, capture your screen to an image.
 
 ## Features
-- Save screen capture as BMP, JPG, PNG or JXR.
+- Save screencapture as BMP, JPG, PNG or JXR.
 - HDR to SDR tonemapping through shader.
 
 ## Known issues
