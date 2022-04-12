@@ -1,6 +1,5 @@
-#pragma once
 #include "CaptureVariables.h"
-#include "CaptureReset.cpp"
+#include "CaptureReset.h"
 #include "CaptureDetails.cpp"
 
 namespace
@@ -92,7 +91,7 @@ namespace
 			if (vCaptureHDREnabled && !vCaptureHDRtoSDR)
 			{
 				vCaptureDxgiFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-				vCapturePixelByteSize = 16;
+				vCapturePixelByteSize = 8;
 			}
 			else
 			{

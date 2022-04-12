@@ -43,6 +43,8 @@ namespace
 			iWICBitmapEncoder.Release();
 			iWICBitmapFrameEncode.Release();
 			iWICMetadataQueryWriter.Release();
+			iWICFormatConverter.Release();
+			iWICBitmap.Release();
 
 			return true;
 		}
@@ -83,6 +85,8 @@ namespace
 			iWICBitmapEncoder.Release();
 			iWICBitmapFrameEncode.Release();
 			iWICMetadataQueryWriter.Release();
+			iWICFormatConverter.Release();
+			iWICBitmap.Release();
 
 			return true;
 		}

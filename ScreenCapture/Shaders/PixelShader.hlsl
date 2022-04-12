@@ -28,6 +28,9 @@ float4 main(PS_INPUT input) : SV_TARGET
 		color = AdjustSDRWhiteLevel(color);
 	}
 
+	//Set alpha channel to maximum
+	color.a = 1.0F;
+
 	//Return updated colors
 	return color;
 }

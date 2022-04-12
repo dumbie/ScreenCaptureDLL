@@ -1,4 +1,3 @@
-#pragma once
 #include "CaptureVariables.h"
 #include "CaptureBitmap.cpp"
 #include "CaptureInitialize.cpp"
@@ -8,7 +7,7 @@ namespace
 {
 	extern "C"
 	{
-		__declspec(dllexport) BOOL CaptureInitialize(UINT CaptureMonitorId, UINT MaxPixelDimension, BOOL HDRtoSDR, UINT* OutputWidth, UINT* OutputHeight, UINT* OutputTotalByteSize, UINT* OutputHDREnabled)
+		__declspec(dllexport) BOOL CaptureInitialize(UINT captureMonitorId, UINT maxPixelDimension, BOOL convertHDRtoSDR, UINT* captureWidth, UINT* captureHeight, UINT* captureWidthByteSize, UINT* captureTotalByteSize, UINT* captureHDREnabled)
 		{
 			try
 			{
@@ -19,9 +18,9 @@ namespace
 				CaptureResetVariablesAll();
 
 				//Update capture variables
-				vCaptureMonitorId = CaptureMonitorId;
-				vCaptureMaxPixelDimension = MaxPixelDimension;
-				vCaptureHDRtoSDR = HDRtoSDR;
+				vCaptureMonitorId = captureMonitorId;
+				vCaptureMaxPixelDimension = maxPixelDimension;
+				vCaptureHDRtoSDR = convertHDRtoSDR;
 
 				//Initialize DirectX
 				if (!InitializeDirectX()) { return false; }
@@ -39,10 +38,11 @@ namespace
 				if (!SetShaderVariables()) { return false; }
 
 				//Set out parameters
-				*OutputWidth = vCaptureWidth;
-				*OutputHeight = vCaptureHeight;
-				*OutputTotalByteSize = vCaptureTotalByteSize;
-				*OutputHDREnabled = vCaptureHDREnabled;
+				*captureWidth = vCaptureWidth;
+				*captureHeight = vCaptureHeight;
+				*captureWidthByteSize = vCaptureWidthByteSize;
+				*captureTotalByteSize = vCaptureTotalByteSize;
+				*captureHDREnabled = vCaptureHDREnabled;
 				return true;
 			}
 			catch (...)
@@ -63,11 +63,11 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureFreeMemory(BYTE* FreeMemory)
+		__declspec(dllexport) BOOL CaptureFreeMemory(BYTE* bitmapData)
 		{
 			try
 			{
-				delete[] FreeMemory;
+				delete[] bitmapData;
 				return true;
 			}
 			catch (...)
@@ -80,7 +80,7 @@ namespace
 		{
 			try
 			{
-				return BitmapDataSaveFileBmp(bitmapData, filePath);
+				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatBmp);
 			}
 			catch (...)
 			{
@@ -88,11 +88,12 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureSaveFileJpg(BYTE* bitmapData, WCHAR* filePath, UINT saveQuality)
+		__declspec(dllexport) BOOL CaptureSaveFileJpg(BYTE* bitmapData, WCHAR* filePath, UINT imageQualityPercentage)
 		{
 			try
 			{
-				return BitmapDataSaveFileJpg(bitmapData, filePath, saveQuality);
+				vBitmapImageQuality = imageQualityPercentage;
+				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatJpeg);
 			}
 			catch (...)
 			{
@@ -104,7 +105,7 @@ namespace
 		{
 			try
 			{
-				return BitmapDataSaveFilePng(bitmapData, filePath);
+				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatPng);
 			}
 			catch (...)
 			{
@@ -116,7 +117,7 @@ namespace
 		{
 			try
 			{
-				return BitmapDataSaveFileJxr(bitmapData, filePath);
+				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatWmp);
 			}
 			catch (...)
 			{

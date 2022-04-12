@@ -1,4 +1,3 @@
-#pragma once
 #include "CaptureVariables.h"
 
 namespace
@@ -37,7 +36,7 @@ namespace
 				return 240.0F;
 			}
 
-			return (sdrWhiteLevel.SDRWhiteLevel / 1000) * 80.0F;
+			return (sdrWhiteLevel.SDRWhiteLevel / 1000.0F) * 80.0F;
 		}
 		catch (...)
 		{

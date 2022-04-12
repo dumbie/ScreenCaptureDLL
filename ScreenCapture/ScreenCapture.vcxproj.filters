@@ -33,8 +33,8 @@
     <ClCompile Include="CaptureDetails.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="CaptureReset.cpp">
-      <Filter>Source files</Filter>
+    <ClCompile Include="CaptureReset.h">
+      <Filter>Header files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

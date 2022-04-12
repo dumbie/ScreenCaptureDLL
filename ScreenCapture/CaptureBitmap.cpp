@@ -1,169 +1,21 @@
-#pragma once
 #include "CaptureVariables.h"
-#include "CaptureReset.cpp"
+#include "CaptureReset.h"
 
 namespace
 {
-	BOOL BitmapDataSaveFileBmp(BYTE* bitmapData, WCHAR* filePath)
+	BOOL BitmapDataSaveFile(BYTE* bitmapData, WCHAR* filePath, GUID iWicFormatGuid)
 	{
 		try
 		{
-			//Create bitmap
-			Gdiplus::Bitmap gdiBitmap(vCaptureWidth, vCaptureHeight);
-			Gdiplus::Rect nodRectangle(0, 0, vCaptureWidth, vCaptureHeight);
-
-			//Set bitmap metadata
-			Gdiplus::PropertyItem* propertyItem = new Gdiplus::PropertyItem;
-			propertyItem->id = PropertyTagSoftwareUsed;
-			propertyItem->length = 17;
-			propertyItem->type = PropertyTagTypeASCII;
-			propertyItem->value = "ScreenCaptureDLL";
-			gdiBitmap.SetPropertyItem(propertyItem);
-
-			//Copy data to bitmap
-			Gdiplus::BitmapData* bitmapDataLock = new Gdiplus::BitmapData;
-			gdiBitmap.LockBits(&nodRectangle, 0, PixelFormat32bppARGB, bitmapDataLock);
-			memcpy(bitmapDataLock->Scan0, bitmapData, (size_t)vCaptureTotalByteSize);
-			gdiBitmap.UnlockBits(bitmapDataLock);
-
-			//Get save class identifier
-			CLSID imageSaveClassId;
-			hResult = CLSIDFromString(L"{557CF400-1A04-11D3-9A73-0000F81EF32E}", &imageSaveClassId);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
-			//Save bitmap to file
-			gdiBitmap.Save(filePath, &imageSaveClassId, NULL);
-
-			return true;
-		}
-		catch (...)
-		{
-			return false;
-		}
-	}
-
-	BOOL BitmapDataSaveFileJpg(BYTE* bitmapData, WCHAR* filePath, UINT saveQuality)
-	{
-		try
-		{
-			//Create bitmap
-			Gdiplus::Bitmap gdiBitmap(vCaptureWidth, vCaptureHeight);
-			Gdiplus::Rect nodRectangle(0, 0, vCaptureWidth, vCaptureHeight);
-
-			//Set bitmap metadata
-			Gdiplus::PropertyItem* propertyItem = new Gdiplus::PropertyItem;
-			propertyItem->id = PropertyTagSoftwareUsed;
-			propertyItem->length = 17;
-			propertyItem->type = PropertyTagTypeASCII;
-			propertyItem->value = "ScreenCaptureDLL";
-			gdiBitmap.SetPropertyItem(propertyItem);
-
-			//Copy data to bitmap
-			Gdiplus::BitmapData* bitmapDataLock = new Gdiplus::BitmapData;
-			gdiBitmap.LockBits(&nodRectangle, 0, PixelFormat32bppARGB, bitmapDataLock);
-			memcpy(bitmapDataLock->Scan0, bitmapData, (size_t)vCaptureTotalByteSize);
-			gdiBitmap.UnlockBits(bitmapDataLock);
-
-			//Get save class identifier
-			CLSID imageSaveClassId;
-			hResult = CLSIDFromString(L"{557CF401-1A04-11D3-9A73-0000F81EF32E}", &imageSaveClassId);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
-			//Set bitmap parameters
-			Gdiplus::EncoderParameters encoderParameters{};
-			encoderParameters.Count = 1;
-			encoderParameters.Parameter[0].Guid = Gdiplus::EncoderQuality;
-			encoderParameters.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
-			encoderParameters.Parameter[0].NumberOfValues = 1;
-			encoderParameters.Parameter[0].Value = &saveQuality;
-
-			//Save bitmap to file
-			gdiBitmap.Save(filePath, &imageSaveClassId, &encoderParameters);
-
-			return true;
-		}
-		catch (...)
-		{
-			return false;
-		}
-	}
-
-	BOOL BitmapDataSaveFilePng(BYTE* bitmapData, WCHAR* filePath)
-	{
-		try
-		{
-			//Create bitmap
-			Gdiplus::Bitmap gdiBitmap(vCaptureWidth, vCaptureHeight);
-			Gdiplus::Rect nodRectangle(0, 0, vCaptureWidth, vCaptureHeight);
-			Gdiplus::Graphics gdiGraphics(&gdiBitmap);
-
-			//Set bitmap metadata
-			Gdiplus::PropertyItem* propertyItem = new Gdiplus::PropertyItem;
-			propertyItem->id = PropertyTagSoftwareUsed;
-			propertyItem->length = 17;
-			propertyItem->type = PropertyTagTypeASCII;
-			propertyItem->value = "ScreenCaptureDLL";
-			gdiBitmap.SetPropertyItem(propertyItem);
-
-			//Copy data to bitmap
-			Gdiplus::BitmapData* bitmapDataLock = new Gdiplus::BitmapData;
-			gdiBitmap.LockBits(&nodRectangle, 0, PixelFormat32bppARGB, bitmapDataLock);
-			memcpy(bitmapDataLock->Scan0, bitmapData, (size_t)vCaptureTotalByteSize);
-			gdiBitmap.UnlockBits(bitmapDataLock);
-
-			//Update alpha channel
-			Gdiplus::ColorMatrix gdiColorMatrix =
-			{
-				1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-				0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f, 255.0f, 0.0f,
-				0.0f, 0.0f, 0.0f, 0.0f, 1.0f
-			};
-			Gdiplus::ImageAttributes gdiImageAttributes;
-			gdiImageAttributes.SetColorMatrix(&gdiColorMatrix);
-			gdiGraphics.DrawImage(&gdiBitmap, nodRectangle, 0, 0, vCaptureWidth, vCaptureHeight, Gdiplus::UnitPixel, &gdiImageAttributes);
-
-			//Get save class identifier
-			CLSID imageSaveClassId;
-			hResult = CLSIDFromString(L"{557CF406-1A04-11D3-9A73-0000F81EF32E}", &imageSaveClassId);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
-			//Save bitmap to file
-			gdiBitmap.Save(filePath, &imageSaveClassId, NULL);
-
-			return true;
-		}
-		catch (...)
-		{
-			return false;
-		}
-	}
-
-	BOOL BitmapDataSaveFileJxr(BYTE* bitmapData, WCHAR* filePath)
-	{
-		try
-		{
-			//Set target file format
-			GUID iWicFormatGuid = GUID_ContainerFormatWmp;
-
 			//Set target pixel format
 			WICPixelFormatGUID iWicPixelFormatGuid = GUID_WICPixelFormat32bppBGRA;
 			if (vCaptureHDREnabled && !vCaptureHDRtoSDR)
 			{
 				iWicPixelFormatGuid = GUID_WICPixelFormat64bppRGBAHalf;
 			}
+			const WICPixelFormatGUID iWicPixelFormatGuidRef = iWicPixelFormatGuid;
 
-			//Create wicfactory
+			//Create wic factory
 			hResult = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, (LPVOID*)&iWICImagingFactory);
 			if (FAILED(hResult))
 			{
@@ -208,6 +60,19 @@ namespace
 				return false;
 			}
 
+			//Write property bag
+			if (iWicFormatGuid == GUID_ContainerFormatJpeg)
+			{
+				PROPBAG2 propertyValue{};
+				propertyValue.pstrName = L"ImageQuality";
+
+				VARIANT variantValue{};
+				variantValue.vt = VT_R4;
+				variantValue.fltVal = vBitmapImageQuality / 100.0F;
+
+				iPropertyBag2->Write(1, &propertyValue, &variantValue);
+			}
+
 			//Initialize bitmap frame
 			hResult = iWICBitmapFrameEncode->Initialize(iPropertyBag2);
 			if (FAILED(hResult))
@@ -219,22 +84,41 @@ namespace
 			//Bitmap frame set metadata
 			if (SUCCEEDED(iWICBitmapFrameEncode->GetMetadataQueryWriter(&iWICMetadataQueryWriter)))
 			{
-				PROPVARIANT propVariant;
-				PropVariantInit(&propVariant);
+				PROPVARIANT propVariant{};
 				propVariant.vt = VT_LPSTR;
 				propVariant.pszVal = "ScreenCaptureDLL";
 
 				//Set application name
-				hResult = iWICMetadataQueryWriter->SetMetadataByName(L"System.ApplicationName", &propVariant);
-				if (FAILED(hResult))
+				if (iWicFormatGuid == GUID_ContainerFormatPng)
 				{
-					CaptureResetVariablesBitmap();
-					return false;
+					hResult = iWICMetadataQueryWriter->SetMetadataByName(L"/tEXt/{str=Software}", &propVariant);
+					if (FAILED(hResult))
+					{
+						CaptureResetVariablesBitmap();
+						return false;
+					}
+				}
+				else
+				{
+					hResult = iWICMetadataQueryWriter->SetMetadataByName(L"System.ApplicationName", &propVariant);
+					if (FAILED(hResult))
+					{
+						CaptureResetVariablesBitmap();
+						return false;
+					}
 				}
 			}
 
 			//Bitmap frame set size
 			hResult = iWICBitmapFrameEncode->SetSize(vCaptureWidth, vCaptureHeight);
+			if (FAILED(hResult))
+			{
+				CaptureResetVariablesBitmap();
+				return false;
+			}
+
+			//Bitmap frame set resolution
+			hResult = iWICBitmapFrameEncode->SetResolution(96, 96);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesBitmap();
@@ -249,12 +133,46 @@ namespace
 				return false;
 			}
 
-			//Write data to bitmap frame
-			hResult = iWICBitmapFrameEncode->WritePixels(vCaptureHeight, vCaptureWidthByteSize, vCaptureTotalByteSize, bitmapData);
-			if (FAILED(hResult))
+			//Write data to bitmap frame and convert jpg
+			if (iWicFormatGuid == GUID_ContainerFormatJpeg && iWicPixelFormatGuidRef != GUID_WICPixelFormat24bppBGR)
 			{
-				CaptureResetVariablesBitmap();
-				return false;
+				hResult = iWICImagingFactory->CreateBitmapFromMemory(vCaptureWidth, vCaptureHeight, iWicPixelFormatGuidRef, vCaptureWidthByteSize, vCaptureTotalByteSize, bitmapData, &iWICBitmap);
+				if (FAILED(hResult))
+				{
+					CaptureResetVariablesBitmap();
+					return false;
+				}
+
+				hResult = iWICImagingFactory->CreateFormatConverter(&iWICFormatConverter);
+				if (FAILED(hResult))
+				{
+					CaptureResetVariablesBitmap();
+					return false;
+				}
+
+				hResult = iWICFormatConverter->Initialize(iWICBitmap, GUID_WICPixelFormat24bppBGR, WICBitmapDitherTypeNone, 0, 0, WICBitmapPaletteTypeCustom);
+				if (FAILED(hResult))
+				{
+					CaptureResetVariablesBitmap();
+					return false;
+				}
+
+				WICRect iWicRectangle = { 0, 0, (INT)vCaptureWidth, (INT)vCaptureHeight };
+				hResult = iWICBitmapFrameEncode->WriteSource(iWICFormatConverter, &iWicRectangle);
+				if (FAILED(hResult))
+				{
+					CaptureResetVariablesBitmap();
+					return false;
+				}
+			}
+			else
+			{
+				hResult = iWICBitmapFrameEncode->WritePixels(vCaptureHeight, vCaptureWidthByteSize, vCaptureTotalByteSize, bitmapData);
+				if (FAILED(hResult))
+				{
+					CaptureResetVariablesBitmap();
+					return false;
+				}
 			}
 
 			//Commit bitmap frame

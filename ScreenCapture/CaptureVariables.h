@@ -1,13 +1,11 @@
 #pragma once
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
-#pragma comment(lib, "gdiplus.lib")
 #pragma comment(lib, "windowscodecs.lib")
 #include "CaptureClasses.h"
 #include <dxgi1_6.h>
 #include <d3d11_4.h>
 #include <d3dcompiler.h>
-#include <gdiplus.h>
 #include <wincodec.h>
 #include <atlbase.h>
 
@@ -59,12 +57,15 @@ namespace
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1RenderTargetView;
 
 	//Bitmap
+	UINT vBitmapImageQuality;
 	CComPtr<IPropertyBag2> iPropertyBag2;
 	CComPtr<IWICImagingFactory> iWICImagingFactory;
 	CComPtr<IWICStream> iWICStream;
 	CComPtr<IWICBitmapEncoder> iWICBitmapEncoder;
 	CComPtr<IWICBitmapFrameEncode> iWICBitmapFrameEncode;
 	CComPtr<IWICMetadataQueryWriter> iWICMetadataQueryWriter;
+	CComPtr<IWICFormatConverter> iWICFormatConverter;
+	CComPtr<IWICBitmap> iWICBitmap;
 
 	//Arrays
 	FLOAT ColorRgbaBlack[] = { 0.0f, 0.0f, 0.0f, 0.0f };

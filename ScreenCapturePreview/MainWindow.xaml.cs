@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace ScreenCapturePreview
 {
@@ -16,8 +18,10 @@ namespace ScreenCapturePreview
         //Screen Capture Variables
         public static int vCaptureWidth = 0;
         public static int vCaptureHeight = 0;
+        public static int vCaptureWidthByteSize = 0;
         public static int vCaptureTotalByteSize = 0;
         public static bool vCaptureHDREnabled = false;
+        public static bool vCaptureHDRtoSDR = true;
 
         //Initialize Screen Capture
         private static async Task<bool> InitializeScreenCapture(int delayTime)
@@ -25,21 +29,46 @@ namespace ScreenCapturePreview
             try
             {
                 Debug.WriteLine("Initializing screen capture: " + DateTime.Now);
-                bool initialized = AppImport.CaptureInitialize(0, 800, false, out vCaptureWidth, out vCaptureHeight, out vCaptureTotalByteSize, out vCaptureHDREnabled);
-                Debug.WriteLine("ScreenOutputWidth: " + vCaptureWidth);
-                Debug.WriteLine("ScreenOutputHeight: " + vCaptureHeight);
-                Debug.WriteLine("ScreenOutputSize: " + vCaptureTotalByteSize);
-                Debug.WriteLine("HDR enabled: " + vCaptureHDREnabled);
+                bool initialized = AppImport.CaptureInitialize(0, 800, vCaptureHDRtoSDR, out vCaptureWidth, out vCaptureHeight, out vCaptureWidthByteSize, out vCaptureTotalByteSize, out vCaptureHDREnabled);
+                Debug.WriteLine("CaptureWidth: " + vCaptureWidth);
+                Debug.WriteLine("CaptureHeight: " + vCaptureHeight);
+                Debug.WriteLine("CaptureWidthByteSize: " + vCaptureWidthByteSize);
+                Debug.WriteLine("CaptureTotalByteSize: " + vCaptureTotalByteSize);
+                Debug.WriteLine("CaptureHDREnabled: " + vCaptureHDREnabled);
+                Debug.WriteLine("CaptureHDRtoSDR: " + vCaptureHDRtoSDR);
                 return initialized;
             }
-            catch
+            catch (Exception ex)
             {
-                Debug.WriteLine("Failed to initialize screen capture.");
+                Debug.WriteLine("Failed to initialize screen capture: " + ex.Message);
                 return false;
             }
             finally
             {
                 await Task.Delay(delayTime);
+            }
+        }
+
+        //Convert bitmapdata to bitmapsource
+        private BitmapSource BitmapDataToBitmapSource(IntPtr bitmapIntPtr)
+        {
+            try
+            {
+                byte[] bitmapDataArray = new byte[vCaptureTotalByteSize];
+                Marshal.Copy(bitmapIntPtr, bitmapDataArray, 0, vCaptureTotalByteSize);
+
+                PixelFormat bitmapPixelFormat = PixelFormats.Bgra32;
+                if (vCaptureHDREnabled && !vCaptureHDRtoSDR)
+                {
+                    bitmapPixelFormat = PixelFormats.Rgba64;
+                }
+
+                return BitmapSource.Create(vCaptureWidth, vCaptureHeight, 96, 96, bitmapPixelFormat, null, bitmapDataArray, vCaptureWidthByteSize);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Failed to convert bitmapdata to bitmapsource: " + ex.Message);
+                return null;
             }
         }
 
@@ -51,52 +80,49 @@ namespace ScreenCapturePreview
                 await InitializeScreenCapture(500);
                 while (true)
                 {
-                    IntPtr BitmapIntPtr = IntPtr.Zero;
-                    Bitmap BitmapImage = null;
+                    IntPtr bitmapIntPtr = IntPtr.Zero;
                     try
                     {
                         //Capture screenshot
                         try
                         {
-                            BitmapIntPtr = AppImport.CaptureScreenshot();
+                            bitmapIntPtr = AppImport.CaptureScreenshot();
                         }
                         catch { }
 
                         //Check screenshot
-                        if (BitmapIntPtr == IntPtr.Zero)
+                        if (bitmapIntPtr == IntPtr.Zero)
                         {
                             Debug.WriteLine("Screenshot is corrupted, restarting capture.");
                             await InitializeScreenCapture(500);
                             continue;
                         }
 
-                        unsafe
-                        {
-                            //Convert pointer to bytes
-                            byte* BitmapData = (byte*)BitmapIntPtr;
-
-                            //Convert data to bitmap
-                            BitmapImage = BitmapProcessing.BitmapFromData(BitmapData, vCaptureWidth, vCaptureHeight, vCaptureTotalByteSize, false);
-                        }
-
                         //Save screenshot to file
                         string fileName = DateTime.Now.ToString("HH.mm.ss.ffff (MM-dd-yyyy)");
                         if (vCaptureHDREnabled)
                         {
-                            fileName += " (HDR)";
+                            if (vCaptureHDRtoSDR)
+                            {
+                                fileName += " (HDRtoSDR)";
+                            }
+                            else
+                            {
+                                fileName += " (HDR)";
+                            }
                         }
                         else
                         {
                             fileName += " (SDR)";
                         }
-                        //bool screenshotExport = AppImport.CaptureSaveFileBmp(BitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".bmp");
-                        //bool screenshotExport = AppImport.CaptureSaveFileJpg(BitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jpg", 100);
-                        //bool screenshotExport = AppImport.CaptureSaveFilePng(BitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".png");
-                        //bool screenshotExport = AppImport.CaptureSaveFileJxr(BitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jxr");
+                        //bool screenshotExport = AppImport.CaptureSaveFileBmp(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".bmp");
+                        //bool screenshotExport = AppImport.CaptureSaveFileJpg(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jpg", 75);
+                        //bool screenshotExport = AppImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".png");
+                        //bool screenshotExport = AppImport.CaptureSaveFileJxr(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jxr");
                         //Debug.WriteLine("Screenshot export succeeded: " + screenshotExport);
 
                         //Update screen capture preview
-                        image_DebugPreview.Source = BitmapProcessing.BitmapToBitmapImage(BitmapImage);
+                        image_DebugPreview.Source = BitmapDataToBitmapSource(bitmapIntPtr);
                     }
                     catch (Exception ex)
                     {
@@ -105,13 +131,9 @@ namespace ScreenCapturePreview
                     finally
                     {
                         //Clear screen capture resources
-                        if (BitmapIntPtr != IntPtr.Zero)
+                        if (bitmapIntPtr != IntPtr.Zero)
                         {
-                            AppImport.CaptureFreeMemory(BitmapIntPtr);
-                        }
-                        if (BitmapImage != null)
-                        {
-                            BitmapImage.Dispose();
+                            AppImport.CaptureFreeMemory(bitmapIntPtr);
                         }
 
                         await Task.Delay(500);
