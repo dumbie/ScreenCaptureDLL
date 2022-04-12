@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static ScreenCapturePreview.CaptureClasses;
 
 namespace ScreenCapturePreview
 {
@@ -16,27 +17,43 @@ namespace ScreenCapturePreview
         }
 
         //Screen Capture Variables
-        public static int vCaptureWidth = 0;
-        public static int vCaptureHeight = 0;
-        public static int vCaptureWidthByteSize = 0;
-        public static int vCaptureTotalByteSize = 0;
-        public static bool vCaptureHDREnabled = false;
-        public static bool vCaptureHDRtoSDR = true;
+        public static CaptureDetails vCaptureDetails;
+        public static CaptureSettings vCaptureSettings;
 
         //Initialize Screen Capture
-        private static async Task<bool> InitializeScreenCapture(int delayTime)
+        private async Task<bool> InitializeScreenCapture(int delayTime)
         {
             try
             {
                 Debug.WriteLine("Initializing screen capture: " + DateTime.Now);
-                bool initialized = AppImport.CaptureInitialize(0, 800, vCaptureHDRtoSDR, out vCaptureWidth, out vCaptureHeight, out vCaptureWidthByteSize, out vCaptureTotalByteSize, out vCaptureHDREnabled);
-                Debug.WriteLine("CaptureWidth: " + vCaptureWidth);
-                Debug.WriteLine("CaptureHeight: " + vCaptureHeight);
-                Debug.WriteLine("CaptureWidthByteSize: " + vCaptureWidthByteSize);
-                Debug.WriteLine("CaptureTotalByteSize: " + vCaptureTotalByteSize);
-                Debug.WriteLine("CaptureHDREnabled: " + vCaptureHDREnabled);
-                Debug.WriteLine("CaptureHDRtoSDR: " + vCaptureHDRtoSDR);
-                return initialized;
+
+                //Set capture settings
+                vCaptureSettings = new CaptureSettings
+                {
+                    MonitorId = 0,
+                    MaxPixelDimension = 800,
+                    HDRtoSDR = true,
+                    HDRBrightness = 70.0F
+                };
+
+                //Initialize screen capture
+                bool captureInitialized = AppImport.CaptureInitialize(vCaptureSettings, out vCaptureDetails);
+
+                //Set capture details string
+                string captureDetails = "Width: " + vCaptureDetails.Width;
+                captureDetails += "\nHeight: " + vCaptureDetails.Height;
+                captureDetails += "\nPixelByteSize: " + vCaptureDetails.PixelByteSize;
+                captureDetails += "\nWidthByteSize: " + vCaptureDetails.WidthByteSize;
+                captureDetails += "\nTotalByteSize: " + vCaptureDetails.TotalByteSize;
+                captureDetails += "\nHDREnabled: " + vCaptureDetails.HDREnabled;
+                captureDetails += "\nHDRtoSDR: " + vCaptureSettings.HDRtoSDR;
+                captureDetails += "\nHDRBrightness: " + vCaptureSettings.HDRBrightness;
+                captureDetails += "\nSDRWhiteLevel: " + vCaptureDetails.SDRWhiteLevel;
+
+                //Update interface details
+                Debug.WriteLine(captureDetails);
+                textblock_CaptureDetails.Text = "Capture details:\n" + captureDetails;
+                return captureInitialized;
             }
             catch (Exception ex)
             {
@@ -54,16 +71,16 @@ namespace ScreenCapturePreview
         {
             try
             {
-                byte[] bitmapDataArray = new byte[vCaptureTotalByteSize];
-                Marshal.Copy(bitmapIntPtr, bitmapDataArray, 0, vCaptureTotalByteSize);
+                byte[] bitmapDataArray = new byte[vCaptureDetails.TotalByteSize];
+                Marshal.Copy(bitmapIntPtr, bitmapDataArray, 0, vCaptureDetails.TotalByteSize);
 
                 PixelFormat bitmapPixelFormat = PixelFormats.Bgra32;
-                if (vCaptureHDREnabled && !vCaptureHDRtoSDR)
+                if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR)
                 {
                     bitmapPixelFormat = PixelFormats.Rgba64;
                 }
 
-                return BitmapSource.Create(vCaptureWidth, vCaptureHeight, 96, 96, bitmapPixelFormat, null, bitmapDataArray, vCaptureWidthByteSize);
+                return BitmapSource.Create(vCaptureDetails.Width, vCaptureDetails.Height, 96, 96, bitmapPixelFormat, null, bitmapDataArray, vCaptureDetails.WidthByteSize);
             }
             catch (Exception ex)
             {
@@ -77,7 +94,10 @@ namespace ScreenCapturePreview
         {
             try
             {
+                //Initialize screen capture
                 await InitializeScreenCapture(500);
+
+                //Loop and capture screen
                 while (true)
                 {
                     IntPtr bitmapIntPtr = IntPtr.Zero;
@@ -100,9 +120,9 @@ namespace ScreenCapturePreview
 
                         //Save screenshot to file
                         string fileName = DateTime.Now.ToString("HH.mm.ss.ffff (MM-dd-yyyy)");
-                        if (vCaptureHDREnabled)
+                        if (vCaptureDetails.HDREnabled)
                         {
-                            if (vCaptureHDRtoSDR)
+                            if (vCaptureSettings.HDRtoSDR)
                             {
                                 fileName += " (HDRtoSDR)";
                             }
@@ -136,6 +156,7 @@ namespace ScreenCapturePreview
                             AppImport.CaptureFreeMemory(bitmapIntPtr);
                         }
 
+                        //Delay next screen capture
                         await Task.Delay(500);
                     }
                 }

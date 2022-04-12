@@ -15,17 +15,9 @@ namespace
 	HRESULT hResult;
 
 	//Capture
-	UINT vCaptureMonitorId;
-	UINT vCaptureWidth;
-	UINT vCaptureHeight;
-	UINT vCaptureMaxPixelDimension;
-	UINT vCapturePixelByteSize;
-	UINT vCaptureWidthByteSize;
-	UINT vCaptureTotalByteSize;
+	CaptureSettings vCaptureSettings{};
+	CaptureDetails vCaptureDetails{};
 	DXGI_FORMAT vCaptureDxgiFormat;
-	BOOL vCaptureHDREnabled;
-	BOOL vCaptureHDRtoSDR;
-	FLOAT vCaptureSDRWhiteLevel;
 
 	//Devices
 	CComPtr<IDXGIDevice4> iDxgiDevice4;

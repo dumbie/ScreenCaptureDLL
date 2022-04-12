@@ -7,7 +7,7 @@ namespace
 {
 	extern "C"
 	{
-		__declspec(dllexport) BOOL CaptureInitialize(UINT captureMonitorId, UINT maxPixelDimension, BOOL convertHDRtoSDR, UINT* captureWidth, UINT* captureHeight, UINT* captureWidthByteSize, UINT* captureTotalByteSize, UINT* captureHDREnabled)
+		__declspec(dllexport) BOOL CaptureInitialize(CaptureSettings captureSettings, CaptureDetails* captureDetails)
 		{
 			try
 			{
@@ -17,10 +17,8 @@ namespace
 				//Reset all used variables
 				CaptureResetVariablesAll();
 
-				//Update capture variables
-				vCaptureMonitorId = captureMonitorId;
-				vCaptureMaxPixelDimension = maxPixelDimension;
-				vCaptureHDRtoSDR = convertHDRtoSDR;
+				//Update capture settings
+				vCaptureSettings = captureSettings;
 
 				//Initialize DirectX
 				if (!InitializeDirectX()) { return false; }
@@ -37,12 +35,8 @@ namespace
 				//Set shader variables
 				if (!SetShaderVariables()) { return false; }
 
-				//Set out parameters
-				*captureWidth = vCaptureWidth;
-				*captureHeight = vCaptureHeight;
-				*captureWidthByteSize = vCaptureWidthByteSize;
-				*captureTotalByteSize = vCaptureTotalByteSize;
-				*captureHDREnabled = vCaptureHDREnabled;
+				//Return capture details
+				*captureDetails = vCaptureDetails;
 				return true;
 			}
 			catch (...)

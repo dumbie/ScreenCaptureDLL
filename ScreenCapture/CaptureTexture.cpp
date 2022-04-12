@@ -15,14 +15,14 @@ namespace
 			}
 
 			//Create image byte array
-			BYTE* BitmapBuffer = new BYTE[vCaptureTotalByteSize];
+			BYTE* BitmapBuffer = new BYTE[vCaptureDetails.TotalByteSize];
 			BYTE* BitmapBufferReturn = BitmapBuffer;
 			BYTE* SourceBuffer = (BYTE*)iD3DMappedSubResource.pData;
-			for (int i = 0; i < vCaptureHeight; i++)
+			for (int i = 0; i < vCaptureDetails.Height; i++)
 			{
-				memcpy(BitmapBuffer, SourceBuffer, vCaptureWidthByteSize);
+				memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
 				SourceBuffer += iD3DMappedSubResource.RowPitch;
-				BitmapBuffer += vCaptureWidthByteSize;
+				BitmapBuffer += vCaptureDetails.WidthByteSize;
 			}
 
 			//Unmap texture from subresource

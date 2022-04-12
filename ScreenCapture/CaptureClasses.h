@@ -1,15 +1,51 @@
 #pragma once
 #include <directxmath.h>
+#include <wincodec.h>
 
 namespace
 {
+	typedef struct CaptureSettings
+	{
+		UINT MonitorId;
+		UINT MaxPixelDimension;
+		BOOL HDRtoSDR;
+		FLOAT HDRBrightness;
+		FLOAT Saturation;
+		FLOAT Temperature;
+		FLOAT HueRotate;
+		FLOAT RedChannel;
+		FLOAT GreenChannel;
+		FLOAT BlueChannel;
+		FLOAT Brightness;
+		FLOAT Contrast;
+		FLOAT Gamma;
+	} CaptureSettings;
+
+	typedef struct CaptureDetails
+	{
+		UINT Width;
+		UINT Height;
+		BOOL HDREnabled;
+		FLOAT SDRWhiteLevel;
+		UINT PixelByteSize;
+		UINT WidthByteSize;
+		UINT TotalByteSize;
+	} CaptureDetails;
+
 	typedef struct ShaderVariables
 	{
-		bool HDRtoSDR;
-		float SDRWhiteLevel;
-		float Saturation;
-		float Brightness;
-		float Gamma;
+		BOOL HDRtoSDR;
+		FLOAT HDRBrightness;
+		FLOAT SDRWhiteLevel;
+		FLOAT Saturation;
+		FLOAT Temperature;
+		FLOAT HueRotate;
+		FLOAT RedChannel;
+		FLOAT GreenChannel;
+		FLOAT BlueChannel;
+		FLOAT Brightness;
+		FLOAT Contrast;
+		FLOAT Gamma;
 	} ShaderVariables;
 
 	typedef struct VertexVertice

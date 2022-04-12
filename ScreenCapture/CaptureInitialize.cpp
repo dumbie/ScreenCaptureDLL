@@ -50,7 +50,7 @@ namespace
 			}
 
 			//Get DXGI Output
-			hResult = iDxgiAdapter4->EnumOutputs(vCaptureMonitorId, &iDxgiOutput0);
+			hResult = iDxgiAdapter4->EnumOutputs(vCaptureSettings.MonitorId, &iDxgiOutput0);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll();
@@ -87,47 +87,48 @@ namespace
 			iDxgiOutputDuplication0->GetDesc(&iDxgiOutputDuplicationDescription);
 
 			//Get monitor HDR details
-			vCaptureHDREnabled = iDxgiOutputDescription.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 || iDxgiOutputDescription.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
-			if (vCaptureHDREnabled && !vCaptureHDRtoSDR)
+			vCaptureDetails.HDREnabled = iDxgiOutputDescription.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 || iDxgiOutputDescription.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
+			if (vCaptureDetails.HDREnabled)
 			{
-				vCaptureDxgiFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-				vCapturePixelByteSize = 8;
-			}
-			else
-			{
-				if (vCaptureHDREnabled)
+				if (vCaptureSettings.HDRtoSDR)
 				{
-					vCaptureSDRWhiteLevel = GetMonitorSDRWhiteLevel(); //Fix detect when changed in Windows settings
+					vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(); //Fix detect when changed in Windows settings
 					vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+					vCaptureDetails.PixelByteSize = 4;
 				}
 				else
 				{
-					vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+					vCaptureDxgiFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+					vCaptureDetails.PixelByteSize = 8;
 				}
-				vCapturePixelByteSize = 4;
+			}
+			else
+			{
+				vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+				vCaptureDetails.PixelByteSize = 4;
 			}
 
 			//Update capture variables
-			vCaptureWidth = iDxgiOutputDuplicationDescription.ModeDesc.Width;
-			vCaptureHeight = iDxgiOutputDuplicationDescription.ModeDesc.Height;
-			if (vCaptureMaxPixelDimension != 0 && vCaptureWidth > vCaptureMaxPixelDimension && vCaptureHeight > vCaptureMaxPixelDimension)
+			vCaptureDetails.Width = iDxgiOutputDuplicationDescription.ModeDesc.Width;
+			vCaptureDetails.Height = iDxgiOutputDuplicationDescription.ModeDesc.Height;
+			if (vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.Width > vCaptureSettings.MaxPixelDimension && vCaptureDetails.Height > vCaptureSettings.MaxPixelDimension)
 			{
 				DOUBLE resizedWidth = 0.01;
 				DOUBLE resizedHeight = 0.01;
-				UINT minDimension = min(vCaptureWidth, vCaptureHeight);
+				UINT minDimension = min(vCaptureDetails.Width, vCaptureDetails.Height);
 				//Find nearest full pixel dimensions to keep ratio
 				while (resizedWidth != (UINT)resizedWidth || resizedHeight != (UINT)resizedHeight)
 				{
-					DOUBLE differenceRatio = (DOUBLE)minDimension / vCaptureMaxPixelDimension;
+					DOUBLE differenceRatio = (DOUBLE)minDimension / vCaptureSettings.MaxPixelDimension;
 					resizedWidth = iDxgiOutputDuplicationDescription.ModeDesc.Width / differenceRatio;
 					resizedHeight = iDxgiOutputDuplicationDescription.ModeDesc.Height / differenceRatio;
-					vCaptureMaxPixelDimension++;
+					vCaptureSettings.MaxPixelDimension++;
 				}
-				vCaptureWidth = resizedWidth;
-				vCaptureHeight = resizedHeight;
+				vCaptureDetails.Width = resizedWidth;
+				vCaptureDetails.Height = resizedHeight;
 			}
-			vCaptureWidthByteSize = vCaptureWidth * vCapturePixelByteSize;
-			vCaptureTotalByteSize = vCaptureWidth * vCaptureHeight * vCapturePixelByteSize;
+			vCaptureDetails.WidthByteSize = vCaptureDetails.Width * vCaptureDetails.PixelByteSize;
+			vCaptureDetails.TotalByteSize = vCaptureDetails.Width * vCaptureDetails.Height * vCaptureDetails.PixelByteSize;
 
 			//Release resources
 			iD3D11Device0.Release();
@@ -152,8 +153,8 @@ namespace
 		{
 			//Create render target view texture
 			D3D11_TEXTURE2D_DESC1 iD3DTexture2D1DescRenderTargetView{};
-			iD3DTexture2D1DescRenderTargetView.Width = vCaptureWidth;
-			iD3DTexture2D1DescRenderTargetView.Height = vCaptureHeight;
+			iD3DTexture2D1DescRenderTargetView.Width = vCaptureDetails.Width;
+			iD3DTexture2D1DescRenderTargetView.Height = vCaptureDetails.Height;
 			iD3DTexture2D1DescRenderTargetView.MipLevels = 1;
 			iD3DTexture2D1DescRenderTargetView.ArraySize = 1;
 			iD3DTexture2D1DescRenderTargetView.Format = vCaptureDxgiFormat;
@@ -195,8 +196,8 @@ namespace
 		{
 			//Create and set viewport
 			D3D11_VIEWPORT iD3D11ViewPort{};
-			iD3D11ViewPort.Width = vCaptureWidth;
-			iD3D11ViewPort.Height = vCaptureHeight;
+			iD3D11ViewPort.Width = vCaptureDetails.Width;
+			iD3D11ViewPort.Height = vCaptureDetails.Height;
 			iD3D11DeviceContext4->RSSetViewports(1, &iD3D11ViewPort);
 
 			return true;
@@ -295,8 +296,18 @@ namespace
 		{
 			//Create shader variables
 			ShaderVariables shaderVariables{};
-			shaderVariables.HDRtoSDR = vCaptureHDREnabled && vCaptureHDRtoSDR;
-			shaderVariables.SDRWhiteLevel = vCaptureSDRWhiteLevel;
+			shaderVariables.HDRtoSDR = vCaptureDetails.HDREnabled && vCaptureSettings.HDRtoSDR;
+			shaderVariables.HDRBrightness = vCaptureSettings.HDRBrightness;
+			shaderVariables.SDRWhiteLevel = vCaptureDetails.SDRWhiteLevel;
+			shaderVariables.Saturation = vCaptureSettings.Saturation;
+			shaderVariables.Temperature = vCaptureSettings.Temperature;
+			shaderVariables.HueRotate = vCaptureSettings.HueRotate;
+			shaderVariables.RedChannel = vCaptureSettings.RedChannel;
+			shaderVariables.GreenChannel = vCaptureSettings.GreenChannel;
+			shaderVariables.BlueChannel = vCaptureSettings.BlueChannel;
+			shaderVariables.Brightness = vCaptureSettings.Brightness;
+			shaderVariables.Contrast = vCaptureSettings.Contrast;
+			shaderVariables.Gamma = vCaptureSettings.Gamma;
 
 			//Create buffer description
 			D3D11_BUFFER_DESC bufferDescription{};

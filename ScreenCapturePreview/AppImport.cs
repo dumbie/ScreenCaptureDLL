@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using static ScreenCapturePreview.CaptureClasses;
 
 namespace ScreenCapturePreview
 {
     class AppImport
     {
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureInitialize(int captureMonitorId, int maxPixelDimension, bool convertHDRtoSDR, out int captureWidth, out int captureHeight, out int captureWidthByteSize, out int captureTotalByteSize, out bool captureHDREnabled);
+        public static extern bool CaptureInitialize(CaptureSettings captureSettings, out CaptureDetails captureDetails);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CaptureReset();

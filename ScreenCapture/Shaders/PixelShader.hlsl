@@ -3,7 +3,17 @@ SamplerState _samplerState : register(s0);
 cbuffer _shaderVariables : register(b0)
 {
 	bool HDRtoSDR;
+	float HDRBrightness;
 	float SDRWhiteLevel;
+	float Saturation;
+	float Temperature;
+	float HueRotate;
+	float RedChannel;
+	float GreenChannel;
+	float BlueChannel;
+	float Brightness;
+	float Contrast;
+	float Gamma;
 };
 
 struct PS_INPUT
@@ -14,7 +24,7 @@ struct PS_INPUT
 
 float4 AdjustSDRWhiteLevel(float4 color)
 {
-	return color / (SDRWhiteLevel / 70.0F);
+	return color / (SDRWhiteLevel / HDRBrightness);
 }
 
 float4 main(PS_INPUT input) : SV_TARGET
