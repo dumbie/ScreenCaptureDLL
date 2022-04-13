@@ -7,14 +7,6 @@ namespace
 	{
 		try
 		{
-			//Set target pixel format
-			WICPixelFormatGUID iWicPixelFormatGuid = GUID_WICPixelFormat32bppBGRA;
-			if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR)
-			{
-				iWicPixelFormatGuid = GUID_WICPixelFormat64bppRGBAHalf;
-			}
-			const WICPixelFormatGUID iWicPixelFormatGuidRef = iWicPixelFormatGuid;
-
 			//Create wic factory
 			hResult = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, (LPVOID*)&iWICImagingFactory);
 			if (FAILED(hResult))
@@ -125,18 +117,10 @@ namespace
 				return false;
 			}
 
-			//Bitmap frame set pixelformat
-			hResult = iWICBitmapFrameEncode->SetPixelFormat(&iWicPixelFormatGuid);
-			if (FAILED(hResult))
-			{
-				CaptureResetVariablesBitmap();
-				return false;
-			}
-
 			//Write data to bitmap frame and convert jpg
-			if (iWicFormatGuid == GUID_ContainerFormatJpeg && iWicPixelFormatGuidRef != GUID_WICPixelFormat24bppBGR)
+			if (iWicFormatGuid == GUID_ContainerFormatJpeg && iWicPixelFormatGuidSource != iWicPixelFormatGuidJpeg)
 			{
-				hResult = iWICImagingFactory->CreateBitmapFromMemory(vCaptureDetails.Width, vCaptureDetails.Height, iWicPixelFormatGuidRef, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData, &iWICBitmap);
+				hResult = iWICImagingFactory->CreateBitmapFromMemory(vCaptureDetails.Width, vCaptureDetails.Height, iWicPixelFormatGuidSource, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData, &iWICBitmap);
 				if (FAILED(hResult))
 				{
 					CaptureResetVariablesBitmap();
@@ -150,7 +134,15 @@ namespace
 					return false;
 				}
 
-				hResult = iWICFormatConverter->Initialize(iWICBitmap, GUID_WICPixelFormat24bppBGR, WICBitmapDitherTypeNone, 0, 0, WICBitmapPaletteTypeCustom);
+				hResult = iWICFormatConverter->Initialize(iWICBitmap, iWicPixelFormatGuidJpeg, WICBitmapDitherTypeNone, 0, 0, WICBitmapPaletteTypeCustom);
+				if (FAILED(hResult))
+				{
+					CaptureResetVariablesBitmap();
+					return false;
+				}
+
+				//Bitmap frame set pixelformat
+				hResult = iWICBitmapFrameEncode->SetPixelFormat(&iWicPixelFormatGuidJpeg);
 				if (FAILED(hResult))
 				{
 					CaptureResetVariablesBitmap();
@@ -167,6 +159,14 @@ namespace
 			}
 			else
 			{
+				//Bitmap frame set pixelformat
+				hResult = iWICBitmapFrameEncode->SetPixelFormat(&iWicPixelFormatGuidSource);
+				if (FAILED(hResult))
+				{
+					CaptureResetVariablesBitmap();
+					return false;
+				}
+
 				hResult = iWICBitmapFrameEncode->WritePixels(vCaptureDetails.Height, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData);
 				if (FAILED(hResult))
 				{

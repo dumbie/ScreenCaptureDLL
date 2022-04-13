@@ -74,6 +74,7 @@ namespace
 		{
 			try
 			{
+				if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
 				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatBmp);
 			}
 			catch (...)
@@ -86,6 +87,7 @@ namespace
 		{
 			try
 			{
+				if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
 				vBitmapImageQuality = imageQualityPercentage;
 				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatJpeg);
 			}
@@ -99,6 +101,7 @@ namespace
 		{
 			try
 			{
+				if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
 				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatPng);
 			}
 			catch (...)

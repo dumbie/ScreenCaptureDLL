@@ -50,6 +50,8 @@ namespace
 
 	//Bitmap
 	UINT vBitmapImageQuality;
+	WICPixelFormatGUID iWicPixelFormatGuidSource;
+	WICPixelFormatGUID iWicPixelFormatGuidJpeg = GUID_WICPixelFormat24bppBGR;
 	CComPtr<IPropertyBag2> iPropertyBag2;
 	CComPtr<IWICImagingFactory> iWICImagingFactory;
 	CComPtr<IWICStream> iWICStream;

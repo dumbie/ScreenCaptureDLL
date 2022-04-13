@@ -92,18 +92,21 @@ namespace
 			{
 				if (vCaptureSettings.HDRtoSDR)
 				{
-					vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(); //Fix detect when changed in Windows settings
+					iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
 					vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 					vCaptureDetails.PixelByteSize = 4;
+					vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(); //Fix detect when changed in Windows settings
 				}
 				else
 				{
+					iWicPixelFormatGuidSource = GUID_WICPixelFormat64bppRGBAHalf;
 					vCaptureDxgiFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
 					vCaptureDetails.PixelByteSize = 8;
 				}
 			}
 			else
 			{
+				iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
 				vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
 				vCaptureDetails.PixelByteSize = 4;
 			}
@@ -296,7 +299,7 @@ namespace
 		{
 			//Create shader variables
 			ShaderVariables shaderVariables{};
-			shaderVariables.HDRtoSDR = vCaptureDetails.HDREnabled && vCaptureSettings.HDRtoSDR;
+			shaderVariables.HDRtoSDR = vCaptureDetails.HDREnabled & vCaptureSettings.HDRtoSDR;
 			shaderVariables.HDRBrightness = vCaptureSettings.HDRBrightness;
 			shaderVariables.SDRWhiteLevel = vCaptureDetails.SDRWhiteLevel;
 			shaderVariables.Saturation = vCaptureSettings.Saturation;

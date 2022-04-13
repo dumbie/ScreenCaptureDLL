@@ -8,11 +8,18 @@
         Title="Screen Capture Preview" Height="750" Width="1280">
     <Grid>
         <Image Name="image_DebugPreview"/>
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right">
-            <StackPanel.Background>
+        <Border Margin="10" CornerRadius="8" VerticalAlignment="Top" HorizontalAlignment="Right">
+            <Border.Background>
                 <SolidColorBrush Color="Black" Opacity="0.60"/>
-            </StackPanel.Background>
-            <TextBlock x:Name="textblock_CaptureDetails" Foreground="White" Margin="5"/>
-        </StackPanel>
+            </Border.Background>
+            <StackPanel Margin="5">
+                <TextBlock x:Name="textblock_CaptureDetails" Foreground="White" Margin="0,0,0,5" Text="Capture details..."/>
+                <CheckBox x:Name="checkbox_SaveJpg" Content="Save jpg image" Foreground="White"/>
+                <CheckBox x:Name="checkbox_SavePng" Content="Save png image" Foreground="White"/>
+                <CheckBox x:Name="checkbox_SaveBmp" Content="Save bmp image" Foreground="White"/>
+                <CheckBox x:Name="checkbox_SaveJxr" Content="Save jxr image" Foreground="White"/>
+                <Button x:Name="button_OpenDir" Content="Open directory" Click="Button_OpenDir_Click" Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

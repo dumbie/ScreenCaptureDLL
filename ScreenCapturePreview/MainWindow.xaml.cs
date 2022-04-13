@@ -52,7 +52,7 @@ namespace ScreenCapturePreview
 
                 //Update interface details
                 Debug.WriteLine(captureDetails);
-                textblock_CaptureDetails.Text = "Capture details:\n" + captureDetails;
+                textblock_CaptureDetails.Text = captureDetails;
                 return captureInitialized;
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace ScreenCapturePreview
                 PixelFormat bitmapPixelFormat = PixelFormats.Bgra32;
                 if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR)
                 {
-                    bitmapPixelFormat = PixelFormats.Rgba64;
+                    bitmapPixelFormat = PixelFormats.Rgba64; //Fix Rgba64Half support missing 
                 }
 
                 return BitmapSource.Create(vCaptureDetails.Width, vCaptureDetails.Height, 96, 96, bitmapPixelFormat, null, bitmapDataArray, vCaptureDetails.WidthByteSize);
@@ -135,11 +135,30 @@ namespace ScreenCapturePreview
                         {
                             fileName += " (SDR)";
                         }
-                        //bool screenshotExport = AppImport.CaptureSaveFileBmp(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".bmp");
-                        //bool screenshotExport = AppImport.CaptureSaveFileJpg(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jpg", 75);
-                        //bool screenshotExport = AppImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".png");
-                        //bool screenshotExport = AppImport.CaptureSaveFileJxr(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jxr");
-                        //Debug.WriteLine("Screenshot export succeeded: " + screenshotExport);
+
+                        if ((bool)checkbox_SaveBmp.IsChecked)
+                        {
+                            bool screenshotExport = AppImport.CaptureSaveFileBmp(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".bmp");
+                            Debug.WriteLine("Screenshot bmp export succeeded: " + screenshotExport);
+                        }
+
+                        if ((bool)checkbox_SaveJpg.IsChecked)
+                        {
+                            bool screenshotExport = AppImport.CaptureSaveFileJpg(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jpg", 10);
+                            Debug.WriteLine("Screenshot jpg export succeeded: " + screenshotExport);
+                        }
+
+                        if ((bool)checkbox_SavePng.IsChecked)
+                        {
+                            bool screenshotExport = AppImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".png");
+                            Debug.WriteLine("Screenshot png export succeeded: " + screenshotExport);
+                        }
+
+                        if ((bool)checkbox_SaveJxr.IsChecked)
+                        {
+                            bool screenshotExport = AppImport.CaptureSaveFileJxr(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jxr");
+                            Debug.WriteLine("Screenshot jxr export succeeded: " + screenshotExport);
+                        }
 
                         //Update screen capture preview
                         image_DebugPreview.Source = BitmapDataToBitmapSource(bitmapIntPtr);
@@ -160,6 +179,15 @@ namespace ScreenCapturePreview
                         await Task.Delay(500);
                     }
                 }
+            }
+            catch { }
+        }
+
+        private void Button_OpenDir_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start("Screenshots");
             }
             catch { }
         }
