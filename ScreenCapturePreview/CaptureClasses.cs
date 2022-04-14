@@ -8,9 +8,10 @@
             public int MaxPixelDimension { get; set; }
             public bool HDRtoSDR { get; set; }
             public float HDRBrightness { get; set; }
-            public float Saturation { get; set; }
+            public float Vibrance { get; set; }
+            public float Saturate { get; set; }
             public float Temperature { get; set; }
-            public float HueRotate { get; set; }
+            public int HueRotate { get; set; }
             public float RedChannel { get; set; }
             public float GreenChannel { get; set; }
             public float BlueChannel { get; set; }

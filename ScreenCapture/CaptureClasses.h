@@ -10,9 +10,10 @@ namespace
 		UINT MaxPixelDimension;
 		BOOL HDRtoSDR;
 		FLOAT HDRBrightness;
-		FLOAT Saturation;
+		FLOAT Vibrance;
+		FLOAT Saturate;
 		FLOAT Temperature;
-		FLOAT HueRotate;
+		UINT HueRotate;
 		FLOAT RedChannel;
 		FLOAT GreenChannel;
 		FLOAT BlueChannel;
@@ -37,9 +38,10 @@ namespace
 		BOOL HDRtoSDR;
 		FLOAT HDRBrightness;
 		FLOAT SDRWhiteLevel;
-		FLOAT Saturation;
+		FLOAT Vibrance;
+		FLOAT Saturate;
 		FLOAT Temperature;
-		FLOAT HueRotate;
+		UINT HueRotate;
 		FLOAT RedChannel;
 		FLOAT GreenChannel;
 		FLOAT BlueChannel;

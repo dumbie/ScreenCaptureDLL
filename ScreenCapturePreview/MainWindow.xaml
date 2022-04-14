@@ -8,13 +8,23 @@
         Title="Screen Capture Preview" Height="750" Width="1280">
     <Grid>
         <Image Name="image_DebugPreview"/>
-        <Border Margin="10" CornerRadius="8" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Border Margin="10" MinWidth="160" CornerRadius="8" VerticalAlignment="Top" HorizontalAlignment="Right">
             <Border.Background>
                 <SolidColorBrush Color="Black" Opacity="0.60"/>
             </Border.Background>
             <StackPanel Margin="5">
-                <TextBlock x:Name="textblock_CaptureDetails" Foreground="White" Margin="0,0,0,5" Text="Capture details..."/>
-                <CheckBox x:Name="checkbox_SaveJpg" Content="Save jpg image" Foreground="White"/>
+                <TextBlock x:Name="textblock_CaptureDetails" Foreground="White" Text="Capture details..."/>
+
+                <TextBlock Text="HDR Brightness:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_HDRBrightness" Value="70" Minimum="10" Maximum="300" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock Text="Vibrance:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Vibrance" Value="1.00" Minimum="0.00" Maximum="3.00" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock Text="Saturate:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Saturate" Value="1.00" Minimum="0.00" Maximum="3.00" ValueChanged="slider_ValueChanged"/>
+
+                <CheckBox x:Name="checkbox_SaveJpg" Content="Save jpg image" Foreground="White" Margin="0,5,0,0"/>
                 <CheckBox x:Name="checkbox_SavePng" Content="Save png image" Foreground="White"/>
                 <CheckBox x:Name="checkbox_SaveBmp" Content="Save bmp image" Foreground="White"/>
                 <CheckBox x:Name="checkbox_SaveJxr" Content="Save jxr image" Foreground="White"/>

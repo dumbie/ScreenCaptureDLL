@@ -33,7 +33,9 @@ namespace ScreenCapturePreview
                     MonitorId = 0,
                     MaxPixelDimension = 800,
                     HDRtoSDR = true,
-                    HDRBrightness = 70.0F
+                    HDRBrightness = (float)slider_HDRBrightness.Value,
+                    Vibrance = (float)slider_Vibrance.Value,
+                    Saturate = (float)slider_Saturate.Value
                 };
 
                 //Initialize screen capture
@@ -49,6 +51,7 @@ namespace ScreenCapturePreview
                 captureDetails += "\nHDRtoSDR: " + vCaptureSettings.HDRtoSDR;
                 captureDetails += "\nHDRBrightness: " + vCaptureSettings.HDRBrightness;
                 captureDetails += "\nSDRWhiteLevel: " + vCaptureDetails.SDRWhiteLevel;
+                captureDetails += "\nSaturate: " + vCaptureSettings.Saturate;
 
                 //Update interface details
                 Debug.WriteLine(captureDetails);
@@ -188,6 +191,15 @@ namespace ScreenCapturePreview
             try
             {
                 Process.Start("Screenshots");
+            }
+            catch { }
+        }
+
+        private async void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try
+            {
+                await InitializeScreenCapture(0);
             }
             catch { }
         }
