@@ -31,11 +31,18 @@ namespace ScreenCapturePreview
                 vCaptureSettings = new CaptureSettings
                 {
                     MonitorId = 0,
-                    MaxPixelDimension = 800,
+                    MaxPixelDimension = 1000,
                     HDRtoSDR = true,
                     HDRBrightness = (float)slider_HDRBrightness.Value,
                     Vibrance = (float)slider_Vibrance.Value,
-                    Saturate = (float)slider_Saturate.Value
+                    Saturate = (float)slider_Saturate.Value,
+                    Temperature = (float)slider_Temperature.Value,
+                    RedChannel = (float)slider_RedChannel.Value,
+                    GreenChannel = (float)slider_GreenChannel.Value,
+                    BlueChannel = (float)slider_BlueChannel.Value,
+                    Brightness = (float)slider_Brightness.Value,
+                    Contrast = (float)slider_Contrast.Value,
+                    Gamma = (float)slider_Gamma.Value,
                 };
 
                 //Initialize screen capture
@@ -49,9 +56,19 @@ namespace ScreenCapturePreview
                 captureDetails += "\nTotalByteSize: " + vCaptureDetails.TotalByteSize;
                 captureDetails += "\nHDREnabled: " + vCaptureDetails.HDREnabled;
                 captureDetails += "\nHDRtoSDR: " + vCaptureSettings.HDRtoSDR;
-                captureDetails += "\nHDRBrightness: " + vCaptureSettings.HDRBrightness;
                 captureDetails += "\nSDRWhiteLevel: " + vCaptureDetails.SDRWhiteLevel;
-                captureDetails += "\nSaturate: " + vCaptureSettings.Saturate;
+
+                //Update slider text
+                text_HDRBrightness.Text = text_HDRBrightness.Tag + " " + slider_HDRBrightness.Value.ToString("0.0000");
+                text_Vibrance.Text = text_Vibrance.Tag + " " + slider_Vibrance.Value.ToString("0.0000");
+                text_Saturate.Text = text_Saturate.Tag + " " + slider_Saturate.Value.ToString("0.0000");
+                text_Temperature.Text = text_Temperature.Tag + " " + slider_Temperature.Value.ToString("0.0000");
+                text_RedChannel.Text = text_RedChannel.Tag + " " + slider_RedChannel.Value.ToString("0.0000");
+                text_GreenChannel.Text = text_GreenChannel.Tag + " " + slider_GreenChannel.Value.ToString("0.0000");
+                text_BlueChannel.Text = text_BlueChannel.Tag + " " + slider_BlueChannel.Value.ToString("0.0000");
+                text_Brightness.Text = text_Brightness.Tag + " " + slider_Brightness.Value.ToString("0.0000");
+                text_Contrast.Text = text_Contrast.Tag + " " + slider_Contrast.Value.ToString("0.0000");
+                text_Gamma.Text = text_Gamma.Tag + " " + slider_Gamma.Value.ToString("0.0000");
 
                 //Update interface details
                 Debug.WriteLine(captureDetails);

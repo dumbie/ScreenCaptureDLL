@@ -305,7 +305,6 @@ namespace
 			shaderVariables.Vibrance = vCaptureSettings.Vibrance;
 			shaderVariables.Saturate = vCaptureSettings.Saturate;
 			shaderVariables.Temperature = vCaptureSettings.Temperature;
-			shaderVariables.HueRotate = vCaptureSettings.HueRotate;
 			shaderVariables.RedChannel = vCaptureSettings.RedChannel;
 			shaderVariables.GreenChannel = vCaptureSettings.GreenChannel;
 			shaderVariables.BlueChannel = vCaptureSettings.BlueChannel;

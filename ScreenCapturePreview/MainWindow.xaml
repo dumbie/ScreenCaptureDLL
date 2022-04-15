@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ScreenCapturePreview"
         mc:Ignorable="d"
-        Title="Screen Capture Preview" Height="750" Width="1280">
+        Title="Screen Capture Preview" MinHeight="750" Height="750" Width="1280">
     <Grid>
         <Image Name="image_DebugPreview"/>
         <Border Margin="10" MinWidth="160" CornerRadius="8" VerticalAlignment="Top" HorizontalAlignment="Right">
@@ -15,14 +15,35 @@
             <StackPanel Margin="5">
                 <TextBlock x:Name="textblock_CaptureDetails" Foreground="White" Text="Capture details..."/>
 
-                <TextBlock Text="HDR Brightness:" Foreground="White" Margin="0,5,0,0"/>
-                <Slider x:Name="slider_HDRBrightness" Value="70" Minimum="10" Maximum="300" ValueChanged="slider_ValueChanged"/>
+                <TextBlock x:Name="text_HDRBrightness" Tag="HDR Brightness:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_HDRBrightness" Value="70" Minimum="5" Maximum="300" ValueChanged="slider_ValueChanged"/>
 
-                <TextBlock Text="Vibrance:" Foreground="White" Margin="0,5,0,0"/>
-                <Slider x:Name="slider_Vibrance" Value="1.00" Minimum="0.00" Maximum="3.00" ValueChanged="slider_ValueChanged"/>
+                <TextBlock x:Name="text_Vibrance" Tag="Vibrance:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Vibrance" Value="0.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
 
-                <TextBlock Text="Saturate:" Foreground="White" Margin="0,5,0,0"/>
-                <Slider x:Name="slider_Saturate" Value="1.00" Minimum="0.00" Maximum="3.00" ValueChanged="slider_ValueChanged"/>
+                <TextBlock x:Name="text_Saturate" Tag="Saturate:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Saturate" Value="1.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock x:Name="text_Temperature" Tag="Temperature:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Temperature" Value="0.00" Minimum="0" Maximum="500" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock x:Name="text_RedChannel" Tag="Red channel:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_RedChannel" Value="1.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock x:Name="text_GreenChannel" Tag="Green channel:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_GreenChannel" Value="1.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock x:Name="text_BlueChannel" Tag="Blue channel:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_BlueChannel" Value="1.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock x:Name="text_Brightness" Tag="Brightness:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Brightness" Value="1.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock x:Name="text_Contrast" Tag="Contrast:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Contrast" Value="0.00" Minimum="-2.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock x:Name="text_Gamma" Tag="Gamma:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Gamma" Value="1.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
 
                 <CheckBox x:Name="checkbox_SaveJpg" Content="Save jpg image" Foreground="White" Margin="0,5,0,0"/>
                 <CheckBox x:Name="checkbox_SavePng" Content="Save png image" Foreground="White"/>

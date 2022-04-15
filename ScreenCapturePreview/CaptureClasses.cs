@@ -11,7 +11,6 @@
             public float Vibrance { get; set; }
             public float Saturate { get; set; }
             public float Temperature { get; set; }
-            public int HueRotate { get; set; }
             public float RedChannel { get; set; }
             public float GreenChannel { get; set; }
             public float BlueChannel { get; set; }

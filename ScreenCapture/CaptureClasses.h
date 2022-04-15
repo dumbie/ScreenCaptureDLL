@@ -13,7 +13,6 @@ namespace
 		FLOAT Vibrance;
 		FLOAT Saturate;
 		FLOAT Temperature;
-		UINT HueRotate;
 		FLOAT RedChannel;
 		FLOAT GreenChannel;
 		FLOAT BlueChannel;
@@ -41,7 +40,6 @@ namespace
 		FLOAT Vibrance;
 		FLOAT Saturate;
 		FLOAT Temperature;
-		UINT HueRotate;
 		FLOAT RedChannel;
 		FLOAT GreenChannel;
 		FLOAT BlueChannel;

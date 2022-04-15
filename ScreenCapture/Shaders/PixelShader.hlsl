@@ -8,7 +8,6 @@ cbuffer _shaderVariables : register(b0)
 	float Vibrance;
 	float Saturate;
 	float Temperature;
-	int HueRotate;
 	float RedChannel;
 	float GreenChannel;
 	float BlueChannel;
@@ -28,30 +27,109 @@ float4 AdjustSDRWhiteLevel(float4 color)
 	return color / (SDRWhiteLevel / HDRBrightness);
 }
 
+float4 AdjustVibrance(float4 color)
+{
+	if (Vibrance == 0.0F) { return color; }
+	float maxColor = max(color.r, max(color.g, color.b));
+	float minColor = min(color.r, min(color.g, color.b));
+	return lerp(minColor, color, 1.0F + (1.0F - pow(maxColor, Vibrance)));
+}
+
 float4 AdjustSaturate(float4 color)
 {
-	float adjustSature = 1.0F - Saturate;
-	float adjustLuminance = 1.0 / 3.0;
+	if (Saturate == 1.0F) { return color; }
+	float adjustSaturate = 1.0F - Saturate;
+	float adjustLuminance = (color.r + color.g + color.b) / 3.0F;
+	return color * Saturate + adjustSaturate * adjustLuminance;
+}
 
-	float Matrix00 = (adjustSature * adjustLuminance) + Saturate;
-	float Matrix10 = adjustSature * adjustLuminance;
-	float Matrix20 = adjustSature * adjustLuminance;
-	float Matrix01 = adjustSature * adjustLuminance;
-	float Matrix11 = (adjustSature * adjustLuminance) + Saturate;
-	float Matrix21 = adjustSature * adjustLuminance;
-	float Matrix02 = adjustSature * adjustLuminance;
-	float Matrix12 = adjustSature * adjustLuminance;
-	float Matrix22 = (adjustSature * adjustLuminance) + Saturate;
+float4 AdjustTemperature(float4 color)
+{
+	if (Temperature == 0) { return color; }
+
+	float redTemp = 255;
+	if (Temperature > 66)
+	{
+		redTemp = Temperature - 60;
+		redTemp = 329.698727466 * pow(redTemp, -0.1332047592);
+	}
+
+	float greenTemp = 0;
+	if (Temperature <= 66)
+	{
+		greenTemp = Temperature;
+		greenTemp = (99.4708025861 * log(greenTemp)) - 161.1195681661;
+	}
+	else
+	{
+		greenTemp = Temperature - 60;
+		greenTemp = 288.1221695283 * pow(greenTemp, -0.0755148492);
+	}
+
+	float blueTemp = 255;
+	if (Temperature < 66)
+	{
+		if (Temperature <= 19)
+		{
+			blueTemp = 0;
+		}
+		else
+		{
+			blueTemp = Temperature - 10;
+			blueTemp = (138.5177312231 * log(blueTemp)) - 305.0447927307;
+		}
+	}
 
 	float4x4 matrix4x4 =
 	{
-		Matrix00, Matrix01, Matrix02, 0.0,
-		Matrix10, Matrix11, Matrix12, 0.0,
-		Matrix20, Matrix21, Matrix22, 0.0,
+		redTemp / 255.0F, 0.0, 0.0, 0.0,
+		0.0, greenTemp / 255.0F, 0.0, 0.0,
+		0.0, 0.0, blueTemp / 255.0F, 0.0,
 		0.0, 0.0, 0.0, 1.0F
 	};
-
 	return mul(matrix4x4, color);
+}
+
+float4 AdjustColorChannels(float4 color)
+{
+	float4x4 matrix4x4 =
+	{
+		RedChannel, 0.0, 0.0, 0.0,
+		0.0, GreenChannel, 0.0, 0.0,
+		0.0, 0.0, BlueChannel, 0.0,
+		0.0, 0.0, 0.0, 1.0F
+	};
+	return mul(matrix4x4, color);
+}
+
+float4 AdjustBrightness(float4 color)
+{
+	float4x4 matrix4x4 =
+	{
+		Brightness, 0.0, 0.0, 0.0,
+		0.0, Brightness, 0.0, 0.0,
+		0.0, 0.0, Brightness, 0.0,
+		0.0, 0.0, 0.0, 1.0F
+	};
+	return mul(matrix4x4, color);
+}
+
+float4 AdjustContrast(float4 color)
+{
+	float4x4 matrix4x4 =
+	{
+		1.0F, 0.0, 0.0, Contrast,
+		0.0, 1.0F, 0.0, Contrast,
+		0.0, 0.0, 1.0F, Contrast,
+		0.0, 0.0, 0.0, 1.0F
+	};
+	return mul(matrix4x4, color);
+}
+
+float4 AdjustGamma(float4 color)
+{
+	float adjustGamma = 1.0F / Gamma;
+	return pow(color, adjustGamma);
 }
 
 float4 main(PS_INPUT input) : SV_TARGET
@@ -59,14 +137,32 @@ float4 main(PS_INPUT input) : SV_TARGET
 	//Get texture colors
 	float4 color = _texture2D.Sample(_samplerState, input.TexCoord);
 
-	//Apply HDR to SDR tonemapping
+	//Adjust SDR white level
 	if (HDRtoSDR)
 	{
 		color = AdjustSDRWhiteLevel(color);
 	}
 
-	//Apply Saturate
+	//Adjust vibrance
+	color = AdjustVibrance(color);
+
+	//Adjust saturate
 	color = AdjustSaturate(color);
+
+	//Adjust temperature
+	color = AdjustTemperature(color);
+
+	//Adjust color channels
+	color = AdjustColorChannels(color);
+
+	//Adjust brightness
+	color = AdjustBrightness(color);
+
+	//Adjust contrast
+	color = AdjustContrast(color);
+
+	//Adjust gamma
+	color = AdjustGamma(color);
 
 	//Set alpha channel to maximum
 	color.a = 1.0F;
