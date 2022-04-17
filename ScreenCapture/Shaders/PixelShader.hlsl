@@ -24,6 +24,7 @@ struct PS_INPUT
 
 float4 AdjustSDRWhiteLevel(float4 color)
 {
+	if (!HDRtoSDR) { return color; }
 	return color / (SDRWhiteLevel / HDRBrightness);
 }
 
@@ -32,7 +33,8 @@ float4 AdjustVibrance(float4 color)
 	if (Vibrance == 0.0F) { return color; }
 	float maxColor = max(color.r, max(color.g, color.b));
 	float minColor = min(color.r, min(color.g, color.b));
-	return lerp(minColor, color, 1.0F + (1.0F - pow(maxColor, Vibrance)));
+	float4 lerpColor = lerp(minColor, color, 1.0F + (1.0F - pow(maxColor, Vibrance)));
+	return min(max(lerpColor, 0), 255);
 }
 
 float4 AdjustSaturate(float4 color)
@@ -45,7 +47,7 @@ float4 AdjustSaturate(float4 color)
 
 float4 AdjustTemperature(float4 color)
 {
-	if (Temperature == 0) { return color; }
+	if (Temperature == 0.0F) { return color; }
 
 	float redTemp = 255;
 	if (Temperature > 66)
@@ -92,6 +94,7 @@ float4 AdjustTemperature(float4 color)
 
 float4 AdjustColorChannels(float4 color)
 {
+	if (RedChannel == 1.0F && GreenChannel == 1.0F && BlueChannel == 1.0F) { return color; }
 	float4x4 matrix4x4 =
 	{
 		RedChannel, 0.0, 0.0, 0.0,
@@ -104,6 +107,7 @@ float4 AdjustColorChannels(float4 color)
 
 float4 AdjustBrightness(float4 color)
 {
+	if (Brightness == 1.0F) { return color; }
 	float4x4 matrix4x4 =
 	{
 		Brightness, 0.0, 0.0, 0.0,
@@ -116,6 +120,7 @@ float4 AdjustBrightness(float4 color)
 
 float4 AdjustContrast(float4 color)
 {
+	if (Contrast == 0.0F) { return color; }
 	float4x4 matrix4x4 =
 	{
 		1.0F, 0.0, 0.0, Contrast,
@@ -128,7 +133,8 @@ float4 AdjustContrast(float4 color)
 
 float4 AdjustGamma(float4 color)
 {
-	float adjustGamma = 1.0F / Gamma;
+	if (Gamma == 1.1F) { return color; }
+	float adjustGamma = Gamma / 1.0F;
 	return pow(color, adjustGamma);
 }
 
@@ -138,10 +144,7 @@ float4 main(PS_INPUT input) : SV_TARGET
 	float4 color = _texture2D.Sample(_samplerState, input.TexCoord);
 
 	//Adjust SDR white level
-	if (HDRtoSDR)
-	{
-		color = AdjustSDRWhiteLevel(color);
-	}
+	color = AdjustSDRWhiteLevel(color);
 
 	//Adjust vibrance
 	color = AdjustVibrance(color);

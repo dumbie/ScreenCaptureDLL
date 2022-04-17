@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Windows;
 
-namespace ScreenCapturePreview
+namespace ScreenCapture
 {
     public partial class App : Application
     {

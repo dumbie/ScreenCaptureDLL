@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using static ScreenCapturePreview.CaptureClasses;
 
-namespace ScreenCapturePreview
+namespace ScreenCapture
 {
     public partial class MainWindow : Window
     {
@@ -46,7 +42,7 @@ namespace ScreenCapturePreview
                 };
 
                 //Initialize screen capture
-                bool captureInitialized = AppImport.CaptureInitialize(vCaptureSettings, out vCaptureDetails);
+                bool captureInitialized = CaptureImport.CaptureInitialize(vCaptureSettings, out vCaptureDetails);
 
                 //Set capture details string
                 string captureDetails = "Width: " + vCaptureDetails.Width;
@@ -57,18 +53,6 @@ namespace ScreenCapturePreview
                 captureDetails += "\nHDREnabled: " + vCaptureDetails.HDREnabled;
                 captureDetails += "\nHDRtoSDR: " + vCaptureSettings.HDRtoSDR;
                 captureDetails += "\nSDRWhiteLevel: " + vCaptureDetails.SDRWhiteLevel;
-
-                //Update slider text
-                text_HDRBrightness.Text = text_HDRBrightness.Tag + " " + slider_HDRBrightness.Value.ToString("0.0000");
-                text_Vibrance.Text = text_Vibrance.Tag + " " + slider_Vibrance.Value.ToString("0.0000");
-                text_Saturate.Text = text_Saturate.Tag + " " + slider_Saturate.Value.ToString("0.0000");
-                text_Temperature.Text = text_Temperature.Tag + " " + slider_Temperature.Value.ToString("0.0000");
-                text_RedChannel.Text = text_RedChannel.Tag + " " + slider_RedChannel.Value.ToString("0.0000");
-                text_GreenChannel.Text = text_GreenChannel.Tag + " " + slider_GreenChannel.Value.ToString("0.0000");
-                text_BlueChannel.Text = text_BlueChannel.Tag + " " + slider_BlueChannel.Value.ToString("0.0000");
-                text_Brightness.Text = text_Brightness.Tag + " " + slider_Brightness.Value.ToString("0.0000");
-                text_Contrast.Text = text_Contrast.Tag + " " + slider_Contrast.Value.ToString("0.0000");
-                text_Gamma.Text = text_Gamma.Tag + " " + slider_Gamma.Value.ToString("0.0000");
 
                 //Update interface details
                 Debug.WriteLine(captureDetails);
@@ -86,28 +70,7 @@ namespace ScreenCapturePreview
             }
         }
 
-        //Convert bitmapdata to bitmapsource
-        private BitmapSource BitmapDataToBitmapSource(IntPtr bitmapIntPtr)
-        {
-            try
-            {
-                byte[] bitmapDataArray = new byte[vCaptureDetails.TotalByteSize];
-                Marshal.Copy(bitmapIntPtr, bitmapDataArray, 0, vCaptureDetails.TotalByteSize);
 
-                PixelFormat bitmapPixelFormat = PixelFormats.Bgra32;
-                if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR)
-                {
-                    bitmapPixelFormat = PixelFormats.Rgba64; //Fix Rgba64Half support missing 
-                }
-
-                return BitmapSource.Create(vCaptureDetails.Width, vCaptureDetails.Height, 96, 96, bitmapPixelFormat, null, bitmapDataArray, vCaptureDetails.WidthByteSize);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Failed to convert bitmapdata to bitmapsource: " + ex.Message);
-                return null;
-            }
-        }
 
         //Handle window initialized event
         protected override async void OnSourceInitialized(EventArgs e)
@@ -126,7 +89,7 @@ namespace ScreenCapturePreview
                         //Capture screenshot
                         try
                         {
-                            bitmapIntPtr = AppImport.CaptureScreenshot();
+                            bitmapIntPtr = CaptureImport.CaptureScreenshot();
                         }
                         catch { }
 
@@ -158,30 +121,30 @@ namespace ScreenCapturePreview
 
                         if ((bool)checkbox_SaveBmp.IsChecked)
                         {
-                            bool screenshotExport = AppImport.CaptureSaveFileBmp(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".bmp");
+                            bool screenshotExport = CaptureImport.CaptureSaveFileBmp(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".bmp");
                             Debug.WriteLine("Screenshot bmp export succeeded: " + screenshotExport);
                         }
 
                         if ((bool)checkbox_SaveJpg.IsChecked)
                         {
-                            bool screenshotExport = AppImport.CaptureSaveFileJpg(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jpg", 10);
+                            bool screenshotExport = CaptureImport.CaptureSaveFileJpg(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jpg", 10);
                             Debug.WriteLine("Screenshot jpg export succeeded: " + screenshotExport);
                         }
 
                         if ((bool)checkbox_SavePng.IsChecked)
                         {
-                            bool screenshotExport = AppImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".png");
+                            bool screenshotExport = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".png");
                             Debug.WriteLine("Screenshot png export succeeded: " + screenshotExport);
                         }
 
                         if ((bool)checkbox_SaveJxr.IsChecked)
                         {
-                            bool screenshotExport = AppImport.CaptureSaveFileJxr(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jxr");
+                            bool screenshotExport = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jxr");
                             Debug.WriteLine("Screenshot jxr export succeeded: " + screenshotExport);
                         }
 
                         //Update screen capture preview
-                        image_DebugPreview.Source = BitmapDataToBitmapSource(bitmapIntPtr);
+                        image_DebugPreview.Source = CaptureBitmap.BitmapIntPtrToBitmapSource(bitmapIntPtr, vCaptureDetails, vCaptureSettings);
                     }
                     catch (Exception ex)
                     {
@@ -192,7 +155,7 @@ namespace ScreenCapturePreview
                         //Clear screen capture resources
                         if (bitmapIntPtr != IntPtr.Zero)
                         {
-                            AppImport.CaptureFreeMemory(bitmapIntPtr);
+                            CaptureImport.CaptureFreeMemory(bitmapIntPtr);
                         }
 
                         //Delay next screen capture
@@ -212,11 +175,42 @@ namespace ScreenCapturePreview
             catch { }
         }
 
-        private async void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             try
             {
-                await InitializeScreenCapture(0);
+                //Update slider text
+                text_HDRBrightness.Text = text_HDRBrightness.Tag + " " + slider_HDRBrightness.Value.ToString("0.0000");
+                text_Vibrance.Text = text_Vibrance.Tag + " " + slider_Vibrance.Value.ToString("0.0000");
+                text_Saturate.Text = text_Saturate.Tag + " " + slider_Saturate.Value.ToString("0.0000");
+                text_Temperature.Text = text_Temperature.Tag + " " + slider_Temperature.Value.ToString("0") + "K";
+                text_RedChannel.Text = text_RedChannel.Tag + " " + slider_RedChannel.Value.ToString("0.0000");
+                text_GreenChannel.Text = text_GreenChannel.Tag + " " + slider_GreenChannel.Value.ToString("0.0000");
+                text_BlueChannel.Text = text_BlueChannel.Tag + " " + slider_BlueChannel.Value.ToString("0.0000");
+                text_Brightness.Text = text_Brightness.Tag + " " + slider_Brightness.Value.ToString("0.0000");
+                text_Contrast.Text = text_Contrast.Tag + " " + slider_Contrast.Value.ToString("0.0000");
+                text_Gamma.Text = text_Gamma.Tag + " " + slider_Gamma.Value.ToString("0.0000");
+
+                //Set capture settings
+                vCaptureSettings = new CaptureSettings
+                {
+                    MonitorId = 0,
+                    MaxPixelDimension = 1000,
+                    HDRtoSDR = true,
+                    HDRBrightness = (float)slider_HDRBrightness.Value,
+                    Vibrance = (float)slider_Vibrance.Value,
+                    Saturate = (float)slider_Saturate.Value,
+                    Temperature = (float)slider_Temperature.Value,
+                    RedChannel = (float)slider_RedChannel.Value,
+                    GreenChannel = (float)slider_GreenChannel.Value,
+                    BlueChannel = (float)slider_BlueChannel.Value,
+                    Brightness = (float)slider_Brightness.Value,
+                    Contrast = (float)slider_Contrast.Value,
+                    Gamma = (float)slider_Gamma.Value,
+                };
+
+                bool settingsUpdated = CaptureImport.CaptureUpdateSettings(vCaptureSettings);
+                Debug.WriteLine("Capture settings updated: " + settingsUpdated);
             }
             catch { }
         }

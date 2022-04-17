@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using static ScreenCapturePreview.CaptureClasses;
 
-namespace ScreenCapturePreview
+namespace ScreenCapture
 {
-    class AppImport
+    class CaptureImport
     {
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CaptureInitialize(CaptureSettings captureSettings, out CaptureDetails captureDetails);
+
+        [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool CaptureUpdateSettings(CaptureSettings captureSettings);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CaptureReset();

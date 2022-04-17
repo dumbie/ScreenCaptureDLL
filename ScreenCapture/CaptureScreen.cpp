@@ -45,6 +45,22 @@ namespace
 			}
 		}
 
+		__declspec(dllexport) BOOL CaptureUpdateSettings(CaptureSettings captureSettings)
+		{
+			try
+			{
+				//Update capture settings
+				vCaptureSettings = captureSettings;
+
+				//Set shader variables
+				return SetShaderVariables();
+			}
+			catch (...)
+			{
+				return false;
+			}
+		}
+
 		__declspec(dllexport) BOOL CaptureReset()
 		{
 			try

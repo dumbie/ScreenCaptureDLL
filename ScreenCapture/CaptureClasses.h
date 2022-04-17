@@ -4,7 +4,7 @@
 
 namespace
 {
-	typedef struct CaptureSettings
+	struct CaptureSettings
 	{
 		UINT MonitorId;
 		UINT MaxPixelDimension;
@@ -19,9 +19,9 @@ namespace
 		FLOAT Brightness;
 		FLOAT Contrast;
 		FLOAT Gamma;
-	} CaptureSettings;
+	};
 
-	typedef struct CaptureDetails
+	struct CaptureDetails
 	{
 		UINT Width;
 		UINT Height;
@@ -30,9 +30,9 @@ namespace
 		UINT PixelByteSize;
 		UINT WidthByteSize;
 		UINT TotalByteSize;
-	} CaptureDetails;
+	};
 
-	typedef struct ShaderVariables
+	struct ShaderVariables
 	{
 		BOOL HDRtoSDR;
 		FLOAT HDRBrightness;
@@ -46,11 +46,11 @@ namespace
 		FLOAT Brightness;
 		FLOAT Contrast;
 		FLOAT Gamma;
-	} ShaderVariables;
+	};
 
-	typedef struct VertexVertice
+	struct VertexVertice
 	{
 		DirectX::XMFLOAT3 Position;
 		DirectX::XMFLOAT2 TexCoord;
-	} VertexVertice;
+	};
 };

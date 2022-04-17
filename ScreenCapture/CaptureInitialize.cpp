@@ -297,6 +297,9 @@ namespace
 	{
 		try
 		{
+			//Check if DirectX is initialized
+			if (iD3D11Device5 == NULL || iD3D11DeviceContext4 == NULL) { return false; }
+
 			//Create shader variables
 			ShaderVariables shaderVariables{};
 			shaderVariables.HDRtoSDR = vCaptureDetails.HDREnabled & vCaptureSettings.HDRtoSDR;
