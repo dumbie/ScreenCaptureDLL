@@ -61,6 +61,22 @@ namespace
 			}
 		}
 
+		__declspec(dllexport) BOOL CaptureUpdateSDRWhiteLevel()
+		{
+			try
+			{
+				//Update capture details
+				vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel();
+
+				//Set shader variables
+				return SetShaderVariables();
+			}
+			catch (...)
+			{
+				return false;
+			}
+		}
+
 		__declspec(dllexport) BOOL CaptureReset()
 		{
 			try
@@ -142,6 +158,14 @@ namespace
 		{
 			try
 			{
+				//Update SDR white level
+				ULONGLONG currentTicks = GetTickCount64();
+				if (vCaptureSettings.HDRtoSDR && (currentTicks - vCaptureSDRWhiteLevelTicks) > 3000)
+				{
+					CaptureUpdateSDRWhiteLevel();
+					vCaptureSDRWhiteLevelTicks = currentTicks;
+				}
+
 				//Get output duplication frame
 				DXGI_OUTDUPL_FRAME_INFO iDxgiOutputDuplicationFrameInfo;
 				hResult = iDxgiOutputDuplication0->AcquireNextFrame(INFINITE, &iDxgiOutputDuplicationFrameInfo, &iDxgiResource0);

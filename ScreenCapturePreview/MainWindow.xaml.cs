@@ -32,7 +32,6 @@ namespace ScreenCapture
                     HDRBrightness = (float)slider_HDRBrightness.Value,
                     Vibrance = (float)slider_Vibrance.Value,
                     Saturate = (float)slider_Saturate.Value,
-                    Temperature = (float)slider_Temperature.Value,
                     RedChannel = (float)slider_RedChannel.Value,
                     GreenChannel = (float)slider_GreenChannel.Value,
                     BlueChannel = (float)slider_BlueChannel.Value,
@@ -183,7 +182,6 @@ namespace ScreenCapture
                 text_HDRBrightness.Text = text_HDRBrightness.Tag + " " + slider_HDRBrightness.Value.ToString("0.0000");
                 text_Vibrance.Text = text_Vibrance.Tag + " " + slider_Vibrance.Value.ToString("0.0000");
                 text_Saturate.Text = text_Saturate.Tag + " " + slider_Saturate.Value.ToString("0.0000");
-                text_Temperature.Text = text_Temperature.Tag + " " + slider_Temperature.Value.ToString("0") + "K";
                 text_RedChannel.Text = text_RedChannel.Tag + " " + slider_RedChannel.Value.ToString("0.0000");
                 text_GreenChannel.Text = text_GreenChannel.Tag + " " + slider_GreenChannel.Value.ToString("0.0000");
                 text_BlueChannel.Text = text_BlueChannel.Tag + " " + slider_BlueChannel.Value.ToString("0.0000");
@@ -200,7 +198,6 @@ namespace ScreenCapture
                     HDRBrightness = (float)slider_HDRBrightness.Value,
                     Vibrance = (float)slider_Vibrance.Value,
                     Saturate = (float)slider_Saturate.Value,
-                    Temperature = (float)slider_Temperature.Value,
                     RedChannel = (float)slider_RedChannel.Value,
                     GreenChannel = (float)slider_GreenChannel.Value,
                     BlueChannel = (float)slider_BlueChannel.Value,

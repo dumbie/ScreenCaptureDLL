@@ -18,6 +18,7 @@ namespace
 	CaptureSettings vCaptureSettings{};
 	CaptureDetails vCaptureDetails{};
 	DXGI_FORMAT vCaptureDxgiFormat;
+	ULONGLONG vCaptureSDRWhiteLevelTicks;
 
 	//Devices
 	CComPtr<IDXGIDevice4> iDxgiDevice4;

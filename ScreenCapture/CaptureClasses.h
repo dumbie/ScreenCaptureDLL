@@ -12,7 +12,6 @@ namespace
 		FLOAT HDRBrightness;
 		FLOAT Vibrance;
 		FLOAT Saturate;
-		FLOAT Temperature;
 		FLOAT RedChannel;
 		FLOAT GreenChannel;
 		FLOAT BlueChannel;
@@ -39,13 +38,14 @@ namespace
 		FLOAT SDRWhiteLevel;
 		FLOAT Vibrance;
 		FLOAT Saturate;
-		FLOAT Temperature;
 		FLOAT RedChannel;
 		FLOAT GreenChannel;
 		FLOAT BlueChannel;
 		FLOAT Brightness;
 		FLOAT Contrast;
 		FLOAT Gamma;
+		FLOAT Reserved1;
+		FLOAT Reserved2;
 	};
 
 	struct VertexVertice

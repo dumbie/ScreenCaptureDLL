@@ -95,7 +95,7 @@ namespace
 					iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
 					vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 					vCaptureDetails.PixelByteSize = 4;
-					vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(); //Fix detect when changed in Windows settings
+					vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel();
 				}
 				else
 				{
@@ -307,7 +307,6 @@ namespace
 			shaderVariables.SDRWhiteLevel = vCaptureDetails.SDRWhiteLevel;
 			shaderVariables.Vibrance = vCaptureSettings.Vibrance;
 			shaderVariables.Saturate = vCaptureSettings.Saturate;
-			shaderVariables.Temperature = vCaptureSettings.Temperature;
 			shaderVariables.RedChannel = vCaptureSettings.RedChannel;
 			shaderVariables.GreenChannel = vCaptureSettings.GreenChannel;
 			shaderVariables.BlueChannel = vCaptureSettings.BlueChannel;
