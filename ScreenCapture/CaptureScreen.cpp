@@ -65,11 +65,17 @@ namespace
 		{
 			try
 			{
-				//Update capture details
-				vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel();
+				//Get and check SDR white level
+				FLOAT currentSDRWhiteLevel = GetMonitorSDRWhiteLevel();
+				if (vCaptureDetails.SDRWhiteLevel != currentSDRWhiteLevel)
+				{
+					//Update capture details
+					vCaptureDetails.SDRWhiteLevel = currentSDRWhiteLevel;
 
-				//Set shader variables
-				return SetShaderVariables();
+					//Set shader variables
+					return SetShaderVariables();
+				}
+				return true;
 			}
 			catch (...)
 			{
