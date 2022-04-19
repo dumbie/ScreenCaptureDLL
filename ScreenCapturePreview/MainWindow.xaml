@@ -21,8 +21,8 @@
                 <TextBlock x:Name="text_Vibrance" Tag="Vibrance:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_Vibrance" Value="0.00" Minimum="-2.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
 
-                <TextBlock x:Name="text_Saturate" Tag="Saturate:" Foreground="White" Margin="0,5,0,0"/>
-                <Slider x:Name="slider_Saturate" Value="1.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
+                <TextBlock x:Name="text_Saturation" Tag="Saturation:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Saturation" Value="1.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
 
                 <TextBlock x:Name="text_RedChannel" Tag="Red channel:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_RedChannel" Value="1.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>

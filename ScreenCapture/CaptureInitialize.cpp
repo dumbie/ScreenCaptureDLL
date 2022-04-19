@@ -306,7 +306,7 @@ namespace
 			shaderVariables.HDRBrightness = vCaptureSettings.HDRBrightness;
 			shaderVariables.SDRWhiteLevel = vCaptureDetails.SDRWhiteLevel;
 			shaderVariables.Vibrance = vCaptureSettings.Vibrance;
-			shaderVariables.Saturate = vCaptureSettings.Saturate;
+			shaderVariables.Saturation = vCaptureSettings.Saturation;
 			shaderVariables.RedChannel = vCaptureSettings.RedChannel;
 			shaderVariables.GreenChannel = vCaptureSettings.GreenChannel;
 			shaderVariables.BlueChannel = vCaptureSettings.BlueChannel;

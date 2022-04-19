@@ -6,7 +6,7 @@ cbuffer _shaderVariables : register(b0)
 	float HDRBrightness;
 	float SDRWhiteLevel;
 	float Vibrance;
-	float Saturate;
+	float Saturation;
 	float RedChannel;
 	float GreenChannel;
 	float BlueChannel;
@@ -32,15 +32,17 @@ float4 AdjustVibrance(float4 color)
 	if (Vibrance == 0.0F) { return color; }
 	float maxColor = max(color.r, max(color.g, color.b));
 	float minColor = min(color.r, min(color.g, color.b));
-	return lerp(minColor, color, 1.0F / pow(maxColor, Vibrance));
+	float powColor = 1.0F / pow(maxColor, Vibrance);
+	float adjustPow = 1.0F - powColor;
+	return minColor * adjustPow + color * powColor;
 }
 
-float4 AdjustSaturate(float4 color)
+float4 AdjustSaturation(float4 color)
 {
-	if (Saturate == 1.0F) { return color; }
-	float adjustSaturate = 1.0F - Saturate;
+	if (Saturation == 1.0F) { return color; }
+	float adjustSaturation = 1.0F - Saturation;
 	float adjustLuminance = (color.r + color.g + color.b) / 3.0F;
-	return color * Saturate + adjustSaturate * adjustLuminance;
+	return color * Saturation + adjustSaturation * adjustLuminance;
 }
 
 float4 AdjustColorChannels(float4 color)
@@ -100,8 +102,8 @@ float4 main(PS_INPUT input) : SV_TARGET
 	//Adjust vibrance
 	color = AdjustVibrance(color);
 
-	//Adjust saturate
-	color = AdjustSaturate(color);
+	//Adjust saturation
+	color = AdjustSaturation(color);
 
 	//Adjust color channels
 	color = AdjustColorChannels(color);

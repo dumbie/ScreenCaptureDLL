@@ -11,7 +11,7 @@ namespace
 		BOOL HDRtoSDR;
 		FLOAT HDRBrightness;
 		FLOAT Vibrance;
-		FLOAT Saturate;
+		FLOAT Saturation;
 		FLOAT RedChannel;
 		FLOAT GreenChannel;
 		FLOAT BlueChannel;
@@ -37,7 +37,7 @@ namespace
 		FLOAT HDRBrightness;
 		FLOAT SDRWhiteLevel;
 		FLOAT Vibrance;
-		FLOAT Saturate;
+		FLOAT Saturation;
 		FLOAT RedChannel;
 		FLOAT GreenChannel;
 		FLOAT BlueChannel;
