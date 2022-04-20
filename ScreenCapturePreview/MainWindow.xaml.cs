@@ -2,19 +2,29 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using static ScreenCapture.AppImport;
 
 namespace ScreenCapture
 {
     public partial class MainWindow : Window
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        //Window Variables
+        private IntPtr vInteropWindowHandle = IntPtr.Zero;
+
+        //Player Variables
+        private static MediaPlayer vWindowsMediaPlayer = new MediaPlayer();
 
         //Screen Capture Variables
         public static CaptureDetails vCaptureDetails;
         public static CaptureSettings vCaptureSettings;
+
+        //Initialize window
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
 
         //Initialize Screen Capture
         private async Task<bool> InitializeScreenCapture(int delayTime)
@@ -69,13 +79,18 @@ namespace ScreenCapture
             }
         }
 
-
-
         //Handle window initialized event
         protected override async void OnSourceInitialized(EventArgs e)
         {
             try
             {
+                //Get interop window handle
+                vInteropWindowHandle = new WindowInteropHelper(this).EnsureHandle();
+
+                //Register Hotkeys and Filtermessage
+                ComponentDispatcher.ThreadFilterMessage += ComponentDispatcher_ThreadFilterMessage;
+                RegisterHotKey(vInteropWindowHandle, HOTKEY_ID, 0x0001, 0x7B); //Alt+F12
+
                 //Initialize screen capture
                 await InitializeScreenCapture(500);
 
@@ -85,6 +100,13 @@ namespace ScreenCapture
                     IntPtr bitmapIntPtr = IntPtr.Zero;
                     try
                     {
+                        //Check window state
+                        if (this.WindowState == WindowState.Minimized)
+                        {
+                            Debug.WriteLine("Minimized skipping preview update.");
+                            continue;
+                        }
+
                         //Capture screenshot
                         try
                         {
@@ -160,6 +182,64 @@ namespace ScreenCapture
                         //Delay next screen capture
                         await Task.Delay(500);
                     }
+                }
+            }
+            catch { }
+        }
+
+        private void ComponentDispatcher_ThreadFilterMessage(ref MSG msg, ref bool handled)
+        {
+            try
+            {
+                if (handled) { return; }
+                if (msg.message == WM_HOTKEY)
+                {
+                    int usedVirtualKey = ((int)msg.lParam >> 16) & 0xFFFF;
+                    if (usedVirtualKey == 0x7B)
+                    {
+                        TakeScreenshotAndSave();
+                        handled = true;
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private static void TakeScreenshotAndSave()
+        {
+            try
+            {
+                //Capture screenshot
+                IntPtr bitmapIntPtr = CaptureImport.CaptureScreenshot();
+
+                //Screenshot filename
+                string fileName = DateTime.Now.ToString("HH.mm.ss.ffff (MM-dd-yyyy)");
+                if (vCaptureDetails.HDREnabled)
+                {
+                    if (vCaptureSettings.HDRtoSDR)
+                    {
+                        fileName += " (HDRtoSDR)";
+                    }
+                    else
+                    {
+                        fileName += " (HDR)";
+                    }
+                }
+                else
+                {
+                    fileName += " (SDR)";
+                }
+
+                //Save screenshot file
+                bool screenshotExport = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".png");
+                Debug.WriteLine("Screenshot png export succeeded: " + screenshotExport);
+
+                //Play capture sound
+                if (screenshotExport)
+                {
+                    vWindowsMediaPlayer.Volume = 1.0;
+                    vWindowsMediaPlayer.Open(new Uri("Resources\\Screenshot.mp3", UriKind.RelativeOrAbsolute));
+                    vWindowsMediaPlayer.Play();
                 }
             }
             catch { }

@@ -47,6 +47,8 @@
                 <CheckBox x:Name="checkbox_SaveBmp" Content="Save bmp image" Foreground="White"/>
                 <CheckBox x:Name="checkbox_SaveJxr" Content="Save jxr image" Foreground="White"/>
                 <Button x:Name="button_OpenDir" Content="Open directory" Click="Button_OpenDir_Click" Margin="0,5,0,0"/>
+
+                <TextBlock Margin="0,5,0,0" Foreground="White" Text="Screenshot hotkey: Alt+F12"/>
             </StackPanel>
         </Border>
     </Grid>
