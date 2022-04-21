@@ -8,7 +8,6 @@
             MaxPixelDimension = 0;
             HDRtoSDR = true;
             HDRBrightness = 70.0F;
-            Vibrance = 0.0F;
             Saturation = 1.0F;
             RedChannel = 1.0F;
             GreenChannel = 1.0F;
@@ -21,7 +20,6 @@
         public int MaxPixelDimension { get; set; }
         public bool HDRtoSDR { get; set; }
         public float HDRBrightness { get; set; }
-        public float Vibrance { get; set; }
         public float Saturation { get; set; }
         public float RedChannel { get; set; }
         public float GreenChannel { get; set; }
