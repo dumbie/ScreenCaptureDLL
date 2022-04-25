@@ -81,7 +81,7 @@ float4 AdjustContrast(float4 color)
 
 float4 AdjustGamma(float4 color)
 {
-	if (Gamma == 1.1F) { return color; }
+	if (Gamma == 1.0F) { return color; }
 	float adjustGamma = Gamma / 1.0F;
 	return pow(color, adjustGamma);
 }

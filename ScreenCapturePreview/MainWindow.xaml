@@ -37,7 +37,7 @@
                 <Slider x:Name="slider_Contrast" Value="0.00" Minimum="-2.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
 
                 <TextBlock x:Name="text_Gamma" Tag="Gamma:" Foreground="White" Margin="0,5,0,0"/>
-                <Slider x:Name="slider_Gamma" Value="1.10" Minimum="0.00" Maximum="3.00" ValueChanged="slider_ValueChanged"/>
+                <Slider x:Name="slider_Gamma" Value="1.00" Minimum="0.00" Maximum="3.00" ValueChanged="slider_ValueChanged"/>
 
                 <CheckBox x:Name="checkbox_SaveJpg" Content="Save jpg image" Foreground="White" Margin="0,5,0,0"/>
                 <CheckBox x:Name="checkbox_SavePng" Content="Save png image" Foreground="White"/>
