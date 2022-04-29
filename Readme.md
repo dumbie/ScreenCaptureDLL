@@ -6,19 +6,19 @@ ScreenCaptureDLL can be used in your application through dll import to capture y
 ScreenCapturePreview gives you a live screen capture preview to see what you can expect.
 
 ScreenCaptureNow saves a screenshot directly to file using command line arguments:
--MonitorId=0, 1, 2, 3...
--ImageFormat=PNG, JPG, BMP or JXR
--ImageQuality=0-100 (Only works with JPG format)
--MaxPixelDimension=0 (Maximum pixel width or height)
--HDRtoSDR=True (False only works with JXR format when HDR is enabled)
--HDRBrightness=70.00 (Adjust HDR brightness to displayed content)
--Saturation=1.00 (Adjust color saturation)
--RedChannel=1.00 (Adjust red color channel)
--GreenChannel=1.00 (Adjust green color channel)
--BlueChannel=1.00 (Adjust blue color channel)
--Brightness=1.00 (Adjust capture brightness)
--Contrast=0.00 (Adjust capture contrast)
--Gamma=1.00 (Adjust capture gamma)
+- -MonitorId=0, 1, 2, 3...
+- -ImageFormat=PNG, JPG, BMP or JXR
+- -ImageQuality=0-100 (Only works with JPG format)
+- -MaxPixelDimension=0 (Maximum pixel width or height)
+- -HDRtoSDR=True (False only works with JXR format when HDR is enabled)
+- -HDRBrightness=70.00 (Adjust HDR brightness to displayed content)
+- -Saturation=1.00 (Adjust color saturation)
+- -RedChannel=1.00 (Adjust red color channel)
+- -GreenChannel=1.00 (Adjust green color channel)
+- -BlueChannel=1.00 (Adjust blue color channel)
+- -Brightness=1.00 (Adjust capture brightness)
+- -Contrast=0.00 (Adjust capture contrast)
+- -Gamma=1.00 (Adjust capture gamma)
 
 ## Features
 - Save screencapture as BMP, JPG, PNG or JXR.
