@@ -122,7 +122,7 @@ namespace ScreenCapture
                         }
 
                         //Save screenshot to file
-                        string fileName = DateTime.Now.ToString("HH.mm.ss.ffff (MM-dd-yyyy)");
+                        string fileName = DateTime.Now.ToString("HH.mm.ss.ffff") + " (" + DateTime.Now.ToShortDateString() + ")";
                         if (vCaptureDetails.HDREnabled)
                         {
                             if (vCaptureSettings.HDRtoSDR)
@@ -212,7 +212,7 @@ namespace ScreenCapture
                 IntPtr bitmapIntPtr = CaptureImport.CaptureScreenshot();
 
                 //Screenshot filename
-                string fileName = DateTime.Now.ToString("HH.mm.ss.ffff (MM-dd-yyyy)");
+                string fileName = DateTime.Now.ToString("HH.mm.ss.ffff") + " (" + DateTime.Now.ToShortDateString() + ")";
                 if (vCaptureDetails.HDREnabled)
                 {
                     if (vCaptureSettings.HDRtoSDR)
@@ -238,6 +238,12 @@ namespace ScreenCapture
                 {
                     vWindowsMediaPlayer.Volume = 1.0;
                     vWindowsMediaPlayer.Open(new Uri("Resources\\Screenshot.mp3", UriKind.RelativeOrAbsolute));
+                    vWindowsMediaPlayer.Play();
+                }
+                else
+                {
+                    vWindowsMediaPlayer.Volume = 1.0;
+                    vWindowsMediaPlayer.Open(new Uri("Resources\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
                     vWindowsMediaPlayer.Play();
                 }
             }
