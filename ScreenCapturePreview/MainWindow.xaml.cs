@@ -179,7 +179,7 @@ namespace ScreenCapture
                         }
 
                         //Delay next screen capture
-                        await Task.Delay(500);
+                        await Task.Delay(250);
                     }
                 }
             }

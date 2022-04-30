@@ -114,7 +114,8 @@ namespace
 			//Update capture variables
 			vCaptureDetails.Width = iDxgiOutputDuplicationDescription.ModeDesc.Width;
 			vCaptureDetails.Height = iDxgiOutputDuplicationDescription.ModeDesc.Height;
-			if (vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.Width > vCaptureSettings.MaxPixelDimension && vCaptureDetails.Height > vCaptureSettings.MaxPixelDimension)
+			vCaptureTextureResizing = vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.Width > vCaptureSettings.MaxPixelDimension && vCaptureDetails.Height > vCaptureSettings.MaxPixelDimension;
+			if (vCaptureTextureResizing)
 			{
 				DOUBLE resizedWidth = 0.01;
 				DOUBLE resizedHeight = 0.01;
@@ -132,6 +133,7 @@ namespace
 			}
 			vCaptureDetails.WidthByteSize = vCaptureDetails.Width * vCaptureDetails.PixelByteSize;
 			vCaptureDetails.TotalByteSize = vCaptureDetails.Width * vCaptureDetails.Height * vCaptureDetails.PixelByteSize;
+			vCaptureTextureMipLevels = 1 + log2(max(vCaptureDetails.Width, vCaptureDetails.Height));
 
 			//Release resources
 			iD3D11Device0.Release();
@@ -146,6 +148,47 @@ namespace
 		catch (...)
 		{
 			CaptureResetVariablesAll();
+			return false;
+		}
+	}
+
+	BOOL InitializeSamplerState()
+	{
+		try
+		{
+			//Create sampler description
+			D3D11_SAMPLER_DESC iD3DSamplerDescription{};
+			iD3DSamplerDescription.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+			iD3DSamplerDescription.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+			iD3DSamplerDescription.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+			iD3DSamplerDescription.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+			iD3DSamplerDescription.MipLODBias = 0.0F;
+			iD3DSamplerDescription.MaxAnisotropy = 0;
+			iD3DSamplerDescription.ComparisonFunc = D3D11_COMPARISON_NEVER;
+			iD3DSamplerDescription.BorderColor[0] = 1.0F;
+			iD3DSamplerDescription.BorderColor[1] = 1.0F;
+			iD3DSamplerDescription.BorderColor[2] = 1.0F;
+			iD3DSamplerDescription.BorderColor[3] = 1.0F;
+			iD3DSamplerDescription.MinLOD = -D3D11_FLOAT32_MAX;
+			iD3DSamplerDescription.MaxLOD = D3D11_FLOAT32_MAX;
+
+			//Create sampler state
+			hResult = iD3D11Device5->CreateSamplerState(&iD3DSamplerDescription, &iD3D11SamplerState0);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Set sampler state
+			iD3D11DeviceContext4->PSSetSamplers(0, 1, &iD3D11SamplerState0);
+
+			//Release resources
+			iD3D11SamplerState0.Release();
+
+			return true;
+		}
+		catch (...)
+		{
 			return false;
 		}
 	}

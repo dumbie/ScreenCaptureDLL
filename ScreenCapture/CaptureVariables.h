@@ -17,6 +17,8 @@ namespace
 	//Capture
 	CaptureSettings vCaptureSettings{};
 	CaptureDetails vCaptureDetails{};
+	BOOL vCaptureTextureResizing;
+	UINT vCaptureTextureMipLevels;
 	DXGI_FORMAT vCaptureDxgiFormat;
 	ULONGLONG vCaptureSDRWhiteLevelTicks;
 
@@ -31,10 +33,14 @@ namespace
 	CComPtr<ID3D11DeviceContext> iD3D11DeviceContext0;
 	CComPtr<ID3D11DeviceContext4> iD3D11DeviceContext4;
 
+	//Sampler
+	CComPtr<ID3D11SamplerState> iD3D11SamplerState0;
+
 	//Views
 	CComPtr<ID3D11InputLayout> iD3D11InputLayout0;
 	CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0;
-	CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0;
+	CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0Shaders;
+	CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0Resize;
 
 	//Shaders
 	CComPtr<ID3D11Buffer> iD3D11Buffer0;
@@ -47,6 +53,7 @@ namespace
 	CComPtr<IDXGIResource> iDxgiResource0;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1CpuRead;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Capture;
+	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Resize;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1RenderTargetView;
 
 	//Bitmap

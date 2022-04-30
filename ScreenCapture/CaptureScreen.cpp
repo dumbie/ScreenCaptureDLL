@@ -23,6 +23,9 @@ namespace
 				//Initialize DirectX
 				if (!InitializeDirectX()) { return false; }
 
+				//Initialize sampler state
+				if (!InitializeSamplerState()) { return false; }
+
 				//Initialize render target view
 				if (!InitializeRenderTargetView()) { return false; }
 
@@ -189,22 +192,42 @@ namespace
 					return NULL;
 				}
 
-				//Apply shaders to texture
-				if (!ApplyShadersToTexture2D(iD3D11Texture2D1Capture))
+				//Check if texture is resizing
+				if (vCaptureTextureResizing)
 				{
-					CaptureResetVariablesScreenshot();
-					return NULL;
+					//Resize texture using mips
+					if (!Texture2DResizeMips(iD3D11Texture2D1Capture))
+					{
+						CaptureResetVariablesScreenshot();
+						return NULL;
+					}
+
+					//Apply shaders to texture
+					if (!Texture2DApplyShaders(iD3D11Texture2D1Resize))
+					{
+						CaptureResetVariablesScreenshot();
+						return NULL;
+					}
+				}
+				else
+				{
+					//Apply shaders to texture
+					if (!Texture2DApplyShaders(iD3D11Texture2D1Capture))
+					{
+						CaptureResetVariablesScreenshot();
+						return NULL;
+					}
 				}
 
 				//Convert to cpu read texture
-				if (!ConvertTexture2DtoCpuRead(iD3D11Texture2D1RenderTargetView))
+				if (!Texture2DConvertToCpuRead(iD3D11Texture2D1RenderTargetView))
 				{
 					CaptureResetVariablesScreenshot();
 					return NULL;
 				}
 
 				//Convert texture to bitmap data
-				BYTE* bitmapData = ConvertTexture2DtoBitmapData(iD3D11Texture2D1CpuRead);
+				BYTE* bitmapData = Texture2DConvertToBitmapData(iD3D11Texture2D1CpuRead);
 
 				//Release output duplication frame
 				hResult = iDxgiOutputDuplication0->ReleaseFrame();

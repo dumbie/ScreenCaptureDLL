@@ -18,10 +18,14 @@ namespace
 			iD3D11DeviceContext0.Release();
 			iD3D11DeviceContext4.Release();
 
+			//Sampler
+			iD3D11SamplerState0.Release();
+
 			//Views
 			iD3D11InputLayout0.Release();
 			iD3D11RenderTargetView0.Release();
-			iD3D11ShaderResourceView0.Release();
+			iD3D11ShaderResourceView0Shaders.Release();
+			iD3D11ShaderResourceView0Resize.Release();
 
 			//Shaders
 			iD3D11Buffer0.Release();
@@ -34,6 +38,7 @@ namespace
 			iDxgiResource0.Release();
 			iD3D11Texture2D1CpuRead.Release();
 			iD3D11Texture2D1Capture.Release();
+			iD3D11Texture2D1Resize.Release();
 			iD3D11Texture2D1RenderTargetView.Release();
 
 			//Bitmap
@@ -59,12 +64,14 @@ namespace
 		try
 		{
 			//Views
-			iD3D11ShaderResourceView0.Release();
+			iD3D11ShaderResourceView0Shaders.Release();
+			iD3D11ShaderResourceView0Resize.Release();
 
 			//Textures
 			iDxgiResource0.Release();
 			iD3D11Texture2D1CpuRead.Release();
 			iD3D11Texture2D1Capture.Release();
+			iD3D11Texture2D1Resize.Release();
 
 			return true;
 		}
