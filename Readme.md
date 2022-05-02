@@ -9,6 +9,7 @@ ScreenCaptureNow saves a screenshot directly to file using command line argument
 - -MonitorId=0, 1, 2, 3...
 - -ImageFormat=PNG, JPG, BMP or JXR
 - -ImageQuality=0-100 (Only works with JPG format)
+- -ImageSaveFolder="E:\Screenshots" (Defaults to app directory)
 - -MaxPixelDimension=0 (Maximum pixel width or height)
 - -HDRtoSDR=True (False only works with JXR format when HDR is enabled)
 - -HDRBrightness=70.00 (Adjust HDR brightness to displayed content)

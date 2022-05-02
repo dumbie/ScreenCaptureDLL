@@ -98,9 +98,6 @@ namespace
 				return false;
 			}
 
-			//Set shader resource view
-			iD3D11DeviceContext4->PSSetShaderResources(0, 1, &iD3D11ShaderResourceView0Resize);
-
 			//Generate texture mips to resize
 			iD3D11DeviceContext4->GenerateMips(iD3D11ShaderResourceView0Resize);
 

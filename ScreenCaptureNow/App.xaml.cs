@@ -22,6 +22,8 @@ namespace ScreenCapture
 
         //Setting Variables
         public string vSettingImageFormat = "png";
+        public string vSettingImageSaveFolder = string.Empty;
+        public string vSettingImageSaveName = string.Empty;
         public int vSettingImageQuality = 100;
 
         protected override async void OnStartup(StartupEventArgs e)
@@ -52,6 +54,12 @@ namespace ScreenCapture
                         if (launchArgumentLower.StartsWith("-imagequality"))
                         {
                             vSettingImageQuality = Convert.ToInt32(Regex.Replace(launchArgumentLower, "(-imagequality).{1}", string.Empty));
+                        }
+
+                        //ImageSaveFolder
+                        if (launchArgumentLower.StartsWith("-imagesavefolder"))
+                        {
+                            vSettingImageSaveFolder = Regex.Replace(launchArgumentLower, "(-imagesavefolder).{1}", string.Empty).Replace("\"", string.Empty);
                         }
 
                         //MaxPixelDimension
@@ -121,12 +129,6 @@ namespace ScreenCapture
             //Set the working directory to executable directory
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
-            //Create screenshots export directory
-            if (!Directory.Exists("Screenshots"))
-            {
-                Directory.CreateDirectory("Screenshots");
-            }
-
             //Prepare screen capture
             IntPtr bitmapIntPtr = IntPtr.Zero;
             try
@@ -156,43 +158,57 @@ namespace ScreenCapture
                     return;
                 }
 
-                //Save screenshot to file
-                string fileName = DateTime.Now.ToString("HH.mm.ss.ffff") + " (" + DateTime.Now.ToShortDateString() + ")";
+                //Set file name
+                vSettingImageSaveName = "\\Screenshot " + DateTime.Now.ToString("HH.mm.ss.ffff") + " (" + DateTime.Now.ToShortDateString() + ")";
                 if (vCaptureDetails.HDREnabled)
                 {
                     if (vCaptureSettings.HDRtoSDR)
                     {
-                        fileName += " (HDRtoSDR)";
+                        vSettingImageSaveName += " (HDRtoSDR)";
                     }
                     else
                     {
-                        fileName += " (HDR)";
+                        vSettingImageSaveName += " (HDR)";
                     }
                 }
                 else
                 {
-                    fileName += " (SDR)";
+                    vSettingImageSaveName += " (SDR)";
                 }
 
+                //Set folder path
+                if (string.IsNullOrWhiteSpace(vSettingImageSaveFolder) || !Directory.Exists(vSettingImageSaveFolder))
+                {
+                    //Create screenshots folder in app directory
+                    if (!Directory.Exists("Screenshots"))
+                    {
+                        Directory.CreateDirectory("Screenshots");
+                    }
+
+                    //Set save folder to screenshots in app directory
+                    vSettingImageSaveFolder = "Screenshots";
+                }
+
+                //Save screenshot to file
                 bool screenshotExport = false;
                 if (vSettingImageFormat == "bmp")
                 {
-                    screenshotExport = CaptureImport.CaptureSaveFileBmp(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".bmp");
+                    screenshotExport = CaptureImport.CaptureSaveFileBmp(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".bmp");
                     Debug.WriteLine("Screenshot bmp export succeeded: " + screenshotExport);
                 }
                 else if (vSettingImageFormat == "jpg")
                 {
-                    screenshotExport = CaptureImport.CaptureSaveFileJpg(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jpg", vSettingImageQuality);
+                    screenshotExport = CaptureImport.CaptureSaveFileJpg(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".jpg", vSettingImageQuality);
                     Debug.WriteLine("Screenshot jpg export succeeded: " + screenshotExport);
                 }
                 else if (vSettingImageFormat == "png")
                 {
-                    screenshotExport = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".png");
+                    screenshotExport = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".png");
                     Debug.WriteLine("Screenshot png export succeeded: " + screenshotExport);
                 }
                 else if (vSettingImageFormat == "jxr")
                 {
-                    screenshotExport = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jxr");
+                    screenshotExport = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".jxr");
                     Debug.WriteLine("Screenshot jxr export succeeded: " + screenshotExport);
                 }
 
