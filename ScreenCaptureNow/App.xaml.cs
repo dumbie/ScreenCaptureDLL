@@ -21,6 +21,7 @@ namespace ScreenCapture
         public static CaptureSettings vCaptureSettings = new CaptureSettings();
 
         //Setting Variables
+        public string vSettingSoundFolder = "Resources";
         public string vSettingImageFormat = "png";
         public string vSettingImageSaveFolder = string.Empty;
         public string vSettingImageSaveName = string.Empty;
@@ -60,6 +61,12 @@ namespace ScreenCapture
                         if (launchArgumentLower.StartsWith("-imagesavefolder"))
                         {
                             vSettingImageSaveFolder = Regex.Replace(launchArgumentLower, "(-imagesavefolder).{1}", string.Empty).Replace("\"", string.Empty);
+                        }
+
+                        //SoundFolder
+                        if (launchArgumentLower.StartsWith("-soundfolder"))
+                        {
+                            vSettingSoundFolder = Regex.Replace(launchArgumentLower, "(-soundfolder).{1}", string.Empty).Replace("\"", string.Empty);
                         }
 
                         //MaxPixelDimension
@@ -150,7 +157,7 @@ namespace ScreenCapture
 
                     //Play capture sound
                     vWindowsMediaPlayer.Volume = 1.0;
-                    vWindowsMediaPlayer.Open(new Uri("Resources\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
+                    vWindowsMediaPlayer.Open(new Uri(vSettingSoundFolder + "\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
                     vWindowsMediaPlayer.Play();
 
                     //Allow sound to finish
@@ -216,13 +223,13 @@ namespace ScreenCapture
                 if (screenshotExport)
                 {
                     vWindowsMediaPlayer.Volume = 1.0;
-                    vWindowsMediaPlayer.Open(new Uri("Resources\\Screenshot.mp3", UriKind.RelativeOrAbsolute));
+                    vWindowsMediaPlayer.Open(new Uri(vSettingSoundFolder + "\\Screenshot.mp3", UriKind.RelativeOrAbsolute));
                     vWindowsMediaPlayer.Play();
                 }
                 else
                 {
                     vWindowsMediaPlayer.Volume = 1.0;
-                    vWindowsMediaPlayer.Open(new Uri("Resources\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
+                    vWindowsMediaPlayer.Open(new Uri(vSettingSoundFolder + "\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
                     vWindowsMediaPlayer.Play();
                 }
 
