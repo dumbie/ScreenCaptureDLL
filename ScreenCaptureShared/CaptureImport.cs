@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace ScreenCapture
 {
-    class CaptureImport
+    public class CaptureImport
     {
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CaptureInitialize(CaptureSettings captureSettings, out CaptureDetails captureDetails);

@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 
 namespace ScreenCapture
 {
-    class CaptureBitmap
+    public class CaptureBitmap
     {
         //Convert BitmapIntPtr to BitmapByteArray
         public static byte[] BitmapIntPtrToBitmapByteArray(IntPtr bitmapIntPtr, CaptureDetails captureDetails)
