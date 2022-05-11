@@ -360,7 +360,7 @@ namespace
 			D3D11_BUFFER_DESC bufferDescription{};
 			bufferDescription.ByteWidth = sizeof(ShaderVariables);
 			bufferDescription.Usage = D3D11_USAGE_DEFAULT;
-			bufferDescription.BindFlags = 0;
+			bufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			bufferDescription.CPUAccessFlags = 0;
 			bufferDescription.MiscFlags = 0;
 			bufferDescription.StructureByteStride = 0;
