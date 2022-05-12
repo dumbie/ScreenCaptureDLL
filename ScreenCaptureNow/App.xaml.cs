@@ -8,11 +8,15 @@ namespace ScreenCapture
     {
         protected override async void OnStartup(StartupEventArgs e)
         {
-            //Set the working directory to executable directory
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            try
+            {
+                //Set the working directory to executable directory
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
-            //Capture screenshot to file
-            await CaptureScreen.CaptureScreenToFile(e.Args);
+                //Capture screenshot to file
+                await CaptureScreen.CaptureScreenToFile(e.Args);
+            }
+            catch { }
         }
     }
 }

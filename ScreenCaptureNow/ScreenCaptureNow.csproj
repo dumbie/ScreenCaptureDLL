@@ -107,11 +107,16 @@
     <Compile Include="..\ScreenCaptureShared\CaptureClasses.cs">
       <Link>CaptureClasses.cs</Link>
     </Compile>
+    <Compile Include="..\ScreenCaptureShared\CaptureFunctions.cs">
+      <Link>CaptureFunctions.cs</Link>
+    </Compile>
     <Compile Include="..\ScreenCaptureShared\CaptureImport.cs">
       <Link>CaptureImport.cs</Link>
     </Compile>
+    <Compile Include="..\ScreenCaptureShared\Properties\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
     <Compile Include="CaptureScreen.cs" />
-    <Compile Include="Properties\AssemblyVersion.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

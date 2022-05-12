@@ -91,7 +91,7 @@ namespace ScreenCapture
                 RegisterHotKey(vInteropWindowHandle, HOTKEY_ID, 0x0001, 0x7B); //Alt+F12
 
                 //Initialize screen capture
-                await InitializeScreenCapture(500);
+                await InitializeScreenCapture(200);
 
                 //Loop and capture screen
                 while (true)
@@ -117,7 +117,7 @@ namespace ScreenCapture
                         if (bitmapIntPtr == IntPtr.Zero)
                         {
                             Debug.WriteLine("Screenshot is corrupted, restarting capture.");
-                            await InitializeScreenCapture(500);
+                            await InitializeScreenCapture(200);
                             continue;
                         }
 
@@ -138,28 +138,29 @@ namespace ScreenCapture
                         {
                             fileName += " (SDR)";
                         }
+                        fileName = "\\Screenshot " + CaptureFunctions.FileNameReplaceInvalidChars(fileName);
 
                         if ((bool)checkbox_SaveBmp.IsChecked)
                         {
-                            bool screenshotExport = CaptureImport.CaptureSaveFileBmp(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".bmp");
+                            bool screenshotExport = CaptureImport.CaptureSaveFileBmp(bitmapIntPtr, "Screenshots" + fileName + ".bmp");
                             Debug.WriteLine("Screenshot bmp export succeeded: " + screenshotExport);
                         }
 
                         if ((bool)checkbox_SaveJpg.IsChecked)
                         {
-                            bool screenshotExport = CaptureImport.CaptureSaveFileJpg(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jpg", 10);
+                            bool screenshotExport = CaptureImport.CaptureSaveFileJpg(bitmapIntPtr, "Screenshots" + fileName + ".jpg", 80);
                             Debug.WriteLine("Screenshot jpg export succeeded: " + screenshotExport);
                         }
 
                         if ((bool)checkbox_SavePng.IsChecked)
                         {
-                            bool screenshotExport = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".png");
+                            bool screenshotExport = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots" + fileName + ".png");
                             Debug.WriteLine("Screenshot png export succeeded: " + screenshotExport);
                         }
 
                         if ((bool)checkbox_SaveJxr.IsChecked)
                         {
-                            bool screenshotExport = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".jxr");
+                            bool screenshotExport = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, "Screenshots" + fileName + ".jxr");
                             Debug.WriteLine("Screenshot jxr export succeeded: " + screenshotExport);
                         }
 
@@ -228,9 +229,10 @@ namespace ScreenCapture
                 {
                     fileName += " (SDR)";
                 }
+                fileName = "\\Screenshot " + CaptureFunctions.FileNameReplaceInvalidChars(fileName);
 
                 //Save screenshot file
-                bool screenshotExport = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots\\Screenshot " + fileName + ".png");
+                bool screenshotExport = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, "Screenshots" + fileName + ".png");
                 Debug.WriteLine("Screenshot png export succeeded: " + screenshotExport);
 
                 //Play capture sound

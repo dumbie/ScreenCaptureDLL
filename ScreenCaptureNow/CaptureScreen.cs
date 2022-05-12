@@ -166,7 +166,7 @@ namespace ScreenCapture
                     Debug.WriteLine(captureDetails);
 
                     //Wait for capturer to have initialized
-                    await Task.Delay(100);
+                    await Task.Delay(200);
                 }
 
                 //Capture screenshot
@@ -192,7 +192,7 @@ namespace ScreenCapture
                 }
 
                 //Set file name
-                vSettingImageSaveName = "\\Screenshot " + DateTime.Now.ToString("HH.mm.ss.ffff") + " (" + DateTime.Now.ToShortDateString() + ")";
+                vSettingImageSaveName = DateTime.Now.ToString("HH.mm.ss.ffff") + " (" + DateTime.Now.ToShortDateString() + ")";
                 if (vCaptureDetails.HDREnabled)
                 {
                     if (vCaptureSettings.HDRtoSDR)
@@ -208,6 +208,7 @@ namespace ScreenCapture
                 {
                     vSettingImageSaveName += " (SDR)";
                 }
+                vSettingImageSaveName = "\\Screenshot " + CaptureFunctions.FileNameReplaceInvalidChars(vSettingImageSaveName);
 
                 //Set folder path
                 if (string.IsNullOrWhiteSpace(vSettingImageSaveFolder) || !Directory.Exists(vSettingImageSaveFolder))
