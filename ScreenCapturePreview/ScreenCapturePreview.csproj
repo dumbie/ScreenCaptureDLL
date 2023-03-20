@@ -98,7 +98,6 @@
     <Compile Include="..\ScreenCaptureShared\Properties\AssemblyVersion.cs">
       <Link>Properties\AssemblyVersion.cs</Link>
     </Compile>
-    <Compile Include="AppImport.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -120,16 +119,6 @@
   <ItemGroup>
     <None Include="Properties\App.config" />
     <None Include="Properties\App.manifest" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\ScreenCaptureShared\Resources\Screenshot.mp3">
-      <Link>Resources\Screenshot.mp3</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ScreenCaptureShared\Resources\ScreenshotFail.mp3">
-      <Link>Resources\ScreenshotFail.mp3</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
