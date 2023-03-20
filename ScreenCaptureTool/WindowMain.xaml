@@ -1,0 +1,34 @@
+﻿<Window x:Class="ScreenCapture.WindowMain"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ScreenCapture"
+        mc:Ignorable="d"
+        Background="{DynamicResource ApplicationWhiteBrush}"
+        Title="ScreenCaptureTool"
+        ShowInTaskbar="False"
+        MinHeight="500"
+        Height="500"
+        MinWidth="550"
+        MaxWidth="550"
+        Width="550">
+
+    <ScrollViewer Style="{StaticResource ScrollViewerVertical}">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Screenshot Shortcut"/>
+            <CheckBox Name="cb_SettingsShortcutScreenshotKeyboard" Content="Capture screenshot by pressing F12 key" Style="{StaticResource CheckBoxBlack}"/>
+            <TextBlock Text="Enabling this will allow you to take a screenshot with your keyboard." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+
+            <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Screenshot Location"/>
+            <TextBlock Text="Screenshot save location" Style="{StaticResource TextBlockBlack}"/>
+            <TextBlock Name="textblock_Settings_ScreenshotLocation" Text="Current save location: Unknown" Tag="Current save location: " TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+            <Button Name="btn_Settings_ScreenshotLocationChange" Content="Change screenshot save location" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}"/>
+            <Button Margin="0,10,0,0" Name="btn_Settings_ScreenshotLocationOpen" Content="Open screenshot save location" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}"/>
+
+            <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Screenshot Format"/>
+            <CheckBox Name="cb_Settings_ScreenshotHDRtoSDR" Content="Convert screenshot HDR to SDR" Style="{StaticResource CheckBoxBlack}"/>
+            <TextBlock Text="Disabling this will save HDR screenshots as raw JXR files." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
