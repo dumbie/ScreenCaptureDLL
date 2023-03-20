@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using ArnoldVinkCode;
+using System.Configuration;
 using System.Windows.Media;
 using static ArnoldVinkCode.AVSettings;
 
@@ -11,5 +12,8 @@ namespace ScreenCapture
 
         //Player Variables
         public static MediaPlayer vWindowsMediaPlayer = new MediaPlayer();
+
+        //Sockets Variables
+        public static ArnoldVinkSockets vArnoldVinkSockets = null;
     }
 }

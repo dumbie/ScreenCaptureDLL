@@ -15,6 +15,9 @@ namespace ScreenCapture
                 //First Launch
                 if (!SettingCheck(vConfiguration, "AppFirstLaunch")) { SettingSave(vConfiguration, "AppFirstLaunch", "True"); }
 
+                //Socket
+                if (!SettingCheck(vConfiguration, "ServerPort")) { SettingSave(vConfiguration, "ServerPort", "1040"); }
+
                 //Shortcuts
                 if (!SettingCheck(vConfiguration, "ShortcutScreenshotKeyboard")) { SettingSave(vConfiguration, "ShortcutScreenshotKeyboard", "True"); }
 

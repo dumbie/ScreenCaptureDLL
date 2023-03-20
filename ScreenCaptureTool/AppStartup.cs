@@ -1,5 +1,6 @@
 ﻿using ArnoldVinkCode;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
@@ -8,7 +9,7 @@ namespace ScreenCapture
     public partial class WindowMain
     {
         //Run application startup code
-        public void Startup()
+        public async Task Startup()
         {
             try
             {
@@ -30,6 +31,9 @@ namespace ScreenCapture
                 //Register keyboard hotkeys
                 AVInputOutputHotKey.Start();
                 AVInputOutputHotKey.EventHotKeyPressed += AppHotKey.EventHotKeyPressed;
+
+                //Enable the socket server
+                await EnableSocketServer();
             }
             catch { }
         }

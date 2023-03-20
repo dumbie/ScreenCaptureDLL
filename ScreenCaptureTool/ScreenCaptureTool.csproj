@@ -120,6 +120,8 @@
     </Compile>
     <Compile Include="AppCheck.cs" />
     <Compile Include="AppClose.cs" />
+    <Compile Include="SocketHandler.cs" />
+    <Compile Include="SocketServer.cs" />
     <Compile Include="AppStartup.cs" />
     <Compile Include="AppVariables.cs" />
     <Compile Include="AppHotKey.cs" />

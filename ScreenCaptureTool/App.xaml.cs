@@ -10,7 +10,7 @@ namespace ScreenCapture
         public static WindowMain vWindowMain = new WindowMain();
 
         //Application Startup
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             try
             {
@@ -18,7 +18,7 @@ namespace ScreenCapture
                 StartupCheck("Screen Capture Tool", ProcessPriority.Normal);
 
                 //Run application startup code
-                vWindowMain.Startup();
+                await vWindowMain.Startup();
             }
             catch { }
         }
