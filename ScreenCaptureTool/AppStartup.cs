@@ -1,6 +1,5 @@
 ﻿using ArnoldVinkCode;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
@@ -9,13 +8,13 @@ namespace ScreenCapture
     public partial class WindowMain
     {
         //Run application startup code
-        public async Task Startup()
+        public void Startup()
         {
             try
             {
                 //Initialize Settings
                 Settings_Check();
-                await Settings_Load();
+                Settings_Load();
                 Settings_Save();
 
                 //Create the tray menu

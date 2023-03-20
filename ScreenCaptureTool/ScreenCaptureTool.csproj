@@ -132,6 +132,7 @@
     </Compile>
     <Compile Include="Settings\SettingsCheck.cs" />
     <Compile Include="Settings\SettingsLoad.cs" />
+    <Compile Include="Settings\SettingsFunction.cs" />
     <Compile Include="Settings\SettingsSave.cs" />
     <Compile Include="WindowMain.xaml.cs">
       <DependentUpon>WindowMain.xaml</DependentUpon>

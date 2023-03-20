@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ScreenCapture"
         mc:Ignorable="d"
         Background="{DynamicResource ApplicationWhiteBrush}"
-        Title="ScreenCaptureTool"
+        Title="Screen Capture Tool"
         ShowInTaskbar="False"
         MinHeight="500"
         Height="500"
@@ -23,8 +23,8 @@
             <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Screenshot Location"/>
             <TextBlock Text="Screenshot save location" Style="{StaticResource TextBlockBlack}"/>
             <TextBlock Name="textblock_Settings_ScreenshotLocation" Text="Current save location: Unknown" Tag="Current save location: " TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
-            <Button Name="btn_Settings_ScreenshotLocationChange" Content="Change screenshot save location" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}"/>
-            <Button Margin="0,10,0,0" Name="btn_Settings_ScreenshotLocationOpen" Content="Open screenshot save location" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}"/>
+            <Button Name="btn_Settings_ScreenshotLocationChange" Content="Change screenshot save location" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}" Click="Btn_Settings_ScreenshotLocationChange_Click"/>
+            <Button Margin="0,10,0,0" Name="btn_Settings_ScreenshotLocationOpen" Content="Open screenshot save location" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}" Click="Btn_Settings_ScreenshotLocationOpen_Click"/>
 
             <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Screenshot Format"/>
             <CheckBox Name="cb_Settings_ScreenshotHDRtoSDR" Content="Convert screenshot HDR to SDR" Style="{StaticResource CheckBoxBlack}"/>
