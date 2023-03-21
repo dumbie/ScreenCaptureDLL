@@ -3,12 +3,14 @@
 ## Description
 ScreenCaptureDLL can be used in your application through dll import to capture your screen to an image.
 
+ScreenCaptureTool allows you to take a screenshot using your keyboard or by remote command.
+
 ScreenCapturePreview gives you a live screen capture preview to see what you can expect.
 
 ScreenCaptureNow saves a screenshot directly to file using command line arguments:
 - -MonitorId=0, 1, 2, 3...
-- -ImageFormat=PNG, JPG, BMP or JXR
-- -ImageQuality=0-100 (Only works with JPG format)
+- -ImageFormat=JXR, PNG, JPG, BMP, TIF or HEIF
+- -ImageQuality=0-100 (Only works with JPG, JXR and HEIF format)
 - -ImageSaveFolder="E:\Screenshots" (Defaults to app directory)
 - -MaxPixelDimension=0 (Maximum pixel width or height)
 - -HDRtoSDR=True (False only works with JXR format when HDR is enabled)
@@ -22,8 +24,8 @@ ScreenCaptureNow saves a screenshot directly to file using command line argument
 - -Gamma=1.00 (Adjust capture gamma)
 
 ## Features
-- Save screencapture as BMP, JPG, PNG or JXR.
-- HDR to SDR tonemapping through shader.
+- Save screencapture as JXR, PNG, JPG, BMP, TIF or HEIF.
+- HDR to SDR tonemapping through shader when needed.
 
 ## Known issues
 - Some content with HDR or DRM might not be captured.
