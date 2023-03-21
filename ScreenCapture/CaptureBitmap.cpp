@@ -76,29 +76,29 @@ namespace
 			//Bitmap frame set metadata
 			if (SUCCEEDED(iWICBitmapFrameEncode->GetMetadataQueryWriter(&iWICMetadataQueryWriter)))
 			{
-				PROPVARIANT propVariant{};
-				propVariant.vt = VT_LPSTR;
-				propVariant.pszVal = "ScreenCaptureDLL";
-
 				//Set application name
+				PROPVARIANT propVariantAppName{};
+				propVariantAppName.vt = VT_LPSTR;
+				propVariantAppName.pszVal = "ScreenCaptureDLL";
 				if (iWicFormatGuid == GUID_ContainerFormatPng)
 				{
-					hResult = iWICMetadataQueryWriter->SetMetadataByName(L"/tEXt/{str=Software}", &propVariant);
-					if (FAILED(hResult))
-					{
-						CaptureResetVariablesBitmap();
-						return false;
-					}
+					iWICMetadataQueryWriter->SetMetadataByName(L"/tEXt/{str=Software}", &propVariantAppName);
 				}
 				else
 				{
-					hResult = iWICMetadataQueryWriter->SetMetadataByName(L"System.ApplicationName", &propVariant);
-					if (FAILED(hResult))
-					{
-						CaptureResetVariablesBitmap();
-						return false;
-					}
+					iWICMetadataQueryWriter->SetMetadataByName(L"System.ApplicationName", &propVariantAppName);
 				}
+
+				//Set date taken
+				FILETIME currentFileTime;
+				SYSTEMTIME currentSystemTime;
+				GetSystemTime(&currentSystemTime);
+				SystemTimeToFileTime(&currentSystemTime, &currentFileTime);
+
+				PROPVARIANT propVariantDateTaken{};
+				propVariantDateTaken.vt = VT_FILETIME;
+				propVariantDateTaken.filetime = currentFileTime;
+				iWICMetadataQueryWriter->SetMetadataByName(L"System.Photo.DateTaken", &propVariantDateTaken);
 			}
 
 			//Bitmap frame set size
