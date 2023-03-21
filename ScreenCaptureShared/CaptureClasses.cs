@@ -7,7 +7,9 @@
             JXR = 0,
             JPG = 1,
             PNG = 2,
-            BMP = 3
+            BMP = 3,
+            TIF = 4,
+            HEIF = 5
         }
 
         public CaptureSettings()

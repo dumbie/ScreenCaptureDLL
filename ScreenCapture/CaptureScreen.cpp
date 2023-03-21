@@ -164,6 +164,33 @@ namespace
 			}
 		}
 
+		__declspec(dllexport) BOOL CaptureSaveFileTif(BYTE* bitmapData, WCHAR* filePath)
+		{
+			try
+			{
+				if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatTiff);
+			}
+			catch (...)
+			{
+				return false;
+			}
+		}
+
+		__declspec(dllexport) BOOL CaptureSaveFileHeif(BYTE* bitmapData, WCHAR* filePath, UINT imageQualityPercentage)
+		{
+			try
+			{
+				if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+				vBitmapImageQuality = imageQualityPercentage;
+				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatHeif);
+			}
+			catch (...)
+			{
+				return false;
+			}
+		}
+
 		__declspec(dllexport) BYTE* CaptureScreenshot()
 		{
 			try

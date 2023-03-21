@@ -8,7 +8,7 @@ namespace
 		try
 		{
 			//Create wic factory
-			hResult = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, (LPVOID*)&iWICImagingFactory);
+			hResult = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_ALL, IID_IWICImagingFactory, (LPVOID*)&iWICImagingFactory);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesBitmap();
@@ -53,18 +53,7 @@ namespace
 			}
 
 			//Write property bag
-			if (iWicFormatGuid == GUID_ContainerFormatJpeg)
-			{
-				PROPBAG2 propertyValue{};
-				propertyValue.pstrName = L"ImageQuality";
-
-				VARIANT variantValue{};
-				variantValue.vt = VT_R4;
-				variantValue.fltVal = vBitmapImageQuality / 100.0F;
-
-				iPropertyBag2->Write(1, &propertyValue, &variantValue);
-			}
-			else if (iWicFormatGuid == GUID_ContainerFormatWmp) //Jxr
+			if (iWicFormatGuid == GUID_ContainerFormatJpeg || iWicFormatGuid == GUID_ContainerFormatWmp || iWicFormatGuid == GUID_ContainerFormatHeif)
 			{
 				PROPBAG2 propertyValue{};
 				propertyValue.pstrName = L"ImageQuality";

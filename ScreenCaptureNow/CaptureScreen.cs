@@ -10,7 +10,7 @@ using System.Windows.Media;
 
 namespace ScreenCapture
 {
-    public class CaptureScreen
+    public partial class CaptureScreen
     {
         //Player Variables
         private static MediaPlayer vWindowsMediaPlayer = new MediaPlayer();
@@ -142,12 +142,7 @@ namespace ScreenCapture
                     Debug.WriteLine("Failed to initialize screen capture.");
 
                     //Play capture sound
-                    vWindowsMediaPlayer.Volume = 1.0;
-                    vWindowsMediaPlayer.Open(new Uri(vSettingSoundFolder + "\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
-                    vWindowsMediaPlayer.Play();
-
-                    //Allow sound to finish
-                    await Task.Delay(1000);
+                    await CaptureSound(true);
                     return;
                 }
                 else
@@ -182,12 +177,7 @@ namespace ScreenCapture
                     Debug.WriteLine("Screenshot capture is corrupted.");
 
                     //Play capture sound
-                    vWindowsMediaPlayer.Volume = 1.0;
-                    vWindowsMediaPlayer.Open(new Uri(vSettingSoundFolder + "\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
-                    vWindowsMediaPlayer.Play();
-
-                    //Allow sound to finish
-                    await Task.Delay(1000);
+                    await CaptureSound(true);
                     return;
                 }
 
@@ -210,10 +200,10 @@ namespace ScreenCapture
                 }
                 vSettingImageSaveName = "\\Screenshot " + CaptureFunctions.FileNameReplaceInvalidChars(vSettingImageSaveName);
 
-                //Set folder path
+                //Check screenshot location
                 if (string.IsNullOrWhiteSpace(vSettingImageSaveFolder) || !Directory.Exists(vSettingImageSaveFolder))
                 {
-                    //Create screenshots folder in app directory
+                    //Check screenshots folder in app directory
                     if (!Directory.Exists("Screenshots"))
                     {
                         Directory.CreateDirectory("Screenshots");
@@ -224,48 +214,54 @@ namespace ScreenCapture
                 }
 
                 //Save screenshot to file
-                bool screenshotExport = false;
-                if (vSettingImageFormat == "bmp")
+                bool screenshotSaved = false;
+                if (vSettingImageFormat == "jpg")
                 {
-                    screenshotExport = CaptureImport.CaptureSaveFileBmp(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".bmp");
-                    Debug.WriteLine("Screenshot bmp export succeeded: " + screenshotExport);
-                }
-                else if (vSettingImageFormat == "jpg")
-                {
-                    screenshotExport = CaptureImport.CaptureSaveFileJpg(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".jpg", vSettingImageQuality);
-                    Debug.WriteLine("Screenshot jpg export succeeded: " + screenshotExport);
+                    screenshotSaved = CaptureImport.CaptureSaveFileJpg(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".jpg", vSettingImageQuality);
+                    Debug.WriteLine("Screenshot JPG export succeeded: " + screenshotSaved);
                 }
                 else if (vSettingImageFormat == "png")
                 {
-                    screenshotExport = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".png");
-                    Debug.WriteLine("Screenshot png export succeeded: " + screenshotExport);
+                    screenshotSaved = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".png");
+                    Debug.WriteLine("Screenshot PNG export succeeded: " + screenshotSaved);
                 }
-                else if (vSettingImageFormat == "jxr")
+                else if (vSettingImageFormat == "bmp")
                 {
-                    screenshotExport = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".jxr", vSettingImageQuality);
-                    Debug.WriteLine("Screenshot jxr export succeeded: " + screenshotExport);
+                    screenshotSaved = CaptureImport.CaptureSaveFileBmp(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".bmp");
+                    Debug.WriteLine("Screenshot BMP export succeeded: " + screenshotSaved);
                 }
-
-                //Play capture sound
-                if (screenshotExport)
+                else if (vSettingImageFormat == "tif")
                 {
-                    vWindowsMediaPlayer.Volume = 1.0;
-                    vWindowsMediaPlayer.Open(new Uri(vSettingSoundFolder + "\\Screenshot.mp3", UriKind.RelativeOrAbsolute));
-                    vWindowsMediaPlayer.Play();
+                    screenshotSaved = CaptureImport.CaptureSaveFileTif(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".tif");
+                    Debug.WriteLine("Screenshot TIF export succeeded: " + screenshotSaved);
+                }
+                else if (vSettingImageFormat == "heif")
+                {
+                    screenshotSaved = CaptureImport.CaptureSaveFileHeif(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".heif", vSettingImageQuality);
+                    Debug.WriteLine("Screenshot HEIF export succeeded: " + screenshotSaved);
                 }
                 else
                 {
-                    vWindowsMediaPlayer.Volume = 1.0;
-                    vWindowsMediaPlayer.Open(new Uri(vSettingSoundFolder + "\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
-                    vWindowsMediaPlayer.Play();
+                    screenshotSaved = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".jxr", vSettingImageQuality);
+                    Debug.WriteLine("Screenshot JXR export succeeded: " + screenshotSaved);
                 }
 
-                //Allow sound to finish
-                await Task.Delay(1000);
+                //Play capture sound
+                if (screenshotSaved)
+                {
+                    await CaptureSound(false);
+                }
+                else
+                {
+                    await CaptureSound(true);
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Screen capture failed: " + ex.Message);
+
+                //Play capture sound
+                await CaptureSound(true);
             }
             finally
             {

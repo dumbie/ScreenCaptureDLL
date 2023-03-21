@@ -24,7 +24,7 @@ namespace ScreenCapture
                 CaptureSettings captureSettings = new CaptureSettings();
 
                 //Check HDR to SDR setting
-                if (imageSaveFormat == ImageFormats.JPG || imageSaveFormat == ImageFormats.PNG || imageSaveFormat == ImageFormats.BMP)
+                if (imageSaveFormat == ImageFormats.JPG || imageSaveFormat == ImageFormats.PNG || imageSaveFormat == ImageFormats.BMP || imageSaveFormat == ImageFormats.TIF || imageSaveFormat == ImageFormats.HEIF)
                 {
                     captureSettings.HDRtoSDR = true;
                 }
@@ -36,7 +36,6 @@ namespace ScreenCapture
 
                     //Play capture sound
                     CaptureSound(true);
-
                     return;
                 }
                 else
@@ -59,7 +58,6 @@ namespace ScreenCapture
 
                     //Play capture sound
                     CaptureSound(true);
-
                     return;
                 }
 
@@ -84,13 +82,15 @@ namespace ScreenCapture
 
                 //Check screenshot location
                 string screenshotSaveFolder = SettingLoad(vConfiguration, "ScreenshotLocation", typeof(string));
-                if (!Directory.Exists(screenshotSaveFolder))
+                if (string.IsNullOrWhiteSpace(screenshotSaveFolder) || !Directory.Exists(screenshotSaveFolder))
                 {
                     //Check screenshots folder in app directory
                     if (!Directory.Exists("Screenshots"))
                     {
                         Directory.CreateDirectory("Screenshots");
                     }
+
+                    //Set save folder to screenshots in app directory
                     screenshotSaveFolder = "Screenshots";
                 }
 
@@ -103,13 +103,23 @@ namespace ScreenCapture
                 }
                 else if (imageSaveFormat == ImageFormats.PNG)
                 {
-                    screenshotSaved = CaptureImport.CaptureSaveFileBmp(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".bmp");
-                    Debug.WriteLine("Screenshot BMP export succeeded: " + screenshotSaved);
+                    screenshotSaved = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".png");
+                    Debug.WriteLine("Screenshot PNG export succeeded: " + screenshotSaved);
                 }
                 else if (imageSaveFormat == ImageFormats.BMP)
                 {
-                    screenshotSaved = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".png");
-                    Debug.WriteLine("Screenshot PNG export succeeded: " + screenshotSaved);
+                    screenshotSaved = CaptureImport.CaptureSaveFileBmp(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".bmp");
+                    Debug.WriteLine("Screenshot BMP export succeeded: " + screenshotSaved);
+                }
+                else if (imageSaveFormat == ImageFormats.TIF)
+                {
+                    screenshotSaved = CaptureImport.CaptureSaveFileTif(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".tif");
+                    Debug.WriteLine("Screenshot TIF export succeeded: " + screenshotSaved);
+                }
+                else if (imageSaveFormat == ImageFormats.HEIF)
+                {
+                    screenshotSaved = CaptureImport.CaptureSaveFileHeif(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".heif", imageSaveQuality);
+                    Debug.WriteLine("Screenshot HEIF export succeeded: " + screenshotSaved);
                 }
                 else
                 {
