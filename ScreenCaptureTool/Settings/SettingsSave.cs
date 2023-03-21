@@ -13,15 +13,27 @@ namespace ScreenCapture
             try
             {
                 //Shortcuts
-                cb_SettingsShortcutScreenshotKeyboard.Click += (sender, e) =>
+                checkbox_ShortcutScreenshot.Click += (sender, e) =>
                 {
-                    SettingSave(vConfiguration, "ShortcutScreenshotKeyboard", cb_SettingsShortcutScreenshotKeyboard.IsChecked.ToString());
+                    SettingSave(vConfiguration, "ShortcutScreenshot", checkbox_ShortcutScreenshot.IsChecked);
+                };
+
+                //Sound
+                checkbox_SoundScreenshot.Click += (sender, e) =>
+                {
+                    SettingSave(vConfiguration, "SoundScreenshot", checkbox_SoundScreenshot.IsChecked);
                 };
 
                 //Capture
-                cb_Settings_ScreenshotHDRtoSDR.Click += (sender, e) =>
+                combobox_ImageSaveFormat.SelectionChanged += (sender, e) =>
                 {
-                    SettingSave(vConfiguration, "ScreenshotHDRtoSDR", cb_Settings_ScreenshotHDRtoSDR.IsChecked.ToString());
+                    SettingSave(vConfiguration, "ImageSaveFormat", combobox_ImageSaveFormat.SelectedIndex);
+                };
+
+                slider_ImageSaveQuality.ValueChanged += (sender, e) =>
+                {
+                    textblock_ImageSaveQuality.Text = textblock_ImageSaveQuality.Tag + slider_ImageSaveQuality.Value.ToString() + "%";
+                    SettingSave(vConfiguration, "ImageSaveQuality", slider_ImageSaveQuality.Value);
                 };
             }
             catch (Exception ex)

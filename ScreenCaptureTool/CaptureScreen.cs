@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
+using static ScreenCapture.CaptureSettings;
 
 namespace ScreenCapture
 {
@@ -15,12 +16,21 @@ namespace ScreenCapture
             IntPtr bitmapIntPtr = IntPtr.Zero;
             try
             {
+                //Image format settings
+                ImageFormats imageSaveFormat = (ImageFormats)SettingLoad(vConfiguration, "ImageSaveFormat", typeof(int));
+                int imageSaveQuality = SettingLoad(vConfiguration, "ImageSaveQuality", typeof(int));
+
                 //Screen capture settings
-                CaptureSettings vCaptureSettings = new CaptureSettings();
-                vCaptureSettings.HDRtoSDR = SettingLoad(vConfiguration, "ScreenshotHDRtoSDR", typeof(bool));
+                CaptureSettings captureSettings = new CaptureSettings();
+
+                //Check HDR to SDR setting
+                if (imageSaveFormat == ImageFormats.JPG || imageSaveFormat == ImageFormats.PNG || imageSaveFormat == ImageFormats.BMP)
+                {
+                    captureSettings.HDRtoSDR = true;
+                }
 
                 //Initialize screen capture
-                if (!CaptureImport.CaptureInitialize(vCaptureSettings, out CaptureDetails vCaptureDetails))
+                if (!CaptureImport.CaptureInitialize(captureSettings, out CaptureDetails vCaptureDetails))
                 {
                     Debug.WriteLine("Failed to initialize screen capture.");
 
@@ -57,7 +67,7 @@ namespace ScreenCapture
                 string imageSaveName = "(" + DateTime.Now.ToShortDateString() + ") " + DateTime.Now.ToString("HH.mm.ss.ffff");
                 if (vCaptureDetails.HDREnabled)
                 {
-                    if (vCaptureSettings.HDRtoSDR)
+                    if (captureSettings.HDRtoSDR)
                     {
                         imageSaveName += " (HDRtoSDR)";
                     }
@@ -85,27 +95,35 @@ namespace ScreenCapture
                 }
 
                 //Save screenshot to file
-                bool screenshotExport = false;
-                if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR)
+                bool screenshotSaved = false;
+                if (imageSaveFormat == ImageFormats.JPG)
                 {
-                    screenshotExport = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".jxr");
-                    Debug.WriteLine("Screenshot jxr export succeeded: " + screenshotExport);
+                    screenshotSaved = CaptureImport.CaptureSaveFileJpg(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".jpg", imageSaveQuality);
+                    Debug.WriteLine("Screenshot JPG export succeeded: " + screenshotSaved);
+                }
+                else if (imageSaveFormat == ImageFormats.PNG)
+                {
+                    screenshotSaved = CaptureImport.CaptureSaveFileBmp(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".bmp");
+                    Debug.WriteLine("Screenshot BMP export succeeded: " + screenshotSaved);
+                }
+                else if (imageSaveFormat == ImageFormats.BMP)
+                {
+                    screenshotSaved = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".png");
+                    Debug.WriteLine("Screenshot PNG export succeeded: " + screenshotSaved);
                 }
                 else
                 {
-                    screenshotExport = CaptureImport.CaptureSaveFilePng(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".png");
-                    Debug.WriteLine("Screenshot png export succeeded: " + screenshotExport);
+                    screenshotSaved = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".jxr");
+                    Debug.WriteLine("Screenshot JXR export succeeded: " + screenshotSaved);
                 }
 
                 //Play capture sound
-                if (screenshotExport)
+                if (screenshotSaved)
                 {
-                    //Play capture sound
                     CaptureSound(false);
                 }
                 else
                 {
-                    //Play capture sound
                     CaptureSound(true);
                 }
             }

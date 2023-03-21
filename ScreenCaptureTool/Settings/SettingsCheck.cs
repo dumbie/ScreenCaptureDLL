@@ -19,13 +19,17 @@ namespace ScreenCapture
                 if (!SettingCheck(vConfiguration, "ServerPort")) { SettingSave(vConfiguration, "ServerPort", "1040"); }
 
                 //Shortcuts
-                if (!SettingCheck(vConfiguration, "ShortcutScreenshotKeyboard")) { SettingSave(vConfiguration, "ShortcutScreenshotKeyboard", "True"); }
+                if (!SettingCheck(vConfiguration, "ShortcutScreenshot")) { SettingSave(vConfiguration, "ShortcutScreenshot", "True"); }
+
+                //Sound
+                if (!SettingCheck(vConfiguration, "SoundScreenshot")) { SettingSave(vConfiguration, "SoundScreenshot", "True"); }
 
                 //Location
                 if (!SettingCheck(vConfiguration, "ScreenshotLocation")) { SettingSave(vConfiguration, "ScreenshotLocation", "Screenshots"); }
 
                 //Capture
-                if (!SettingCheck(vConfiguration, "ScreenshotHDRtoSDR")) { SettingSave(vConfiguration, "ScreenshotHDRtoSDR", "False"); }
+                if (!SettingCheck(vConfiguration, "ImageSaveFormat")) { SettingSave(vConfiguration, "ImageSaveFormat", "0"); }
+                if (!SettingCheck(vConfiguration, "ImageSaveQuality")) { SettingSave(vConfiguration, "ImageSaveQuality", "100"); }
             }
             catch (Exception ex)
             {

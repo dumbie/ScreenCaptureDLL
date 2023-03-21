@@ -13,13 +13,19 @@ namespace ScreenCapture
             try
             {
                 //Shortcuts
-                cb_SettingsShortcutScreenshotKeyboard.IsChecked = SettingLoad(vConfiguration, "ShortcutScreenshotKeyboard", typeof(bool));
+                checkbox_ShortcutScreenshot.IsChecked = SettingLoad(vConfiguration, "ShortcutScreenshot", typeof(bool));
+
+                //Sound
+                checkbox_SoundScreenshot.IsChecked = SettingLoad(vConfiguration, "SoundScreenshot", typeof(bool));
 
                 //Location
-                textblock_Settings_ScreenshotLocation.Text = textblock_Settings_ScreenshotLocation.Tag + SettingLoad(vConfiguration, "ScreenshotLocation", typeof(string));
+                textblock_ScreenshotLocation.Text = textblock_ScreenshotLocation.Tag + SettingLoad(vConfiguration, "ScreenshotLocation", typeof(string));
 
                 //Capture
-                cb_Settings_ScreenshotHDRtoSDR.IsChecked = SettingLoad(vConfiguration, "ScreenshotHDRtoSDR", typeof(bool));
+                combobox_ImageSaveFormat.SelectedIndex = SettingLoad(vConfiguration, "ImageSaveFormat", typeof(int));
+
+                textblock_ImageSaveQuality.Text = textblock_ImageSaveQuality.Tag + SettingLoad(vConfiguration, "ImageSaveQuality", typeof(string)) + "%";
+                slider_ImageSaveQuality.Value = SettingLoad(vConfiguration, "ImageSaveQuality", typeof(double));
             }
             catch (Exception ex)
             {

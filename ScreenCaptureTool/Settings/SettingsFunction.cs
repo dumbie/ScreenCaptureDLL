@@ -10,7 +10,7 @@ namespace ScreenCapture
     partial class WindowMain
     {
         //Change screenshot location
-        private void Btn_Settings_ScreenshotLocationChange_Click(object sender, RoutedEventArgs e)
+        private void button_ScreenshotLocationChange_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace ScreenCapture
                     {
                         Debug.WriteLine("Screenshot location selected: " + folderBrowserDialog.SelectedPath);
                         SettingSave(vConfiguration, "ScreenshotLocation", folderBrowserDialog.SelectedPath);
-                        textblock_Settings_ScreenshotLocation.Text = textblock_Settings_ScreenshotLocation.Tag + folderBrowserDialog.SelectedPath;
+                        textblock_ScreenshotLocation.Text = textblock_ScreenshotLocation.Tag + folderBrowserDialog.SelectedPath;
                     }
                 }
             }
@@ -29,7 +29,7 @@ namespace ScreenCapture
         }
 
         //Open screenshot location
-        private void Btn_Settings_ScreenshotLocationOpen_Click(object sender, RoutedEventArgs e)
+        private void button_ScreenshotLocationOpen_Click(object sender, RoutedEventArgs e)
         {
             try
             {

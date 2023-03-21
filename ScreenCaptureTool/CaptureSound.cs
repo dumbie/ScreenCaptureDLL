@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ArnoldVinkCode;
+using System;
+using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -10,17 +12,23 @@ namespace ScreenCapture
         {
             try
             {
-                if (!failSound)
+                if (SettingLoad(vConfiguration, "SoundScreenshot", typeof(bool)))
                 {
-                    vWindowsMediaPlayer.Volume = 1.0;
-                    vWindowsMediaPlayer.Open(new Uri("Resources\\Screenshot.mp3", UriKind.RelativeOrAbsolute));
-                    vWindowsMediaPlayer.Play();
-                }
-                else
-                {
-                    vWindowsMediaPlayer.Volume = 1.0;
-                    vWindowsMediaPlayer.Open(new Uri("Resources\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
-                    vWindowsMediaPlayer.Play();
+                    AVActions.DispatcherInvoke(delegate
+                    {
+                        if (!failSound)
+                        {
+                            vWindowsMediaPlayer.Volume = 1.0;
+                            vWindowsMediaPlayer.Open(new Uri("Assets\\Screenshot.mp3", UriKind.RelativeOrAbsolute));
+                            vWindowsMediaPlayer.Play();
+                        }
+                        else
+                        {
+                            vWindowsMediaPlayer.Volume = 1.0;
+                            vWindowsMediaPlayer.Open(new Uri("Assets\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
+                            vWindowsMediaPlayer.Play();
+                        }
+                    });
                 }
             }
             catch { }

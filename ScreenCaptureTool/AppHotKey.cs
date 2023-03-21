@@ -21,7 +21,7 @@ namespace ScreenCapture
                 if (!modifierKeyPressed && keysPressed.Contains(KeysVirtual.F12))
                 {
                     //Capture screenshot hotkey
-                    if (SettingLoad(vConfiguration, "ShortcutScreenshotKeyboard", typeof(bool)))
+                    if (SettingLoad(vConfiguration, "ShortcutScreenshot", typeof(bool)))
                     {
                         Debug.WriteLine("Button Global - Capture screenshot");
                         await CaptureScreen.CaptureScreenToFile();
