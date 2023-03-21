@@ -77,7 +77,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>..\ScreenCaptureShared\Resources\AppIcon.ico</ApplicationIcon>
+    <ApplicationIcon>..\ScreenCaptureShared\Assets\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -144,12 +144,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\ScreenCaptureShared\Resources\Screenshot.mp3">
-      <Link>Resources\Screenshot.mp3</Link>
+    <Content Include="..\ScreenCaptureShared\Assets\Screenshot.mp3">
+      <Link>Assets\Screenshot.mp3</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\ScreenCaptureShared\Resources\ScreenshotFail.mp3">
-      <Link>Resources\ScreenshotFail.mp3</Link>
+    <Content Include="..\ScreenCaptureShared\Assets\ScreenshotFail.mp3">
+      <Link>Assets\ScreenshotFail.mp3</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

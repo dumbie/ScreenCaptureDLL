@@ -59,7 +59,7 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>..\ScreenCaptureShared\Resources\AppIcon.ico</ApplicationIcon>
+    <ApplicationIcon>..\ScreenCaptureShared\Assets\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
