@@ -2,11 +2,19 @@
 {
     public struct CaptureSettings
     {
+        public enum ImageFormats : int
+        {
+            JXR = 0,
+            JPG = 1,
+            PNG = 2,
+            BMP = 3
+        }
+
         public CaptureSettings()
         {
             MonitorId = 0;
             MaxPixelDimension = 0;
-            HDRtoSDR = true;
+            HDRtoSDR = false;
             HDRBrightness = 70.0F;
             Saturation = 1.0F;
             RedChannel = 1.0F;
