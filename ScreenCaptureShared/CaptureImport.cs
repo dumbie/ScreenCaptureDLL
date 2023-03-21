@@ -33,6 +33,6 @@ namespace ScreenCapture
         public static extern bool CaptureSaveFilePng(IntPtr bitmapData, [MarshalAs(UnmanagedType.LPWStr)] string filePath);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureSaveFileJxr(IntPtr bitmapData, [MarshalAs(UnmanagedType.LPWStr)] string filePath);
+        public static extern bool CaptureSaveFileJxr(IntPtr bitmapData, [MarshalAs(UnmanagedType.LPWStr)] string filePath, int imageQualityPercentage);
     }
 }

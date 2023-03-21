@@ -151,10 +151,11 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureSaveFileJxr(BYTE* bitmapData, WCHAR* filePath)
+		__declspec(dllexport) BOOL CaptureSaveFileJxr(BYTE* bitmapData, WCHAR* filePath, UINT imageQualityPercentage)
 		{
 			try
 			{
+				vBitmapImageQuality = imageQualityPercentage;
 				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatWmp);
 			}
 			catch (...)

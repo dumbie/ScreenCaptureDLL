@@ -64,6 +64,17 @@ namespace
 
 				iPropertyBag2->Write(1, &propertyValue, &variantValue);
 			}
+			else if (iWicFormatGuid == GUID_ContainerFormatWmp) //Jxr
+			{
+				PROPBAG2 propertyValue{};
+				propertyValue.pstrName = L"ImageQuality";
+
+				VARIANT variantValue{};
+				variantValue.vt = VT_R4;
+				variantValue.fltVal = vBitmapImageQuality / 100.0F;
+
+				iPropertyBag2->Write(1, &propertyValue, &variantValue);
+			}
 
 			//Initialize bitmap frame
 			hResult = iWICBitmapFrameEncode->Initialize(iPropertyBag2);

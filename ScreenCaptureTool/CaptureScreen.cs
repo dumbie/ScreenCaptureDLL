@@ -113,7 +113,7 @@ namespace ScreenCapture
                 }
                 else
                 {
-                    screenshotSaved = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".jxr");
+                    screenshotSaved = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, screenshotSaveFolder + imageSaveName + ".jxr", imageSaveQuality);
                     Debug.WriteLine("Screenshot JXR export succeeded: " + screenshotSaved);
                 }
 

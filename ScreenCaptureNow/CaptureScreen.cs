@@ -20,8 +20,8 @@ namespace ScreenCapture
         public static CaptureSettings vCaptureSettings = new CaptureSettings();
 
         //Setting Variables
-        public static string vSettingSoundFolder = "Resources";
-        public static string vSettingImageFormat = "png";
+        public static string vSettingSoundFolder = "Assets";
+        public static string vSettingImageFormat = "jxr";
         public static string vSettingImageSaveFolder = string.Empty;
         public static string vSettingImageSaveName = string.Empty;
         public static int vSettingImageQuality = 100;
@@ -166,7 +166,7 @@ namespace ScreenCapture
                     Debug.WriteLine(captureDetails);
 
                     //Wait for capturer to have initialized
-                    await Task.Delay(200);
+                    await Task.Delay(100);
                 }
 
                 //Capture screenshot
@@ -242,7 +242,7 @@ namespace ScreenCapture
                 }
                 else if (vSettingImageFormat == "jxr")
                 {
-                    screenshotExport = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".jxr");
+                    screenshotExport = CaptureImport.CaptureSaveFileJxr(bitmapIntPtr, vSettingImageSaveFolder + vSettingImageSaveName + ".jxr", vSettingImageQuality);
                     Debug.WriteLine("Screenshot jxr export succeeded: " + screenshotExport);
                 }
 
