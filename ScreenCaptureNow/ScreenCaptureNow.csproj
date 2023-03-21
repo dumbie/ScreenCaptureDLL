@@ -107,9 +107,6 @@
     <Compile Include="..\ScreenCaptureShared\CaptureClasses.cs">
       <Link>CaptureClasses.cs</Link>
     </Compile>
-    <Compile Include="..\ScreenCaptureShared\CaptureFunctions.cs">
-      <Link>CaptureFunctions.cs</Link>
-    </Compile>
     <Compile Include="..\ScreenCaptureShared\CaptureImport.cs">
       <Link>CaptureImport.cs</Link>
     </Compile>
@@ -153,6 +150,12 @@
       <Link>Assets\ScreenshotFail.mp3</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ArnoldVinkCode\Desktop\ArnoldVinkCode.csproj">
+      <Project>{478ED5D3-38AF-47FC-AE14-B67976AB952C}</Project>
+      <Name>ArnoldVinkCode</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

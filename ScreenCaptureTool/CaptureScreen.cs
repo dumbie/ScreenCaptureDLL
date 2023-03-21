@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArnoldVinkCode;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace ScreenCapture
             IntPtr bitmapIntPtr = IntPtr.Zero;
             try
             {
-                //Image format settings
+                //Capture tool settings
                 ImageFormats imageSaveFormat = (ImageFormats)SettingLoad(vConfiguration, "ImageSaveFormat", typeof(int));
                 int imageSaveQuality = SettingLoad(vConfiguration, "ImageSaveQuality", typeof(int));
 
@@ -78,7 +79,7 @@ namespace ScreenCapture
                 {
                     imageSaveName += " (SDR)";
                 }
-                imageSaveName = "\\Screenshot " + CaptureFunctions.FileNameReplaceInvalidChars(imageSaveName);
+                imageSaveName = "\\Screenshot " + AVFiles.FileNameReplaceInvalidChars("-", imageSaveName);
 
                 //Check screenshot location
                 string screenshotSaveFolder = SettingLoad(vConfiguration, "ScreenshotLocation", typeof(string));

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using static ArnoldVinkCode.AVFirewall;
 using static ArnoldVinkCode.AVInteropDll;
 using static ArnoldVinkCode.AVProcess;
 
@@ -28,10 +29,13 @@ namespace ScreenCapture
                     return;
                 }
 
+                //Get path to application executable file
+                string appFilePath = Assembly.GetEntryAssembly().Location;
+
                 //Set the working directory to executable directory
                 try
                 {
-                    Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+                    Directory.SetCurrentDirectory(Path.GetDirectoryName(appFilePath));
                 }
                 catch { }
 
@@ -39,6 +43,13 @@ namespace ScreenCapture
                 try
                 {
                     currentProcess.Priority = priorityLevel;
+                }
+                catch { }
+
+                //Allow application in firewall
+                try
+                {
+                    Firewall_ExecutableAllow("Screen Capture Tool", appFilePath, true);
                 }
                 catch { }
             }

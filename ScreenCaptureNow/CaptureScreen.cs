@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArnoldVinkCode;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -198,7 +199,7 @@ namespace ScreenCapture
                 {
                     vSettingImageSaveName += " (SDR)";
                 }
-                vSettingImageSaveName = "\\Screenshot " + CaptureFunctions.FileNameReplaceInvalidChars(vSettingImageSaveName);
+                vSettingImageSaveName = "\\Screenshot " + AVFiles.FileNameReplaceInvalidChars("-", vSettingImageSaveName);
 
                 //Check screenshot location
                 if (string.IsNullOrWhiteSpace(vSettingImageSaveFolder) || !Directory.Exists(vSettingImageSaveFolder))
