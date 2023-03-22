@@ -79,7 +79,7 @@ namespace ScreenCapture
                 {
                     imageSaveName += " (SDR)";
                 }
-                imageSaveName = "\\Screenshot " + AVFiles.FileNameReplaceInvalidChars("-", imageSaveName);
+                imageSaveName = "\\Screenshot " + AVFiles.FileNameReplaceInvalidChars(imageSaveName, "-");
 
                 //Check screenshot location
                 string screenshotSaveFolder = SettingLoad(vConfiguration, "ScreenshotLocation", typeof(string));

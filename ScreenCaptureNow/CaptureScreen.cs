@@ -199,7 +199,7 @@ namespace ScreenCapture
                 {
                     vSettingImageSaveName += " (SDR)";
                 }
-                vSettingImageSaveName = "\\Screenshot " + AVFiles.FileNameReplaceInvalidChars("-", vSettingImageSaveName);
+                vSettingImageSaveName = "\\Screenshot " + AVFiles.FileNameReplaceInvalidChars(vSettingImageSaveName, "-");
 
                 //Check screenshot location
                 if (string.IsNullOrWhiteSpace(vSettingImageSaveFolder) || !Directory.Exists(vSettingImageSaveFolder))
