@@ -12,9 +12,6 @@ namespace ScreenCapture
         {
             try
             {
-                //Shortcuts
-                checkbox_ShortcutScreenshot.IsChecked = SettingLoad(vConfiguration, "ShortcutScreenshot", typeof(bool));
-
                 //Sound
                 checkbox_SoundScreenshot.IsChecked = SettingLoad(vConfiguration, "SoundScreenshot", typeof(bool));
 
@@ -26,6 +23,10 @@ namespace ScreenCapture
 
                 textblock_ImageSaveQuality.Text = textblock_ImageSaveQuality.Tag + SettingLoad(vConfiguration, "ImageSaveQuality", typeof(string)) + "%";
                 slider_ImageSaveQuality.Value = SettingLoad(vConfiguration, "ImageSaveQuality", typeof(double));
+
+                //Shortcuts
+                Load_SetShortcut_Items();
+                Load_SetShortcut_Keys();
             }
             catch (Exception ex)
             {

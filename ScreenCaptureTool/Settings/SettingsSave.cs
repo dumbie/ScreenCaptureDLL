@@ -12,12 +12,6 @@ namespace ScreenCapture
         {
             try
             {
-                //Shortcuts
-                checkbox_ShortcutScreenshot.Click += (sender, e) =>
-                {
-                    SettingSave(vConfiguration, "ShortcutScreenshot", checkbox_ShortcutScreenshot.IsChecked);
-                };
-
                 //Sound
                 checkbox_SoundScreenshot.Click += (sender, e) =>
                 {
@@ -35,6 +29,12 @@ namespace ScreenCapture
                     textblock_ImageSaveQuality.Text = textblock_ImageSaveQuality.Tag + slider_ImageSaveQuality.Value.ToString() + "%";
                     SettingSave(vConfiguration, "ImageSaveQuality", slider_ImageSaveQuality.Value);
                 };
+
+                //Shortcuts
+                button_SetShortcut_Unmap.Click += Button_SetShortcut_Unmap_Click;
+                combobox_SetShortcut_Key0.SelectionChanged += Combobox_SetShortcut_SelectionChanged;
+                combobox_SetShortcut_Key1.SelectionChanged += Combobox_SetShortcut_SelectionChanged;
+                combobox_SetShortcut_Key2.SelectionChanged += Combobox_SetShortcut_SelectionChanged;
             }
             catch (Exception ex)
             {

@@ -117,6 +117,7 @@
     </Compile>
     <Compile Include="AppCheck.cs" />
     <Compile Include="AppClose.cs" />
+    <Compile Include="Settings\SettingsShortcut.cs" />
     <Compile Include="SocketHandler.cs" />
     <Compile Include="SocketServer.cs" />
     <Compile Include="AppStartup.cs" />

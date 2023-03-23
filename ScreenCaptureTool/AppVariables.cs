@@ -10,6 +10,9 @@ namespace ScreenCapture
         //Application Variables
         public static Configuration vConfiguration = SettingLoadConfig("ScreenCaptureTool.exe.csettings");
 
+        //Setting Variables
+        public static bool vComboboxSaveEnabled = true;
+
         //Player Variables
         public static MediaPlayer vWindowsMediaPlayer = new MediaPlayer();
 

@@ -18,9 +18,6 @@ namespace ScreenCapture
                 //Socket
                 if (!SettingCheck(vConfiguration, "ServerPort")) { SettingSave(vConfiguration, "ServerPort", "1040"); }
 
-                //Shortcuts
-                if (!SettingCheck(vConfiguration, "ShortcutScreenshot")) { SettingSave(vConfiguration, "ShortcutScreenshot", "True"); }
-
                 //Sound
                 if (!SettingCheck(vConfiguration, "SoundScreenshot")) { SettingSave(vConfiguration, "SoundScreenshot", "True"); }
 
@@ -30,6 +27,9 @@ namespace ScreenCapture
                 //Capture
                 if (!SettingCheck(vConfiguration, "ImageSaveFormat")) { SettingSave(vConfiguration, "ImageSaveFormat", "0"); }
                 if (!SettingCheck(vConfiguration, "ImageSaveQuality")) { SettingSave(vConfiguration, "ImageSaveQuality", "100"); }
+
+                //Shortcuts
+                Check_SetShortcut_Keys();
             }
             catch (Exception ex)
             {
