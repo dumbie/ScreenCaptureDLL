@@ -3,7 +3,8 @@ SamplerState _samplerState : register(s0);
 cbuffer _shaderVariables : register(b0)
 {
 	bool HDRtoSDR;
-	float HDRBrightness;
+	float HDRPaperWhite;
+	float HDRMaximumNits;
 	float SDRWhiteLevel;
 	float Saturation;
 	float RedChannel;
@@ -20,10 +21,41 @@ struct PS_INPUT
 	float2 TexCoord : TEXCOORD;
 };
 
-float4 AdjustSDRWhiteLevel(float4 color)
+float ColorLinearToST2084(float color)
+{
+	float colorPow = pow(abs(color), 0.1593017578F);
+	return pow((0.8359375F + 18.8515625F * colorPow) / (1.0F + 18.6875F * colorPow), 78.84375F);
+}
+
+float ColorST2084ToLinear(float color)
+{
+	float colorPow = pow(abs(color), 1.0F / 78.84375F);
+	return pow(abs(max(colorPow - 0.8359375F, 0.0F) / (18.8515625F - 18.6875F * colorPow)), 1.0F / 0.1593017578F);
+}
+
+float4 AdjustHDRMaximumNits(float4 color)
+{
+	float colorMax = max(max(color.r, color.g), color.b);
+	float color2084 = ColorLinearToST2084(colorMax);
+
+	float nits2084 = ColorLinearToST2084(HDRMaximumNits / 1000.0F);
+	nits2084 = saturate(color2084 / nits2084) * nits2084;
+	nits2084 = ColorST2084ToLinear(nits2084);
+
+	return color *= nits2084 / colorMax;
+}
+
+float4 AdjustHDRtoSDR(float4 color)
 {
 	if (!HDRtoSDR) { return color; }
-	return color / (SDRWhiteLevel / HDRBrightness);
+
+	//Adjust SDR white level and HDR paper white
+	color /= SDRWhiteLevel / HDRPaperWhite;
+
+	//Adjust HDR maximum nits
+	color = AdjustHDRMaximumNits(color);
+
+	return color;
 }
 
 float4 AdjustSaturation(float4 color)
@@ -91,8 +123,8 @@ float4 main(PS_INPUT input) : SV_TARGET
 	//Get texture colors
 	float4 color = _texture2D.Sample(_samplerState, input.TexCoord);
 
-	//Adjust SDR white level
-	color = AdjustSDRWhiteLevel(color);
+	//Adjust HDR to SDR
+	color = AdjustHDRtoSDR(color);
 
 	//Adjust saturation
 	color = AdjustSaturation(color);

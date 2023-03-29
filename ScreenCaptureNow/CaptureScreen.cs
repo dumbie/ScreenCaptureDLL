@@ -81,10 +81,16 @@ namespace ScreenCapture
                             vCaptureSettings.HDRtoSDR = Convert.ToBoolean(Regex.Replace(launchArgumentLower, "(-hdrtosdr).{1}", string.Empty));
                         }
 
-                        //HDRBrightness
-                        if (launchArgumentLower.StartsWith("-hdrbrightness"))
+                        //HDRPaperWhite
+                        if (launchArgumentLower.StartsWith("-hdrpaperwhite"))
                         {
-                            vCaptureSettings.HDRBrightness = Convert.ToSingle(Regex.Replace(launchArgumentLower, "(-hdrbrightness).{1}", string.Empty), CultureInfo.InvariantCulture);
+                            vCaptureSettings.HDRPaperWhite = Convert.ToSingle(Regex.Replace(launchArgumentLower, "(-hdrpaperwhite).{1}", string.Empty), CultureInfo.InvariantCulture);
+                        }
+
+                        //HDRMaximumNits
+                        if (launchArgumentLower.StartsWith("-hdrmaximumnits"))
+                        {
+                            vCaptureSettings.HDRMaximumNits = Convert.ToSingle(Regex.Replace(launchArgumentLower, "(-hdrmaximumnits).{1}", string.Empty), CultureInfo.InvariantCulture);
                         }
 
                         //Saturation
@@ -133,6 +139,12 @@ namespace ScreenCapture
                 }
             }
 
+            //Check HDR to SDR setting
+            if (vSettingImageFormat == "jpg" || vSettingImageFormat == "png" || vSettingImageFormat == "bmp" || vSettingImageFormat == "tif" || vSettingImageFormat == "heif")
+            {
+                vCaptureSettings.HDRtoSDR = true;
+            }
+
             //Prepare screen capture
             IntPtr bitmapIntPtr = IntPtr.Zero;
             try
@@ -156,7 +168,7 @@ namespace ScreenCapture
                     captureDetails += "\nTotalByteSize: " + vCaptureDetails.TotalByteSize;
                     captureDetails += "\nHDREnabled: " + vCaptureDetails.HDREnabled;
                     captureDetails += "\nHDRtoSDR: " + vCaptureSettings.HDRtoSDR;
-                    captureDetails += "\nSDRWhiteLevel: " + vCaptureDetails.SDRWhiteLevel;
+                    captureDetails += "\nSDR White Level: " + vCaptureDetails.SDRWhiteLevel;
 
                     //Write capture details
                     Debug.WriteLine(captureDetails);
@@ -183,7 +195,7 @@ namespace ScreenCapture
                 }
 
                 //Set file name
-                vSettingImageSaveName = DateTime.Now.ToString("HH.mm.ss.ffff") + " (" + DateTime.Now.ToShortDateString() + ")";
+                vSettingImageSaveName = "(" + DateTime.Now.ToShortDateString() + ") " + DateTime.Now.ToString("HH.mm.ss.ffff");
                 if (vCaptureDetails.HDREnabled)
                 {
                     if (vCaptureSettings.HDRtoSDR)

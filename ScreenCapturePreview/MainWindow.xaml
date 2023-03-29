@@ -8,15 +8,18 @@
         Title="Screen Capture Preview" MinHeight="750" Height="750" Width="1280">
     <Grid>
         <Image Name="image_DebugPreview"/>
-        <Border Margin="10" MinWidth="160" CornerRadius="8" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Border Margin="10" MinWidth="180" CornerRadius="8" VerticalAlignment="Top" HorizontalAlignment="Right">
             <Border.Background>
                 <SolidColorBrush Color="Black" Opacity="0.60"/>
             </Border.Background>
             <StackPanel Margin="5">
                 <TextBlock x:Name="textblock_CaptureDetails" Foreground="White" Text="Capture details..."/>
 
-                <TextBlock x:Name="text_HDRBrightness" Tag="HDR Brightness:" Foreground="White" Margin="0,5,0,0"/>
-                <Slider x:Name="slider_HDRBrightness" Value="70" Minimum="5" Maximum="100" ValueChanged="slider_ValueChanged"/>
+                <TextBlock x:Name="text_HDRPaperWhite" Tag="HDR Paper White:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_HDRPaperWhite" Value="80" Minimum="5" Maximum="100" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock x:Name="text_HDRMaximumNits" Tag="HDR Maximum Nits:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_HDRMaximumNits" Value="1200" Minimum="500" Maximum="3000" ValueChanged="slider_ValueChanged"/>
 
                 <TextBlock x:Name="text_Saturation" Tag="Saturation:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_Saturation" Value="1.00" Minimum="0.00" Maximum="5.00" ValueChanged="slider_ValueChanged"/>

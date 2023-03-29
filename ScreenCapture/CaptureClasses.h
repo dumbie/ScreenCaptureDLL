@@ -9,7 +9,8 @@ namespace
 		UINT MonitorId;
 		UINT MaxPixelDimension;
 		BOOL HDRtoSDR;
-		FLOAT HDRBrightness;
+		FLOAT HDRPaperWhite;
+		FLOAT HDRMaximumNits;
 		FLOAT Saturation;
 		FLOAT RedChannel;
 		FLOAT GreenChannel;
@@ -33,7 +34,8 @@ namespace
 	struct ShaderVariables
 	{
 		BOOL HDRtoSDR;
-		FLOAT HDRBrightness;
+		FLOAT HDRPaperWhite;
+		FLOAT HDRMaximumNits;
 		FLOAT SDRWhiteLevel;
 		FLOAT Saturation;
 		FLOAT RedChannel;
@@ -43,7 +45,6 @@ namespace
 		FLOAT Contrast;
 		FLOAT Gamma;
 		FLOAT Reserved1;
-		FLOAT Reserved2;
 	};
 
 	struct VertexVertice

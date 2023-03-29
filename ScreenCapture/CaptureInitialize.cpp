@@ -346,7 +346,8 @@ namespace
 			//Create shader variables
 			ShaderVariables shaderVariables{};
 			shaderVariables.HDRtoSDR = vCaptureDetails.HDREnabled & vCaptureSettings.HDRtoSDR;
-			shaderVariables.HDRBrightness = vCaptureSettings.HDRBrightness;
+			shaderVariables.HDRPaperWhite = vCaptureSettings.HDRPaperWhite;
+			shaderVariables.HDRMaximumNits = vCaptureSettings.HDRMaximumNits;
 			shaderVariables.SDRWhiteLevel = vCaptureDetails.SDRWhiteLevel;
 			shaderVariables.Saturation = vCaptureSettings.Saturation;
 			shaderVariables.RedChannel = vCaptureSettings.RedChannel;

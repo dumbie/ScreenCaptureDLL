@@ -30,7 +30,8 @@ namespace ScreenCapture
                     MonitorId = 0,
                     MaxPixelDimension = 1000,
                     HDRtoSDR = true,
-                    HDRBrightness = (float)slider_HDRBrightness.Value,
+                    HDRPaperWhite = (float)slider_HDRPaperWhite.Value,
+                    HDRMaximumNits = (float)slider_HDRMaximumNits.Value,
                     Saturation = (float)slider_Saturation.Value,
                     RedChannel = (float)slider_RedChannel.Value,
                     GreenChannel = (float)slider_GreenChannel.Value,
@@ -51,7 +52,7 @@ namespace ScreenCapture
                 captureDetails += "\nTotalByteSize: " + vCaptureDetails.TotalByteSize;
                 captureDetails += "\nHDREnabled: " + vCaptureDetails.HDREnabled;
                 captureDetails += "\nHDRtoSDR: " + vCaptureSettings.HDRtoSDR;
-                captureDetails += "\nSDRWhiteLevel: " + vCaptureDetails.SDRWhiteLevel;
+                captureDetails += "\nSDR White Level: " + vCaptureDetails.SDRWhiteLevel;
 
                 //Update interface details
                 Debug.WriteLine(captureDetails);
@@ -133,7 +134,8 @@ namespace ScreenCapture
             try
             {
                 //Update slider text
-                text_HDRBrightness.Text = text_HDRBrightness.Tag + " " + slider_HDRBrightness.Value.ToString("0.0000");
+                text_HDRPaperWhite.Text = text_HDRPaperWhite.Tag + " " + slider_HDRPaperWhite.Value.ToString("0.0000");
+                text_HDRMaximumNits.Text = text_HDRMaximumNits.Tag + " " + slider_HDRMaximumNits.Value.ToString("0.0000");
                 text_Saturation.Text = text_Saturation.Tag + " " + slider_Saturation.Value.ToString("0.0000");
                 text_RedChannel.Text = text_RedChannel.Tag + " " + slider_RedChannel.Value.ToString("0.0000");
                 text_GreenChannel.Text = text_GreenChannel.Tag + " " + slider_GreenChannel.Value.ToString("0.0000");
@@ -148,7 +150,8 @@ namespace ScreenCapture
                     MonitorId = 0,
                     MaxPixelDimension = 1000,
                     HDRtoSDR = true,
-                    HDRBrightness = (float)slider_HDRBrightness.Value,
+                    HDRPaperWhite = (float)slider_HDRPaperWhite.Value,
+                    HDRMaximumNits = (float)slider_HDRMaximumNits.Value,
                     Saturation = (float)slider_Saturation.Value,
                     RedChannel = (float)slider_RedChannel.Value,
                     GreenChannel = (float)slider_GreenChannel.Value,

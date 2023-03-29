@@ -1,42 +1,32 @@
 ﻿namespace ScreenCapture
 {
+    //Enumerators
+    public enum ImageFormats : int
+    {
+        JXR = 0,
+        JPG = 1,
+        PNG = 2,
+        BMP = 3,
+        TIF = 4,
+        HEIF = 5
+    }
+
+    //Structures
     public struct CaptureSettings
     {
-        public enum ImageFormats : int
-        {
-            JXR = 0,
-            JPG = 1,
-            PNG = 2,
-            BMP = 3,
-            TIF = 4,
-            HEIF = 5
-        }
-
-        public CaptureSettings()
-        {
-            MonitorId = 0;
-            MaxPixelDimension = 0;
-            HDRtoSDR = false;
-            HDRBrightness = 70.0F;
-            Saturation = 1.0F;
-            RedChannel = 1.0F;
-            GreenChannel = 1.0F;
-            BlueChannel = 1.0F;
-            Brightness = 1.0F;
-            Contrast = 0.0F;
-            Gamma = 1.0F;
-        }
-        public int MonitorId { get; set; }
-        public int MaxPixelDimension { get; set; }
-        public bool HDRtoSDR { get; set; }
-        public float HDRBrightness { get; set; }
-        public float Saturation { get; set; }
-        public float RedChannel { get; set; }
-        public float GreenChannel { get; set; }
-        public float BlueChannel { get; set; }
-        public float Brightness { get; set; }
-        public float Contrast { get; set; }
-        public float Gamma { get; set; }
+        public CaptureSettings() { }
+        public int MonitorId { get; set; } = 0;
+        public int MaxPixelDimension { get; set; } = 0;
+        public bool HDRtoSDR { get; set; } = true;
+        public float HDRPaperWhite { get; set; } = 80.0F;
+        public float HDRMaximumNits { get; set; } = 1200.0F;
+        public float Saturation { get; set; } = 1.0F;
+        public float RedChannel { get; set; } = 1.0F;
+        public float GreenChannel { get; set; } = 1.0F;
+        public float BlueChannel { get; set; } = 1.0F;
+        public float Brightness { get; set; } = 1.0F;
+        public float Contrast { get; set; } = 0.0F;
+        public float Gamma { get; set; } = 1.0F;
     }
 
     public struct CaptureDetails
