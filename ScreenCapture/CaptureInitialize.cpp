@@ -356,6 +356,7 @@ namespace
 			shaderVariables.Brightness = vCaptureSettings.Brightness;
 			shaderVariables.Contrast = vCaptureSettings.Contrast;
 			shaderVariables.Gamma = vCaptureSettings.Gamma;
+			shaderVariables.Blur = vCaptureSettings.Blur;
 
 			//Create buffer description
 			D3D11_BUFFER_DESC bufferDescription{};

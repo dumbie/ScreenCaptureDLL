@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
-using static ScreenCapture.CaptureSettings;
 
 namespace ScreenCapture
 {

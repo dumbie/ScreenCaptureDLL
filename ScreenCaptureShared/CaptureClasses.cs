@@ -19,7 +19,7 @@
         public int MaxPixelDimension { get; set; } = 0;
         public bool HDRtoSDR { get; set; } = true;
         public float HDRPaperWhite { get; set; } = 80.0F;
-        public float HDRMaximumNits { get; set; } = 1200.0F;
+        public float HDRMaximumNits { get; set; } = 1000.0F;
         public float Saturation { get; set; } = 1.0F;
         public float RedChannel { get; set; } = 1.0F;
         public float GreenChannel { get; set; } = 1.0F;
@@ -27,6 +27,7 @@
         public float Brightness { get; set; } = 1.0F;
         public float Contrast { get; set; } = 0.0F;
         public float Gamma { get; set; } = 1.0F;
+        public float Blur { get; set; } = 0.0F;
     }
 
     public struct CaptureDetails

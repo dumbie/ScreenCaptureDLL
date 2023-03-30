@@ -18,6 +18,7 @@ namespace
 		FLOAT Brightness;
 		FLOAT Contrast;
 		FLOAT Gamma;
+		FLOAT Blur;
 	};
 
 	struct CaptureDetails
@@ -44,7 +45,7 @@ namespace
 		FLOAT Brightness;
 		FLOAT Contrast;
 		FLOAT Gamma;
-		FLOAT Reserved1;
+		FLOAT Blur;
 	};
 
 	struct VertexVertice

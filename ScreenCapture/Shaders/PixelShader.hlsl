@@ -13,6 +13,7 @@ cbuffer _shaderVariables : register(b0)
 	float Brightness;
 	float Contrast;
 	float Gamma;
+	float Blur;
 };
 
 struct PS_INPUT
@@ -54,6 +55,31 @@ float4 AdjustHDRtoSDR(float4 color)
 
 	//Adjust HDR maximum nits
 	color = AdjustHDRMaximumNits(color);
+
+	return color;
+}
+
+float GaussianWeight(float2 dist, float sigma)
+{
+	return exp(-0.5F * dot(dist /= sigma, dist)) / (6.283185307F * sigma * sigma);
+}
+
+float4 AdjustBlur(PS_INPUT input)
+{
+	if (Blur <= 2.0F)
+	{
+		return _texture2D.Sample(_samplerState, input.TexCoord);
+	}
+
+	float4 color;
+	float sigma = Blur * 0.25F;
+	float resolution = 1.0F / 1024.0F;
+
+	for (int i = 0; i < Blur * Blur; i++)
+	{
+		float2 dist = float2(i % Blur, i / Blur) - (Blur / 2.0F);
+		color += GaussianWeight(dist, sigma) * _texture2D.Sample(_samplerState, input.TexCoord + resolution * dist);
+	}
 
 	return color;
 }
@@ -121,7 +147,10 @@ float4 AdjustGamma(float4 color)
 float4 main(PS_INPUT input) : SV_TARGET
 {
 	//Get texture colors
-	float4 color = _texture2D.Sample(_samplerState, input.TexCoord);
+	float4 color;
+
+	//Adjust blur
+	color = AdjustBlur(input);
 
 	//Adjust HDR to SDR
 	color = AdjustHDRtoSDR(color);

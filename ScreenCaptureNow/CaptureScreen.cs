@@ -134,6 +134,12 @@ namespace ScreenCapture
                         {
                             vCaptureSettings.Gamma = Convert.ToSingle(Regex.Replace(launchArgumentLower, "(-gamma).{1}", string.Empty), CultureInfo.InvariantCulture);
                         }
+
+                        //Blur
+                        if (launchArgumentLower.StartsWith("-blur"))
+                        {
+                            vCaptureSettings.Blur = Convert.ToSingle(Regex.Replace(launchArgumentLower, "(-blur).{1}", string.Empty), CultureInfo.InvariantCulture);
+                        }
                     }
                     catch { }
                 }

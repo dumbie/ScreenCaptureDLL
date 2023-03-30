@@ -39,6 +39,7 @@ namespace ScreenCapture
                     Brightness = (float)slider_Brightness.Value,
                     Contrast = (float)slider_Contrast.Value,
                     Gamma = (float)slider_Gamma.Value,
+                    Blur = (float)slider_Blur.Value
                 };
 
                 //Initialize screen capture
@@ -143,6 +144,7 @@ namespace ScreenCapture
                 text_Brightness.Text = text_Brightness.Tag + " " + slider_Brightness.Value.ToString("0.0000");
                 text_Contrast.Text = text_Contrast.Tag + " " + slider_Contrast.Value.ToString("0.0000");
                 text_Gamma.Text = text_Gamma.Tag + " " + slider_Gamma.Value.ToString("0.0000");
+                text_Blur.Text = text_Blur.Tag + " " + slider_Blur.Value.ToString("0.0000");
 
                 //Set capture settings
                 vCaptureSettings = new CaptureSettings
@@ -159,6 +161,7 @@ namespace ScreenCapture
                     Brightness = (float)slider_Brightness.Value,
                     Contrast = (float)slider_Contrast.Value,
                     Gamma = (float)slider_Gamma.Value,
+                    Blur = (float)slider_Blur.Value,
                 };
 
                 bool settingsUpdated = CaptureImport.CaptureUpdateSettings(vCaptureSettings);

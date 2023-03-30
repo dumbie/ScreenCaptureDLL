@@ -19,7 +19,7 @@
                 <Slider x:Name="slider_HDRPaperWhite" Value="80" Minimum="5" Maximum="100" ValueChanged="slider_ValueChanged"/>
 
                 <TextBlock x:Name="text_HDRMaximumNits" Tag="HDR Maximum Nits:" Foreground="White" Margin="0,5,0,0"/>
-                <Slider x:Name="slider_HDRMaximumNits" Value="1200" Minimum="500" Maximum="3000" ValueChanged="slider_ValueChanged"/>
+                <Slider x:Name="slider_HDRMaximumNits" Value="1000" Minimum="500" Maximum="3000" ValueChanged="slider_ValueChanged"/>
 
                 <TextBlock x:Name="text_Saturation" Tag="Saturation:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_Saturation" Value="1.00" Minimum="0.00" Maximum="5.00" ValueChanged="slider_ValueChanged"/>
@@ -36,11 +36,14 @@
                 <TextBlock x:Name="text_Brightness" Tag="Brightness:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_Brightness" Value="1.00" Minimum="0.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
 
-                <TextBlock x:Name="text_Contrast" Tag="Contrast:" Foreground="White" Margin="0,5,0,0"/>
+                <TextBlock x:Name="text_Contrast" Text="Contrast: 0,0000" Tag="Contrast:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_Contrast" Value="0.00" Minimum="-2.00" Maximum="2.00" ValueChanged="slider_ValueChanged"/>
 
                 <TextBlock x:Name="text_Gamma" Tag="Gamma:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_Gamma" Value="1.00" Minimum="0.00" Maximum="3.00" ValueChanged="slider_ValueChanged"/>
+
+                <TextBlock x:Name="text_Blur" Text="Blur: 0,0000" Tag="Blur:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_Blur" Value="0.00" Minimum="0.00" Maximum="80.00" ValueChanged="slider_ValueChanged"/>
             </StackPanel>
         </Border>
     </Grid>
