@@ -1,9 +1,20 @@
 #pragma once
-#include <directxmath.h>
-#include <wincodec.h>
+#include "CaptureIncludes.h"
 
 namespace
 {
+	struct VideoSettings
+	{
+		WCHAR* FileName = L"E:\\ScreenCaptureTool.mp4";
+		GUID AudioFormat = MFAudioFormat_MP3;
+		UINT AudioChannels = 2;
+		UINT AudioBitRate = 320;
+		UINT AudioFrequency = 44100;
+		GUID VideoFormat = MFVideoFormat_HEVC;
+		UINT VideoBitRate = 6000;
+		UINT VideoFrameRate = 60;
+	};
+
 	struct CaptureSettings
 	{
 		UINT MonitorId;

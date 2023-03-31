@@ -1,13 +1,6 @@
 #pragma once
-#pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "d3dcompiler.lib")
-#pragma comment(lib, "windowscodecs.lib")
+#include "CaptureIncludes.h"
 #include "CaptureClasses.h"
-#include <dxgi1_6.h>
-#include <d3d11_4.h>
-#include <d3dcompiler.h>
-#include <wincodec.h>
-#include <atlbase.h>
 
 namespace
 {
@@ -56,7 +49,7 @@ namespace
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Resize;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1RenderTargetView;
 
-	//Bitmap
+	//Image
 	UINT vBitmapImageQuality;
 	WICPixelFormatGUID iWicPixelFormatGuidSource;
 	WICPixelFormatGUID iWicPixelFormatGuidJpeg = GUID_WICPixelFormat24bppBGR;
@@ -68,6 +61,15 @@ namespace
 	CComPtr<IWICMetadataQueryWriter> iWICMetadataQueryWriter;
 	CComPtr<IWICFormatConverter> iWICFormatConverter;
 	CComPtr<IWICBitmap> iWICBitmap;
+
+	//Video
+	BOOL vVideoWriteLoop;
+	BOOL vVideoCapturing;
+	VideoSettings vVideoSettings{};
+	DWORD vOutVideoStreamIndex = 0;
+
+	//Audio
+	DWORD vOutAudioStreamIndex = 0;
 
 	//Arrays
 	FLOAT ColorRgbaBlack[] = { 0.0f, 0.0f, 0.0f, 0.0f };

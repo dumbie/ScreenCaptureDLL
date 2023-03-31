@@ -59,7 +59,7 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesScreenshot()
+	BOOL CaptureResetVariablesTexture()
 	{
 		try
 		{
@@ -81,7 +81,7 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesBitmap()
+	BOOL CaptureResetVariablesImage()
 	{
 		try
 		{
@@ -94,6 +94,21 @@ namespace
 			iWICMetadataQueryWriter.Release();
 			iWICFormatConverter.Release();
 			iWICBitmap.Release();
+
+			return true;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
+	BOOL CaptureResetVariablesVideo()
+	{
+		try
+		{
+			//Status
+			vVideoCapturing = false;
 
 			return true;
 		}

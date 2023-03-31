@@ -19,16 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CaptureIncludes.h" />
     <ClInclude Include="CaptureVariables.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CaptureBitmap.cpp" />
+    <ClCompile Include="CaptureImage.cpp" />
     <ClCompile Include="CaptureClasses.h" />
     <ClCompile Include="CaptureInitialize.cpp" />
     <ClCompile Include="CaptureDetails.cpp" />
     <ClCompile Include="CaptureReset.h" />
+    <ClCompile Include="CaptureMain.cpp" />
     <ClCompile Include="CaptureScreen.cpp" />
     <ClCompile Include="CaptureTexture.cpp" />
+    <ClCompile Include="CaptureVideo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AssemblyInfo.rc" />

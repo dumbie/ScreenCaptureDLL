@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CaptureScreen.cpp">
+    <ClCompile Include="CaptureMain.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="CaptureInitialize.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="CaptureBitmap.cpp">
+    <ClCompile Include="CaptureImage.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="CaptureTexture.cpp">
@@ -36,6 +36,12 @@
     <ClCompile Include="CaptureReset.h">
       <Filter>Header files</Filter>
     </ClCompile>
+    <ClCompile Include="CaptureVideo.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptureScreen.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AssemblyInfo.rc">
@@ -44,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CaptureVariables.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptureIncludes.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

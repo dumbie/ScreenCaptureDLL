@@ -1,3 +1,4 @@
+#pragma once
 #include "CaptureVariables.h"
 #include "CaptureReset.h"
 #include "CaptureDetails.cpp"
@@ -384,6 +385,69 @@ namespace
 			//Release resources
 			iD3D11Buffer0.Release();
 
+			return true;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
+	BOOL UpdateMonitorSDRWhiteLevel()
+	{
+		try
+		{
+			//Get and check SDR white level
+			FLOAT currentSDRWhiteLevel = GetMonitorSDRWhiteLevel();
+			if (vCaptureDetails.SDRWhiteLevel != currentSDRWhiteLevel)
+			{
+				//Update capture details
+				vCaptureDetails.SDRWhiteLevel = currentSDRWhiteLevel;
+
+				//Set shader variables
+				return SetShaderVariables();
+			}
+			return true;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
+	BOOL InitializeCapture(CaptureSettings captureSettings, CaptureDetails* captureDetails)
+	{
+		try
+		{
+			//Disable assert reporting
+			_CrtSetReportMode(_CRT_ASSERT, 0);
+
+			//Reset all used variables
+			CaptureResetVariablesAll();
+
+			//Update capture settings
+			vCaptureSettings = captureSettings;
+
+			//Initialize DirectX
+			if (!InitializeDirectX()) { return false; }
+
+			//Initialize sampler state
+			if (!InitializeSamplerState()) { return false; }
+
+			//Initialize render target view
+			if (!InitializeRenderTargetView()) { return false; }
+
+			//Initialize view port
+			if (!InitializeViewPort()) { return false; }
+
+			//Initialize shaders
+			if (!InitializeShaders()) { return false; }
+
+			//Set shader variables
+			if (!SetShaderVariables()) { return false; }
+
+			//Return capture details
+			*captureDetails = vCaptureDetails;
 			return true;
 		}
 		catch (...)
