@@ -76,95 +76,59 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureSaveFileBmp(BYTE* bitmapData, WCHAR* filePath)
-		{
-			try
-			{
-				if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
-				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatBmp);
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-
-		__declspec(dllexport) BOOL CaptureSaveFileJpg(BYTE* bitmapData, WCHAR* filePath, UINT imageQualityPercentage)
-		{
-			try
-			{
-				if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
-				vBitmapImageQuality = imageQualityPercentage;
-				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatJpeg);
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-
-		__declspec(dllexport) BOOL CaptureSaveFilePng(BYTE* bitmapData, WCHAR* filePath)
-		{
-			try
-			{
-				if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
-				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatPng);
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-
-		__declspec(dllexport) BOOL CaptureSaveFileJxr(BYTE* bitmapData, WCHAR* filePath, UINT imageQualityPercentage)
-		{
-			try
-			{
-				vBitmapImageQuality = imageQualityPercentage;
-				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatWmp);
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-
-		__declspec(dllexport) BOOL CaptureSaveFileTif(BYTE* bitmapData, WCHAR* filePath)
-		{
-			try
-			{
-				if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
-				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatTiff);
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-
-		__declspec(dllexport) BOOL CaptureSaveFileHeif(BYTE* bitmapData, WCHAR* filePath, UINT imageQualityPercentage)
-		{
-			try
-			{
-				if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
-				vBitmapImageQuality = imageQualityPercentage;
-				return BitmapDataSaveFile(bitmapData, filePath, GUID_ContainerFormatHeif);
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-
 		__declspec(dllexport) BYTE* CaptureScreenshot()
 		{
 			return CaptureScreenBytes();
+		}
+
+		__declspec(dllexport) BOOL CaptureImage(BYTE* bitmapData, WCHAR* filePath, UINT imageQualityPercentage, ImageFormats imageFormat)
+		{
+			try
+			{
+				GUID imageSaveFormat{};
+				vBitmapImageQuality = imageQualityPercentage;
+				if (imageFormat == JXR)
+				{
+					imageSaveFormat = GUID_ContainerFormatWmp;
+				}
+				else if (imageFormat == JPG)
+				{
+					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+					imageSaveFormat = GUID_ContainerFormatJpeg;
+				}
+				else if (imageFormat == PNG)
+				{
+					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+					imageSaveFormat = GUID_ContainerFormatPng;
+				}
+				else if (imageFormat == BMP)
+				{
+					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+					imageSaveFormat = GUID_ContainerFormatBmp;
+				}
+				else if (imageFormat == TIF)
+				{
+					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+					imageSaveFormat = GUID_ContainerFormatTiff;
+				}
+				else if (imageFormat == HEIF)
+				{
+					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+					imageSaveFormat = GUID_ContainerFormatHeif;
+				}
+				return BitmapDataSaveFile(bitmapData, filePath, imageSaveFormat);
+			}
+			catch (...)
+			{
+				return false;
+			}
 		}
 
 		__declspec(dllexport) BOOL CaptureVideoStart()
 		{
 			try
 			{
+				if (vVideoCapturing) { return false; }
 				InitializeMediaFoundation();
 				return true;
 			}
@@ -193,6 +157,25 @@ namespace
 			{
 				CaptureResetVariablesTexture();
 				CaptureResetVariablesVideo();
+				return false;
+			}
+		}
+
+		__declspec(dllexport) BOOL CaptureVideoStartStop()
+		{
+			try
+			{
+				if (vVideoCapturing)
+				{
+					return CaptureVideoStop();
+				}
+				else
+				{
+					return CaptureVideoStart();
+				}
+			}
+			catch (...)
+			{
 				return false;
 			}
 		}

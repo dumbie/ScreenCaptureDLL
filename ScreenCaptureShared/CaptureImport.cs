@@ -24,21 +24,15 @@ namespace ScreenCapture
         public static extern IntPtr CaptureScreenshot();
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureSaveFileBmp(IntPtr bitmapData, [MarshalAs(UnmanagedType.LPWStr)] string filePath);
+        public static extern bool CaptureImage(IntPtr bitmapData, [MarshalAs(UnmanagedType.LPWStr)] string filePath, int imageQualityPercentage, ImageFormats imageFormat);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureSaveFileJpg(IntPtr bitmapData, [MarshalAs(UnmanagedType.LPWStr)] string filePath, int imageQualityPercentage);
+        public static extern bool CaptureVideoStartStop();
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureSaveFilePng(IntPtr bitmapData, [MarshalAs(UnmanagedType.LPWStr)] string filePath);
+        public static extern bool CaptureVideoStart();
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureSaveFileJxr(IntPtr bitmapData, [MarshalAs(UnmanagedType.LPWStr)] string filePath, int imageQualityPercentage);
-
-        [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureSaveFileTif(IntPtr bitmapData, [MarshalAs(UnmanagedType.LPWStr)] string filePath);
-
-        [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureSaveFileHeif(IntPtr bitmapData, [MarshalAs(UnmanagedType.LPWStr)] string filePath, int imageQualityPercentage);
+        public static extern bool CaptureVideoStop();
     }
 }

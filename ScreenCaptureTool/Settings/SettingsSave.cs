@@ -31,10 +31,10 @@ namespace ScreenCapture
                 };
 
                 //Shortcuts
-                button_SetShortcut_Unmap.Click += Button_SetShortcut_Unmap_Click;
-                combobox_SetShortcut_Key0.SelectionChanged += Combobox_SetShortcut_SelectionChanged;
-                combobox_SetShortcut_Key1.SelectionChanged += Combobox_SetShortcut_SelectionChanged;
-                combobox_SetShortcut_Key2.SelectionChanged += Combobox_SetShortcut_SelectionChanged;
+                button_SetShortcutCaptureImage_Unmap.Click += Button_SetShortcut_Unmap_Click;
+                combobox_SetShortcutCaptureImage_Key0.SelectionChanged += Combobox_SetShortcut_SelectionChanged;
+                combobox_SetShortcutCaptureImage_Key1.SelectionChanged += Combobox_SetShortcut_SelectionChanged;
+                combobox_SetShortcutCaptureImage_Key2.SelectionChanged += Combobox_SetShortcut_SelectionChanged;
             }
             catch (Exception ex)
             {

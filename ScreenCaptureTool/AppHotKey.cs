@@ -14,9 +14,9 @@ namespace ScreenCapture
             try
             {
                 //Load set shortcut keys
-                KeysVirtual usedKey0 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutSceenshotKey0", typeof(byte));
-                KeysVirtual usedKey1 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutSceenshotKey1", typeof(byte));
-                KeysVirtual usedKey2 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutSceenshotKey2", typeof(byte));
+                KeysVirtual usedKey0 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey0", typeof(byte));
+                KeysVirtual usedKey1 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey1", typeof(byte));
+                KeysVirtual usedKey2 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey2", typeof(byte));
                 List<KeysVirtual> shortcutKeys = new List<KeysVirtual>();
                 if (usedKey0 != KeysVirtual.None)
                 {

@@ -3,6 +3,18 @@
 
 namespace
 {
+	//Enumerators
+	enum ImageFormats
+	{
+		JXR = 0,
+		JPG = 1,
+		PNG = 2,
+		BMP = 3,
+		TIF = 4,
+		HEIF = 5
+	};
+
+	//Structures
 	struct VideoSettings
 	{
 		WCHAR* FileName = L"E:\\ScreenCaptureTool.mp4";
