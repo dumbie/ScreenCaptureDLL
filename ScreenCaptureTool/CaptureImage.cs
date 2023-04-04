@@ -10,9 +10,9 @@ namespace ScreenCapture
 {
     public partial class CaptureScreen
     {
-        public static async Task CaptureScreenToFile()
+        //Prepare image capture
+        public static async Task CaptureImageToFile()
         {
-            //Prepare screen capture
             IntPtr bitmapIntPtr = IntPtr.Zero;
             try
             {
@@ -35,13 +35,13 @@ namespace ScreenCapture
                     Debug.WriteLine("Failed to initialize screen capture.");
 
                     //Play capture sound
-                    CaptureSound(true);
+                    PlayCaptureSound(true);
                     return;
                 }
                 else
                 {
                     //Wait for capturer to have initialized
-                    await Task.Delay(100);
+                    await Task.Delay(500);
                 }
 
                 //Capture screenshot
@@ -57,7 +57,7 @@ namespace ScreenCapture
                     Debug.WriteLine("Screenshot capture is corrupted.");
 
                     //Play capture sound
-                    CaptureSound(true);
+                    PlayCaptureSound(true);
                     return;
                 }
 
@@ -130,11 +130,11 @@ namespace ScreenCapture
                 //Play capture sound
                 if (screenshotSaved)
                 {
-                    CaptureSound(false);
+                    PlayCaptureSound(false);
                 }
                 else
                 {
-                    CaptureSound(true);
+                    PlayCaptureSound(true);
                 }
             }
             catch (Exception ex)
@@ -142,7 +142,7 @@ namespace ScreenCapture
                 Debug.WriteLine("Screen capture failed: " + ex.Message);
 
                 //Play capture sound
-                CaptureSound(true);
+                PlayCaptureSound(true);
             }
             finally
             {

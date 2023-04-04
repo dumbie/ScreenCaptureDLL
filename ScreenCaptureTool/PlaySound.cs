@@ -8,7 +8,7 @@ namespace ScreenCapture
     public partial class CaptureScreen
     {
         //Play capture sound
-        public static void CaptureSound(bool failSound)
+        public static void PlayCaptureSound(bool failSound)
         {
             try
             {

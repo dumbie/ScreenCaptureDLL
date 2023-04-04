@@ -13,32 +13,34 @@ namespace ScreenCapture
         {
             try
             {
-                //Load set shortcut keys
-                KeysVirtual usedKey0 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey0", typeof(byte));
-                KeysVirtual usedKey1 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey1", typeof(byte));
-                KeysVirtual usedKey2 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey2", typeof(byte));
-                List<KeysVirtual> shortcutKeys = new List<KeysVirtual>();
-                if (usedKey0 != KeysVirtual.None)
+                //Load set shortcut image keys
+                List<KeysVirtual> usedImageKeys = new List<KeysVirtual>
                 {
-                    shortcutKeys.Add(usedKey0);
-                }
-                if (usedKey1 != KeysVirtual.None)
+                    (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey0", typeof(byte)),
+                    (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey1", typeof(byte)),
+                    (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey2", typeof(byte))
+                };
+
+                //Load set shortcut video keys
+                List<KeysVirtual> usedVideoKeys = new List<KeysVirtual>
                 {
-                    shortcutKeys.Add(usedKey1);
-                }
-                if (usedKey2 != KeysVirtual.None)
+                    (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureVideoKey0", typeof(byte)),
+                    (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureVideoKey1", typeof(byte)),
+                    (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureVideoKey2", typeof(byte))
+                };
+
+                //Capture image hotkey
+                if (usedImageKeys.Count > 0 && !usedImageKeys.Where(x => x != KeysVirtual.None).Except(keysPressed).Any())
                 {
-                    shortcutKeys.Add(usedKey2);
+                    Debug.WriteLine("Button Global - Capture image");
+                    await CaptureScreen.CaptureImageToFile();
                 }
 
-                //Check if shortcut is set
-                if (shortcutKeys.Count == 0) { return; }
-
-                //Capture screenshot hotkey
-                if (!shortcutKeys.Except(keysPressed).Any())
+                //Capture video hotkey
+                if (usedVideoKeys.Count > 0 && !usedVideoKeys.Where(x => x != KeysVirtual.None).Except(keysPressed).Any())
                 {
-                    Debug.WriteLine("Button Global - Capture screenshot");
-                    await CaptureScreen.CaptureScreenToFile();
+                    Debug.WriteLine("Button Global - Capture video");
+                    await CaptureScreen.CaptureVideoToFile();
                 }
             }
             catch { }

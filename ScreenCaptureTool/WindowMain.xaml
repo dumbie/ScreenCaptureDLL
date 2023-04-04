@@ -17,12 +17,19 @@
     <ScrollViewer Style="{StaticResource ScrollViewerVertical}">
         <StackPanel Margin="10">
             <TextBlock Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Screenshot Shortcut"/>
-            <TextBlock Text="Capture screenshot image by pressing:" TextWrapping="Wrap" Style="{StaticResource TextBlockBlack}"/>
+            <TextBlock Text="Capture screen image by pressing:" TextWrapping="Wrap" Style="{StaticResource TextBlockBlack}"/>
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <ComboBox Name="combobox_SetShortcutCaptureImage_Key0" Width="140" Style="{StaticResource ComboBoxBlack}"/>
                 <ComboBox Name="combobox_SetShortcutCaptureImage_Key1" Width="140" Margin="10,0,0,0" Style="{StaticResource ComboBoxBlack}"/>
                 <ComboBox Name="combobox_SetShortcutCaptureImage_Key2" Width="140" Margin="10,0,0,0" Style="{StaticResource ComboBoxBlack}"/>
                 <Button Name="button_SetShortcutCaptureImage_Unmap" Margin="10,0,0,0" Content="Unmap" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}"/>
+            </StackPanel>
+            <TextBlock Text="Capture screen video by pressing:" TextWrapping="Wrap" Style="{StaticResource TextBlockBlack}"/>
+            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                <ComboBox Name="combobox_SetShortcutCaptureVideo_Key0" Width="140" Style="{StaticResource ComboBoxBlack}"/>
+                <ComboBox Name="combobox_SetShortcutCaptureVideo_Key1" Width="140" Margin="10,0,0,0" Style="{StaticResource ComboBoxBlack}"/>
+                <ComboBox Name="combobox_SetShortcutCaptureVideo_Key2" Width="140" Margin="10,0,0,0" Style="{StaticResource ComboBoxBlack}"/>
+                <Button Name="button_SetShortcutCaptureVideo_Unmap" Margin="10,0,0,0" Content="Unmap" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}"/>
             </StackPanel>
 
             <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Screenshot Sound"/>

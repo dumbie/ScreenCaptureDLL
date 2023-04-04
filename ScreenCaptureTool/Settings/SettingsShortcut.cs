@@ -16,12 +16,17 @@ namespace ScreenCapture
             {
                 combobox_SetShortcutCaptureImage_Key0.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
                 combobox_SetShortcutCaptureImage_Key0.SelectedItem = KeysVirtual.None;
-
                 combobox_SetShortcutCaptureImage_Key1.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
                 combobox_SetShortcutCaptureImage_Key1.SelectedItem = KeysVirtual.None;
-
                 combobox_SetShortcutCaptureImage_Key2.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
                 combobox_SetShortcutCaptureImage_Key2.SelectedItem = KeysVirtual.None;
+
+                combobox_SetShortcutCaptureVideo_Key0.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
+                combobox_SetShortcutCaptureVideo_Key0.SelectedItem = KeysVirtual.None;
+                combobox_SetShortcutCaptureVideo_Key1.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
+                combobox_SetShortcutCaptureVideo_Key1.SelectedItem = KeysVirtual.None;
+                combobox_SetShortcutCaptureVideo_Key2.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
+                combobox_SetShortcutCaptureVideo_Key2.SelectedItem = KeysVirtual.None;
             }
             catch { }
         }
@@ -45,14 +50,19 @@ namespace ScreenCapture
         {
             try
             {
-                KeysVirtual usedKey0 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey0", typeof(byte));
-                combobox_SetShortcutCaptureImage_Key0.SelectedItem = usedKey0;
+                KeysVirtual usedImageKey0 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey0", typeof(byte));
+                combobox_SetShortcutCaptureImage_Key0.SelectedItem = usedImageKey0;
+                KeysVirtual usedImageKey1 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey1", typeof(byte));
+                combobox_SetShortcutCaptureImage_Key1.SelectedItem = usedImageKey1;
+                KeysVirtual usedImageKey2 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey2", typeof(byte));
+                combobox_SetShortcutCaptureImage_Key2.SelectedItem = usedImageKey2;
 
-                KeysVirtual usedKey1 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey1", typeof(byte));
-                combobox_SetShortcutCaptureImage_Key1.SelectedItem = usedKey1;
-
-                KeysVirtual usedKey2 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureImageKey2", typeof(byte));
-                combobox_SetShortcutCaptureImage_Key2.SelectedItem = usedKey2;
+                KeysVirtual usedVideoKey0 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureVideoKey0", typeof(byte));
+                combobox_SetShortcutCaptureVideo_Key0.SelectedItem = usedVideoKey0;
+                KeysVirtual usedVideoKey1 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureVideoKey1", typeof(byte));
+                combobox_SetShortcutCaptureVideo_Key1.SelectedItem = usedVideoKey1;
+                KeysVirtual usedVideoKey2 = (KeysVirtual)SettingLoad(vConfiguration, "ShortcutCaptureVideoKey2", typeof(byte));
+                combobox_SetShortcutCaptureVideo_Key2.SelectedItem = usedVideoKey2;
             }
             catch { }
         }
@@ -65,20 +75,28 @@ namespace ScreenCapture
                 if (!vComboboxSaveEnabled) { return; }
 
                 //Get selected keypad buttons
-                KeysVirtual usedKey0 = (KeysVirtual)combobox_SetShortcutCaptureImage_Key0.SelectedItem;
-                KeysVirtual usedKey1 = (KeysVirtual)combobox_SetShortcutCaptureImage_Key1.SelectedItem;
-                KeysVirtual usedKey2 = (KeysVirtual)combobox_SetShortcutCaptureImage_Key2.SelectedItem;
+                KeysVirtual usedImageKey0 = (KeysVirtual)combobox_SetShortcutCaptureImage_Key0.SelectedItem;
+                KeysVirtual usedImageKey1 = (KeysVirtual)combobox_SetShortcutCaptureImage_Key1.SelectedItem;
+                KeysVirtual usedImageKey2 = (KeysVirtual)combobox_SetShortcutCaptureImage_Key2.SelectedItem;
+                KeysVirtual usedVideoKey0 = (KeysVirtual)combobox_SetShortcutCaptureVideo_Key0.SelectedItem;
+                KeysVirtual usedVideoKey1 = (KeysVirtual)combobox_SetShortcutCaptureVideo_Key1.SelectedItem;
+                KeysVirtual usedVideoKey2 = (KeysVirtual)combobox_SetShortcutCaptureVideo_Key2.SelectedItem;
 
                 //Save shortcut keys
-                SettingSave(vConfiguration, "ShortcutCaptureImageKey0", (byte)usedKey0);
-                SettingSave(vConfiguration, "ShortcutCaptureImageKey1", (byte)usedKey1);
-                SettingSave(vConfiguration, "ShortcutCaptureImageKey2", (byte)usedKey2);
-                Debug.WriteLine("Saving shortcut screenshot to " + usedKey0 + "/" + usedKey1 + "/" + usedKey2);
+                SettingSave(vConfiguration, "ShortcutCaptureImageKey0", (byte)usedImageKey0);
+                SettingSave(vConfiguration, "ShortcutCaptureImageKey1", (byte)usedImageKey1);
+                SettingSave(vConfiguration, "ShortcutCaptureImageKey2", (byte)usedImageKey2);
+                SettingSave(vConfiguration, "ShortcutCaptureVideoKey0", (byte)usedVideoKey0);
+                SettingSave(vConfiguration, "ShortcutCaptureVideoKey1", (byte)usedVideoKey1);
+                SettingSave(vConfiguration, "ShortcutCaptureVideoKey2", (byte)usedVideoKey2);
+
+                Debug.WriteLine("Saving shortcut screen image to " + usedImageKey0 + "/" + usedImageKey1 + "/" + usedImageKey2);
+                Debug.WriteLine("Saving shortcut screen video to " + usedVideoKey0 + "/" + usedVideoKey1 + "/" + usedVideoKey2);
             }
             catch { }
         }
 
-        private void Button_SetShortcut_Unmap_Click(object sender, RoutedEventArgs e)
+        private void Button_SetShortcut_Unmap_Image_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -93,7 +111,27 @@ namespace ScreenCapture
                 SettingSave(vConfiguration, "ShortcutCaptureImageKey0", (byte)KeysVirtual.None);
                 SettingSave(vConfiguration, "ShortcutCaptureImageKey1", (byte)KeysVirtual.None);
                 SettingSave(vConfiguration, "ShortcutCaptureImageKey2", (byte)KeysVirtual.None);
-                Debug.WriteLine("Unmapped shortcut: screenshot");
+                Debug.WriteLine("Unmapped shortcut: Capture image");
+            }
+            catch { }
+        }
+
+        private void Button_SetShortcut_Unmap_Video_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //Reset combobox selection
+                vComboboxSaveEnabled = false;
+                combobox_SetShortcutCaptureVideo_Key0.SelectedItem = KeysVirtual.None;
+                combobox_SetShortcutCaptureVideo_Key1.SelectedItem = KeysVirtual.None;
+                combobox_SetShortcutCaptureVideo_Key2.SelectedItem = KeysVirtual.None;
+                vComboboxSaveEnabled = true;
+
+                //Save shortcut keys
+                SettingSave(vConfiguration, "ShortcutCaptureVideoKey0", (byte)KeysVirtual.None);
+                SettingSave(vConfiguration, "ShortcutCaptureVideoKey1", (byte)KeysVirtual.None);
+                SettingSave(vConfiguration, "ShortcutCaptureVideoKey2", (byte)KeysVirtual.None);
+                Debug.WriteLine("Unmapped shortcut: Capture video");
             }
             catch { }
         }

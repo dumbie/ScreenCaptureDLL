@@ -117,6 +117,7 @@
     </Compile>
     <Compile Include="AppCheck.cs" />
     <Compile Include="AppClose.cs" />
+    <Compile Include="CaptureMedia.cs" />
     <Compile Include="Settings\SettingsShortcut.cs" />
     <Compile Include="SocketHandler.cs" />
     <Compile Include="SocketServer.cs" />
@@ -124,8 +125,8 @@
     <Compile Include="AppVariables.cs" />
     <Compile Include="AppHotKey.cs" />
     <Compile Include="AppTrayMenu.cs" />
-    <Compile Include="CaptureSound.cs" />
-    <Compile Include="CaptureScreen.cs" />
+    <Compile Include="PlaySound.cs" />
+    <Compile Include="CaptureImage.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
