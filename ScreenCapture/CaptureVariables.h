@@ -62,14 +62,22 @@ namespace
 	CComPtr<IWICFormatConverter> iWICFormatConverter;
 	CComPtr<IWICBitmap> iWICBitmap;
 
-	//Video
-	BOOL vVideoWriteLoop;
-	BOOL vVideoCapturing;
-	VideoSettings vVideoSettings{};
+	//Media
+	CComPtr<IMFSinkWriterEx> imfSinkWriter;
+	MediaSettings vMediaSettings{};
+	BOOL vMediaWriteLoop;
+	BOOL vMediaCapturing;
 	DWORD vOutVideoStreamIndex = 0;
+	DWORD vOutAudioStreamIndex = 0;
+	UINT vReferenceTimeToSeconds = 10000000;
+	UINT vReferenceTimeToMilliSeconds = 10000;
 
 	//Audio
-	DWORD vOutAudioStreamIndex = 0;
+	CComPtr<IMMDevice> iDevice;
+	CComPtr<IAudioClient> iAudioClient;
+	CComPtr<IAudioCaptureClient> iAudioCaptureClient;
+	WAVEFORMATEX* iAudioWaveFormatEx;
+	REFERENCE_TIME iAudioReferenceTime;
 
 	//Arrays
 	FLOAT ColorRgbaBlack[] = { 0.0f, 0.0f, 0.0f, 0.0f };

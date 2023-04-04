@@ -11,6 +11,7 @@
 #include <functional>
 #include <vector>
 #include <memory>
+#include <thread>
 
 //DirectX
 #include <directxmath.h>

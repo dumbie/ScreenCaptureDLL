@@ -23,10 +23,12 @@
     <ClInclude Include="CaptureVariables.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CaptureAudio.cpp" />
     <ClCompile Include="CaptureImage.cpp" />
     <ClCompile Include="CaptureClasses.h" />
     <ClCompile Include="CaptureInitialize.cpp" />
     <ClCompile Include="CaptureDetails.cpp" />
+    <ClCompile Include="CaptureMedia.cpp" />
     <ClCompile Include="CaptureReset.h" />
     <ClCompile Include="CaptureMain.cpp" />
     <ClCompile Include="CaptureScreen.cpp" />

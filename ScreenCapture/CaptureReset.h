@@ -103,12 +103,14 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesVideo()
+	BOOL CaptureResetVariablesMedia()
 	{
 		try
 		{
 			//Status
-			vVideoCapturing = false;
+			vMediaCapturing = false;
+
+			//CoTaskMemFree(iAudioWaveFormatEx);
 
 			return true;
 		}

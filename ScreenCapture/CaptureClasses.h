@@ -15,12 +15,13 @@ namespace
 	};
 
 	//Structures
-	struct VideoSettings
+	struct MediaSettings
 	{
 		WCHAR* FileName = L"E:\\ScreenCaptureTool.mp4";
-		GUID AudioFormat = MFAudioFormat_MP3;
+		GUID AudioFormat = MFAudioFormat_AAC;
 		UINT AudioChannels = 2;
-		UINT AudioBitRate = 320;
+		UINT AudioBitRate = 256;
+		UINT AudioBits = 16;
 		UINT AudioFrequency = 44100;
 		GUID VideoFormat = MFVideoFormat_HEVC;
 		UINT VideoBitRate = 6000;
@@ -75,5 +76,11 @@ namespace
 	{
 		DirectX::XMFLOAT3 Position;
 		DirectX::XMFLOAT2 TexCoord;
+	};
+
+	struct DataBytes
+	{
+		BYTE* Bytes = NULL;
+		UINT32 Size = 0;
 	};
 };

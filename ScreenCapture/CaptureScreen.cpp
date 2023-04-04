@@ -5,8 +5,9 @@
 
 namespace
 {
-	BYTE* CaptureScreenBytes()
+	DataBytes CaptureScreenBytes()
 	{
+		DataBytes dataBytes{};
 		try
 		{
 			//Update SDR white level
@@ -23,7 +24,7 @@ namespace
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return dataBytes;
 			}
 
 			//Convert variables
@@ -31,7 +32,7 @@ namespace
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return dataBytes;
 			}
 
 			//Check if texture is resizing
@@ -41,14 +42,14 @@ namespace
 				if (!Texture2DResizeMips(iD3D11Texture2D1Capture))
 				{
 					CaptureResetVariablesTexture();
-					return NULL;
+					return dataBytes;
 				}
 
 				//Apply shaders to texture
 				if (!Texture2DApplyShaders(iD3D11Texture2D1Resize))
 				{
 					CaptureResetVariablesTexture();
-					return NULL;
+					return dataBytes;
 				}
 			}
 			else
@@ -57,7 +58,7 @@ namespace
 				if (!Texture2DApplyShaders(iD3D11Texture2D1Capture))
 				{
 					CaptureResetVariablesTexture();
-					return NULL;
+					return dataBytes;
 				}
 			}
 
@@ -65,7 +66,7 @@ namespace
 			if (!Texture2DConvertToCpuRead(iD3D11Texture2D1RenderTargetView))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return dataBytes;
 			}
 
 			//Convert texture to bitmap data
@@ -76,19 +77,21 @@ namespace
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return dataBytes;
 			}
 
 			//Release resources
 			CaptureResetVariablesTexture();
 
 			//Return bitmap data
-			return bitmapData;
+			dataBytes.Bytes = bitmapData;
+			dataBytes.Size = vCaptureDetails.TotalByteSize;
+			return dataBytes;
 		}
 		catch (...)
 		{
 			CaptureResetVariablesTexture();
-			return NULL;
+			return dataBytes;
 		}
 	}
 }
