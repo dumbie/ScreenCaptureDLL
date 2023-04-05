@@ -28,8 +28,18 @@ namespace ScreenCapture
             catch { }
         }
 
-        //Open screenshot location
+        //Open capture location
         private void button_ScreenshotLocationOpen_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                OpenCaptureLocation();
+            }
+            catch { }
+        }
+
+        //Open capture location
+        public static void OpenCaptureLocation()
         {
             try
             {

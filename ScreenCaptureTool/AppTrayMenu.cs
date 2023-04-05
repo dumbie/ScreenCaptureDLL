@@ -21,6 +21,8 @@ namespace ScreenCapture
                 Debug.WriteLine("Creating application tray menu.");
 
                 //Create a context menu for systray
+                TrayContextMenu.MenuItems.Add("Open capture location", NotifyIcon_OpenCapture);
+                TrayContextMenu.MenuItems.Add("-");
                 TrayContextMenu.MenuItems.Add("Settings", NotifyIcon_Settings);
                 TrayContextMenu.MenuItems.Add("Website", NotifyIcon_Website);
                 TrayContextMenu.MenuItems.Add("Exit", NotifyIcon_Exit);
@@ -80,6 +82,15 @@ namespace ScreenCapture
             try
             {
                 Application_ShowHideWindow();
+            }
+            catch { }
+        }
+
+        void NotifyIcon_OpenCapture(object sender, EventArgs args)
+        {
+            try
+            {
+                OpenCaptureLocation();
             }
             catch { }
         }
