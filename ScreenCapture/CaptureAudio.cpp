@@ -3,39 +3,39 @@
 
 namespace
 {
-	DataBytes CaptureAudioBytes()
+	MediaFrameBytes CaptureAudioBytes()
 	{
-		DataBytes dataBytes{};
+		MediaFrameBytes mediaFrameBytes{};
 		try
 		{
-			DWORD capFlags;
-			UINT64 devPosition;
-			UINT64 pcPosition;
-			BYTE* bytesAudio;
-			UINT32 numFramesAvailable;
-			hResult = iAudioCaptureClient->GetBuffer(&bytesAudio, &numFramesAvailable, &capFlags, &devPosition, &pcPosition);
+			DWORD bufferFlags;
+			UINT32 numFramesRead;
+			hResult = iAudioCaptureClient->GetBuffer(&mediaFrameBytes.Bytes, &numFramesRead, &bufferFlags, NULL, NULL);
 			if (FAILED(hResult))
 			{
-				return dataBytes;
+				return mediaFrameBytes;
 			}
 
-			UINT32 bytesSize = numFramesAvailable * iAudioWaveFormatEx->nChannels * iAudioWaveFormatEx->wBitsPerSample / 8;
-			//UINT32 bytesSize = numFramesAvailable * iAudioWaveFormatEx->nChannels * 2;
-			//BYTE* bytesBuffer;
-			//memcpy
-			hResult = iAudioCaptureClient->ReleaseBuffer(numFramesAvailable);
+			hResult = iAudioCaptureClient->ReleaseBuffer(numFramesRead);
 			if (FAILED(hResult))
 			{
-				return dataBytes;
+				return mediaFrameBytes;
 			}
 
-			//Return audio bytes
-			dataBytes.Bytes = bytesAudio;
-			dataBytes.Size = bytesSize;
-			return dataBytes;
+			//Calculate media size
+			UINT32 mediaSize = numFramesRead * iAudioWaveFormatEx->nBlockAlign;
+
+			//Calculate media duration
+			ULONGLONG mediaTimeDuration = numFramesRead;
+			mediaTimeDuration *= vReferenceTimeToSeconds;
+			mediaTimeDuration /= iAudioWaveFormatEx->nSamplesPerSec;
+
+			//Return media bytes
+			mediaFrameBytes.Size = mediaSize;
+			mediaFrameBytes.TimeDuration = mediaTimeDuration;
 		}
 		catch (...) {}
-		return dataBytes;
+		return mediaFrameBytes;
 	}
 
 	BOOL SetAudioDevice(CComPtr<IMFSinkWriterEx> imfSinkWriter)
@@ -71,10 +71,19 @@ namespace
 				return false;
 			}
 
+			//Set audio wave format information
+			WAVEFORMATEXTENSIBLE* iAudioWaveFormatExtensible = (WAVEFORMATEXTENSIBLE*)iAudioWaveFormatEx;
+			iAudioWaveFormatExtensible->SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
+			iAudioWaveFormatExtensible->Format.wBitsPerSample = vMediaSettings.AudioBits;
+			iAudioWaveFormatExtensible->Format.nSamplesPerSec = vMediaSettings.AudioFrequency;
+			iAudioWaveFormatExtensible->Format.nChannels = vMediaSettings.AudioChannels;
+			iAudioWaveFormatExtensible->Format.nBlockAlign = iAudioWaveFormatExtensible->Format.nChannels * (iAudioWaveFormatExtensible->Format.wBitsPerSample / 8);
+			iAudioWaveFormatExtensible->Format.nAvgBytesPerSec = iAudioWaveFormatExtensible->Format.nBlockAlign * iAudioWaveFormatExtensible->Format.nSamplesPerSec;
+			iAudioWaveFormatExtensible->Samples.wValidBitsPerSample = iAudioWaveFormatExtensible->Format.wBitsPerSample;
+
 			//Initialize default audio device
-			UINT initFlags = AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM;
-			iAudioReferenceTime = iAudioWaveFormatEx->nSamplesPerSec / vMediaSettings.VideoFrameRate * 1000 * 10000 / iAudioWaveFormatEx->nSamplesPerSec;
-			hResult = iAudioClient->Initialize(AUDCLNT_SHAREMODE::AUDCLNT_SHAREMODE_SHARED, initFlags, iAudioReferenceTime, 0, iAudioWaveFormatEx, 0);
+			UINT initFlags = AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
+			hResult = iAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, vReferenceTimeToSeconds, 0, iAudioWaveFormatEx, 0);
 			if (FAILED(hResult))
 			{
 				return false;

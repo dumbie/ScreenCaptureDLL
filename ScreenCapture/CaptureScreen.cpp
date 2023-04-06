@@ -5,9 +5,8 @@
 
 namespace
 {
-	DataBytes CaptureScreenBytes()
+	BYTE* CaptureScreenBytes()
 	{
-		DataBytes dataBytes{};
 		try
 		{
 			//Update SDR white level
@@ -24,7 +23,7 @@ namespace
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return dataBytes;
+				return NULL;
 			}
 
 			//Convert variables
@@ -32,7 +31,7 @@ namespace
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return dataBytes;
+				return NULL;
 			}
 
 			//Check if texture is resizing
@@ -42,14 +41,14 @@ namespace
 				if (!Texture2DResizeMips(iD3D11Texture2D1Capture))
 				{
 					CaptureResetVariablesTexture();
-					return dataBytes;
+					return NULL;
 				}
 
 				//Apply shaders to texture
 				if (!Texture2DApplyShaders(iD3D11Texture2D1Resize))
 				{
 					CaptureResetVariablesTexture();
-					return dataBytes;
+					return NULL;
 				}
 			}
 			else
@@ -58,7 +57,7 @@ namespace
 				if (!Texture2DApplyShaders(iD3D11Texture2D1Capture))
 				{
 					CaptureResetVariablesTexture();
-					return dataBytes;
+					return NULL;
 				}
 			}
 
@@ -66,32 +65,30 @@ namespace
 			if (!Texture2DConvertToCpuRead(iD3D11Texture2D1RenderTargetView))
 			{
 				CaptureResetVariablesTexture();
-				return dataBytes;
+				return NULL;
 			}
 
 			//Convert texture to bitmap data
-			BYTE* bitmapData = Texture2DConvertToBitmapData(iD3D11Texture2D1CpuRead);
+			BYTE* bitmapBytes = Texture2DConvertToBitmapData(iD3D11Texture2D1CpuRead);
 
 			//Release output duplication frame
 			hResult = iDxgiOutputDuplication0->ReleaseFrame();
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return dataBytes;
+				return NULL;
 			}
 
 			//Release resources
 			CaptureResetVariablesTexture();
 
 			//Return bitmap data
-			dataBytes.Bytes = bitmapData;
-			dataBytes.Size = vCaptureDetails.TotalByteSize;
-			return dataBytes;
+			return bitmapBytes;
 		}
 		catch (...)
 		{
 			CaptureResetVariablesTexture();
-			return dataBytes;
+			return NULL;
 		}
 	}
 }

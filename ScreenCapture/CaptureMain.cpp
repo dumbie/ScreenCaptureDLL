@@ -78,7 +78,7 @@ namespace
 
 		__declspec(dllexport) BYTE* CaptureScreenshot()
 		{
-			return CaptureScreenBytes().Bytes;
+			return CaptureScreenBytes();
 		}
 
 		__declspec(dllexport) BOOL CaptureImage(BYTE* bitmapData, WCHAR* filePath, UINT imageQualityPercentage, ImageFormats imageFormat)

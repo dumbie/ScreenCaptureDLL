@@ -70,7 +70,7 @@ namespace
 	DWORD vOutVideoStreamIndex = 0;
 	DWORD vOutAudioStreamIndex = 0;
 	UINT vReferenceTimeToSeconds = 10000000;
-	UINT vReferenceTimeToMilliSeconds = 10000;
+	UINT vReferenceTimeMediaFrame = 100000;
 
 	//Audio
 	CComPtr<IMMDevice> iDevice;

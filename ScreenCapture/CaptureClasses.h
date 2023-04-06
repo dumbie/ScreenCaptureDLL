@@ -22,7 +22,7 @@ namespace
 		UINT AudioChannels = 2;
 		UINT AudioBitRate = 256;
 		UINT AudioBits = 16;
-		UINT AudioFrequency = 44100;
+		UINT AudioFrequency = 48000;
 		GUID VideoFormat = MFVideoFormat_HEVC;
 		UINT VideoBitRate = 6000;
 		UINT VideoFrameRate = 60;
@@ -78,9 +78,10 @@ namespace
 		DirectX::XMFLOAT2 TexCoord;
 	};
 
-	struct DataBytes
+	struct MediaFrameBytes
 	{
-		BYTE* Bytes = NULL;
-		UINT32 Size = 0;
+		BYTE* Bytes;
+		UINT32 Size;
+		ULONGLONG TimeDuration;
 	};
 };
