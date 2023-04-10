@@ -3,7 +3,7 @@
 
 namespace
 {
-	BYTE* Texture2DConvertToBitmapData(CComPtr<ID3D11Texture2D1>& textureTarget)
+	BYTE* Texture2DConvertToBitmapBytes(CComPtr<ID3D11Texture2D1>& textureTarget)
 	{
 		try
 		{
@@ -101,6 +101,53 @@ namespace
 
 			//Generate texture mips to resize
 			iD3D11DeviceContext4->GenerateMips(iD3D11ShaderResourceView0Resize);
+
+			return true;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
+	BOOL Texture2DDrawCursor(CComPtr<ID3D11Texture2D1>& textureTarget)
+	{
+		try
+		{
+			//Read texture description
+			D3D11_TEXTURE2D_DESC1 iD3DTexture2D1DescCursor{};
+			textureTarget->GetDesc1(&iD3DTexture2D1DescCursor);
+
+			//Update texture description
+			iD3DTexture2D1DescCursor.MiscFlags = D3D11_RESOURCE_MISC_GDI_COMPATIBLE;
+
+			//Create cursor texture
+			hResult = iD3D11Device5->CreateTexture2D1(&iD3DTexture2D1DescCursor, NULL, &iD3D11Texture2D1Cursor);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Copy target to cursor texture
+			iD3D11DeviceContext4->CopySubresourceRegion(iD3D11Texture2D1Cursor, 0, 0, 0, 0, textureTarget, 0, NULL);
+
+			//Convert variables
+			iD3D11Texture2D1Cursor->QueryInterface(&iDxgiSurface2);
+
+			//Draw cursor to texture surface
+			CURSORINFO cursorInfo{};
+			cursorInfo.cbSize = sizeof(cursorInfo);
+			if (GetCursorInfo(&cursorInfo))
+			{
+				if (cursorInfo.flags == CURSOR_SHOWING)
+				{
+					HDC cursorHDC;
+					POINT cursorPosition = cursorInfo.ptScreenPos;
+					iDxgiSurface2->GetDC(FALSE, &cursorHDC);
+					DrawIconEx(cursorHDC, cursorPosition.x, cursorPosition.y, cursorInfo.hCursor, 0, 0, 0, NULL, DI_NORMAL | DI_DEFAULTSIZE);
+					iDxgiSurface2->ReleaseDC(NULL);
+				}
+			}
 
 			return true;
 		}
