@@ -5,25 +5,19 @@
 
 namespace
 {
-	BYTE* CaptureScreenBytes()
+	BOOL UpdateScreenBytesCache(BOOL waitNextFrame)
 	{
 		try
 		{
-			//Update SDR white level
-			ULONGLONG currentTicks = GetTickCount64();
-			if (vCaptureSettings.HDRtoSDR && (currentTicks - vCaptureSDRWhiteLevelTicks) > 3000)
-			{
-				UpdateMonitorSDRWhiteLevel();
-				vCaptureSDRWhiteLevelTicks = currentTicks;
-			}
-
 			//Get output duplication frame
+			UINT timeoutInMilliseconds = 0;
+			if (waitNextFrame) { timeoutInMilliseconds = INFINITE; }
 			DXGI_OUTDUPL_FRAME_INFO iDxgiOutputDuplicationFrameInfo;
-			hResult = iDxgiOutputDuplication0->AcquireNextFrame(INFINITE, &iDxgiOutputDuplicationFrameInfo, &iDxgiResource0);
+			hResult = iDxgiOutputDuplication0->AcquireNextFrame(timeoutInMilliseconds, &iDxgiOutputDuplicationFrameInfo, &iDxgiResource0);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return false;
 			}
 
 			//Convert variables
@@ -31,7 +25,7 @@ namespace
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return false;
 			}
 
 			//Check if texture is resizing
@@ -41,7 +35,7 @@ namespace
 				if (!Texture2DResizeMips(iD3D11Texture2D1Capture))
 				{
 					CaptureResetVariablesTexture();
-					return NULL;
+					return false;
 				}
 
 				//Apply shaders to texture
@@ -57,7 +51,7 @@ namespace
 				if (!Texture2DApplyShaders(iD3D11Texture2D1Capture))
 				{
 					CaptureResetVariablesTexture();
-					return NULL;
+					return false;
 				}
 			}
 
@@ -68,27 +62,36 @@ namespace
 				return NULL;
 			}
 
-			//Convert texture to bitmap data
-			BYTE* bitmapBytes = Texture2DConvertToBitmapData(iD3D11Texture2D1CpuRead);
+			//Convert texture to bitmap bytes
+			BYTE* bitmapBytes = Texture2DConvertToBitmapBytes(iD3D11Texture2D1CpuRead);
 
 			//Release output duplication frame
 			hResult = iDxgiOutputDuplication0->ReleaseFrame();
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return false;
 			}
 
 			//Release resources
 			CaptureResetVariablesTexture();
 
-			//Return bitmap data
-			return bitmapBytes;
+			//Update bitmap bytes cache
+			if (bitmapBytes != NULL)
+			{
+				//Release cached bytes
+				free(vScreenBytesCache);
+
+				//Update cached bytes
+				vScreenBytesCache = bitmapBytes;
+			}
+
+			return true;
 		}
 		catch (...)
 		{
 			CaptureResetVariablesTexture();
-			return NULL;
+			return false;
 		}
 	}
 }

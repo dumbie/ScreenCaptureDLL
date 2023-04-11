@@ -20,9 +20,9 @@ namespace
 		WCHAR* FileName = L"E:\\ScreenCaptureTool.mp4";
 		GUID AudioFormat = MFAudioFormat_AAC;
 		UINT AudioChannels = 2;
-		UINT AudioBitRate = 256;
+		UINT AudioBitRate = 320;
 		UINT AudioBits = 16;
-		UINT AudioFrequency = 48000;
+		UINT AudioFrequency = 44100;
 		GUID VideoFormat = MFVideoFormat_HEVC;
 		UINT VideoBitRate = 6000;
 		UINT VideoFrameRate = 60;

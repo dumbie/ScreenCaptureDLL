@@ -1,6 +1,6 @@
 #pragma once
 #include "CaptureVariables.h"
-#include "CaptureReset.h"
+#include "CaptureReset.cpp"
 #include "CaptureDetails.cpp"
 
 namespace

@@ -33,9 +33,6 @@
     <ClCompile Include="CaptureDetails.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="CaptureReset.h">
-      <Filter>Header files</Filter>
-    </ClCompile>
     <ClCompile Include="CaptureVideo.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
@@ -46,6 +43,9 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="CaptureAudio.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptureReset.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

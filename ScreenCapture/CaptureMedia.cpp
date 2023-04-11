@@ -6,7 +6,7 @@
 
 namespace
 {
-	BOOL WriteMediaDataBytes(CComPtr<IMFSinkWriterEx> imfSinkWriter, BYTE* mediaBytes, UINT mediaSize, UINT mediaIndex, LONGLONG mediaTimeStart, LONGLONG mediaTimeDuration)
+	BOOL WriteMediaDataBytes(CComPtr<IMFSinkWriterEx> imfSinkWriter, BYTE* mediaBytes, UINT mediaSize, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
 	{
 		try
 		{
@@ -18,17 +18,41 @@ namespace
 				return false;
 			}
 
+			//Lock media bytes
+			BYTE* mediaBufferBytes;
+			hResult = imfMediaBuffer->Lock(&mediaBufferBytes, NULL, NULL);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
 			//Set media bytes
-			BYTE* bytesMediaBuffer = new BYTE[mediaSize];
-			imfMediaBuffer->Lock(&bytesMediaBuffer, NULL, NULL);
-			memcpy(bytesMediaBuffer, mediaBytes, mediaSize);
-			imfMediaBuffer->SetCurrentLength(mediaSize);
-			imfMediaBuffer->Unlock();
+			memcpy(mediaBufferBytes, mediaBytes, mediaSize);
+
+			//Unlock media bytes
+			hResult = imfMediaBuffer->Unlock();
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Set media length
+			hResult = imfMediaBuffer->SetCurrentLength(mediaSize);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
 
 			//Create media sample
 			CComPtr<IMFSample> imfMediaSample;
 			hResult = MFCreateSample(&imfMediaSample);
-			imfMediaSample->AddBuffer(imfMediaBuffer);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Add media buffer to sample
+			hResult = imfMediaSample->AddBuffer(imfMediaBuffer);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -56,8 +80,6 @@ namespace
 			}
 
 			//Release resources
-			//delete[] bytesMediaBuffer;
-			//imfMediaSample->RemoveAllBuffers();
 			imfMediaSample.Release();
 			imfMediaBuffer.Release();
 
@@ -69,47 +91,43 @@ namespace
 		}
 	}
 
-	BOOL WriteMediaLoop(CComPtr<IMFSinkWriterEx> imfSinkWriter)
+	VOID WriteMediaLoop(CComPtr<IMFSinkWriterEx> imfSinkWriter)
 	{
 		try
 		{
-			ULONGLONG mediaTimeStart = 0;
-			while (vMediaWriteLoop)
+			ULONGLONG mediaTimeStartAudio = 0;
+			ULONGLONG mediaTimeStartVideo = 0;
+			while (vMediaWriteLoopAllowed)
 			{
-				//Get audio bytes
-				MediaFrameBytes mediaFrameAudio = CaptureAudioBytes();
-				if (mediaFrameAudio.TimeDuration == 0 || mediaFrameAudio.TimeDuration < vReferenceTimeMediaFrame) { continue; }
-				ULONGLONG mediaTimeDuration = mediaFrameAudio.TimeDuration;
+				//Update screen bytes and check cache
+				UpdateScreenBytesCache(false);
+				ULONGLONG mediaTimeDurationVideo = vReferenceTimeToSeconds / vMediaSettings.VideoFrameRate;
+				if (vScreenBytesCache == NULL)
+				{
+					continue;
+				}
+				WriteMediaDataBytes(imfSinkWriter, vScreenBytesCache, vCaptureDetails.TotalByteSize, vOutVideoStreamIndex, mediaTimeStartVideo, mediaTimeDurationVideo);
+				mediaTimeStartVideo += mediaTimeDurationVideo;
 
-				//Get screen bytes
-				BYTE* dataScreen = CaptureScreenBytes();
-				//ULONGLONG mediaTimeDuration = vReferenceTimeToSeconds / vMediaSettings.VideoFrameRate;
-
-				//Write media data bytes
-				WriteMediaDataBytes(imfSinkWriter, dataScreen, vCaptureDetails.TotalByteSize, vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
-				WriteMediaDataBytes(imfSinkWriter, mediaFrameAudio.Bytes, mediaFrameAudio.Size, vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
-
-				//Release resources
-				delete[] dataScreen;
-				//delete[] mediaFrameAudio.Bytes;
-
-				//Update media time
-				mediaTimeStart += mediaTimeDuration;
+				////Get audio bytes
+				//MediaFrameBytes mediaFrameAudio = CaptureAudioBytes();
+				//ULONGLONG mediaTimeDurationAudio = mediaFrameAudio.TimeDuration;
+				//if (mediaFrameAudio.Bytes == NULL)
+				//{
+				//	continue;
+				//}
+				//WriteMediaDataBytes(imfSinkWriter, mediaFrameAudio.Bytes, mediaFrameAudio.Size, vOutAudioStreamIndex, mediaTimeStartAudio, mediaTimeDurationAudio);
+				//mediaTimeStartAudio += mediaTimeDurationAudio;
 			}
-
-			return true;
 		}
 		catch (...) {}
-		return false;
+		vMediaWriteLoopFinished = true;
 	}
 
 	BOOL InitializeMediaFoundation()
 	{
 		try
 		{
-			//Update variables
-			vMediaCapturing = true;
-
 			//Initialize media foundation
 			MFStartup(MFSTARTUP_FULL); //MFSTARTUP_LITE
 
@@ -127,7 +145,7 @@ namespace
 				return false;
 			}
 
-			//Convert IMF sink writer
+			//Convert variables
 			imfSinkWriterNormal->QueryInterface(&imfSinkWriter);
 
 			//Set video media type
@@ -139,11 +157,11 @@ namespace
 			//Set video transform details
 			SetVideoTransformDetails(imfSinkWriter);
 
-			//Set audio device
-			if (!SetAudioDevice(imfSinkWriter)) { return false; }
+			////Set audio device
+			//if (!SetAudioDevice(imfSinkWriter)) { return false; }
 
-			//Set audio media type
-			SetAudioMediaType(imfSinkWriter);
+			////Set audio media type
+			//SetAudioMediaType(imfSinkWriter);
 
 			return true;
 		}

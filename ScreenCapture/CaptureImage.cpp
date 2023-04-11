@@ -1,10 +1,10 @@
 #pragma once
 #include "CaptureVariables.h"
-#include "CaptureReset.h"
+#include "CaptureReset.cpp"
 
 namespace
 {
-	BOOL BitmapDataSaveFile(BYTE* bitmapData, WCHAR* filePath, GUID iWicFormatGuid)
+	BOOL BitmapDataSaveFile(BYTE* bitmapData, WCHAR* filePath, GUID iWicFormatGuid, UINT imageQualityPercentage)
 	{
 		try
 		{
@@ -12,21 +12,21 @@ namespace
 			hResult = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_ALL, IID_IWICImagingFactory, (LPVOID*)&iWICImagingFactory);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
 			hResult = iWICImagingFactory->CreateStream(&iWICStream);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
 			hResult = iWICStream->InitializeFromFilename(filePath, GENERIC_WRITE);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
@@ -34,14 +34,14 @@ namespace
 			hResult = iWICImagingFactory->CreateEncoder(iWicFormatGuid, NULL, &iWICBitmapEncoder);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
 			hResult = iWICBitmapEncoder->Initialize(iWICStream, WICBitmapEncoderNoCache);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
@@ -49,7 +49,7 @@ namespace
 			hResult = iWICBitmapEncoder->CreateNewFrame(&iWICBitmapFrameEncode, &iPropertyBag2);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
@@ -61,7 +61,7 @@ namespace
 
 				VARIANT variantValue{};
 				variantValue.vt = VT_R4;
-				variantValue.fltVal = vBitmapImageQuality / 100.0F;
+				variantValue.fltVal = imageQualityPercentage / 100.0F;
 
 				iPropertyBag2->Write(1, &propertyValue, &variantValue);
 			}
@@ -70,7 +70,7 @@ namespace
 			hResult = iWICBitmapFrameEncode->Initialize(iPropertyBag2);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
@@ -106,7 +106,7 @@ namespace
 			hResult = iWICBitmapFrameEncode->SetSize(vCaptureDetails.Width, vCaptureDetails.Height);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
@@ -114,7 +114,7 @@ namespace
 			hResult = iWICBitmapFrameEncode->SetResolution(96, 96);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
@@ -124,21 +124,21 @@ namespace
 				hResult = iWICImagingFactory->CreateBitmapFromMemory(vCaptureDetails.Width, vCaptureDetails.Height, iWicPixelFormatGuidSource, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData, &iWICBitmap);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesImage();
+					CaptureResetVariablesBitmapImage();
 					return false;
 				}
 
 				hResult = iWICImagingFactory->CreateFormatConverter(&iWICFormatConverter);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesImage();
+					CaptureResetVariablesBitmapImage();
 					return false;
 				}
 
 				hResult = iWICFormatConverter->Initialize(iWICBitmap, iWicPixelFormatGuidJpeg, WICBitmapDitherTypeNone, 0, 0, WICBitmapPaletteTypeCustom);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesImage();
+					CaptureResetVariablesBitmapImage();
 					return false;
 				}
 
@@ -146,7 +146,7 @@ namespace
 				hResult = iWICBitmapFrameEncode->SetPixelFormat(&iWicPixelFormatGuidJpeg);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesImage();
+					CaptureResetVariablesBitmapImage();
 					return false;
 				}
 
@@ -154,7 +154,7 @@ namespace
 				hResult = iWICBitmapFrameEncode->WriteSource(iWICFormatConverter, &iWicRectangle);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesImage();
+					CaptureResetVariablesBitmapImage();
 					return false;
 				}
 			}
@@ -164,14 +164,14 @@ namespace
 				hResult = iWICBitmapFrameEncode->SetPixelFormat(&iWicPixelFormatGuidSource);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesImage();
+					CaptureResetVariablesBitmapImage();
 					return false;
 				}
 
 				hResult = iWICBitmapFrameEncode->WritePixels(vCaptureDetails.Height, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesImage();
+					CaptureResetVariablesBitmapImage();
 					return false;
 				}
 			}
@@ -180,7 +180,7 @@ namespace
 			hResult = iWICBitmapFrameEncode->Commit();
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
@@ -188,18 +188,18 @@ namespace
 			hResult = iWICBitmapEncoder->Commit();
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesImage();
+				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
 			//Release resources
-			CaptureResetVariablesImage();
+			CaptureResetVariablesBitmapImage();
 
 			return true;
 		}
 		catch (...)
 		{
-			CaptureResetVariablesImage();
+			CaptureResetVariablesBitmapImage();
 			return false;
 		}
 	}

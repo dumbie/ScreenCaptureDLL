@@ -29,7 +29,7 @@
     <ClCompile Include="CaptureInitialize.cpp" />
     <ClCompile Include="CaptureDetails.cpp" />
     <ClCompile Include="CaptureMedia.cpp" />
-    <ClCompile Include="CaptureReset.h" />
+    <ClCompile Include="CaptureReset.cpp" />
     <ClCompile Include="CaptureMain.cpp" />
     <ClCompile Include="CaptureScreen.cpp" />
     <ClCompile Include="CaptureTexture.cpp" />

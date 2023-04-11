@@ -43,14 +43,18 @@ namespace
 	CComPtr<ID3D11PixelShader> iD3D11PixelShader0;
 
 	//Textures
+	CComPtr<IDXGISurface2> iDxgiSurface2;
 	CComPtr<IDXGIResource> iDxgiResource0;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1CpuRead;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Capture;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Resize;
+	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Cursor;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1RenderTargetView;
 
+	//Screen
+	BYTE* vScreenBytesCache;
+
 	//Image
-	UINT vBitmapImageQuality;
 	WICPixelFormatGUID iWicPixelFormatGuidSource;
 	WICPixelFormatGUID iWicPixelFormatGuidJpeg = GUID_WICPixelFormat24bppBGR;
 	CComPtr<IPropertyBag2> iPropertyBag2;
@@ -62,22 +66,22 @@ namespace
 	CComPtr<IWICFormatConverter> iWICFormatConverter;
 	CComPtr<IWICBitmap> iWICBitmap;
 
-	//Media
+	//Media foundation
 	CComPtr<IMFSinkWriterEx> imfSinkWriter;
 	MediaSettings vMediaSettings{};
-	BOOL vMediaWriteLoop;
 	BOOL vMediaCapturing;
+	BOOL vMediaWriteLoopAllowed;
+	BOOL vMediaWriteLoopFinished;
 	DWORD vOutVideoStreamIndex = 0;
 	DWORD vOutAudioStreamIndex = 0;
 	UINT vReferenceTimeToSeconds = 10000000;
-	UINT vReferenceTimeMediaFrame = 100000;
+	UINT vReferenceTimeFrameDuration = 100000;
 
 	//Audio
 	CComPtr<IMMDevice> iDevice;
-	CComPtr<IAudioClient> iAudioClient;
+	CComPtr<IAudioClient3> iAudioClient;
 	CComPtr<IAudioCaptureClient> iAudioCaptureClient;
-	WAVEFORMATEX* iAudioWaveFormatEx;
-	REFERENCE_TIME iAudioReferenceTime;
+	CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatEx;
 
 	//Arrays
 	FLOAT ColorRgbaBlack[] = { 0.0f, 0.0f, 0.0f, 0.0f };

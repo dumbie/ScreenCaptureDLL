@@ -78,7 +78,8 @@ namespace
 
 		__declspec(dllexport) BYTE* CaptureScreenshot()
 		{
-			return CaptureScreenBytes();
+			UpdateScreenBytesCache(true);
+			return vScreenBytesCache;
 		}
 
 		__declspec(dllexport) BOOL CaptureImage(BYTE* bitmapData, WCHAR* filePath, UINT imageQualityPercentage, ImageFormats imageFormat)
@@ -86,7 +87,6 @@ namespace
 			try
 			{
 				GUID imageSaveFormat{};
-				vBitmapImageQuality = imageQualityPercentage;
 				if (imageFormat == JXR)
 				{
 					imageSaveFormat = GUID_ContainerFormatWmp;
@@ -116,7 +116,7 @@ namespace
 					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatHeif;
 				}
-				return BitmapDataSaveFile(bitmapData, filePath, imageSaveFormat);
+				return BitmapDataSaveFile(bitmapData, filePath, imageSaveFormat, imageQualityPercentage);
 			}
 			catch (...)
 			{
@@ -130,10 +130,16 @@ namespace
 			{
 				if (vMediaCapturing) { return false; }
 
+				//Start video capture loop
+				vMediaCapturing = true;
+				vMediaWriteLoopAllowed = true;
+				vMediaWriteLoopFinished = false;
+
 				//Initialize media foundation
 				bool initialized = InitializeMediaFoundation();
 				if (!initialized)
 				{
+					CaptureResetVariablesMedia();
 					return false;
 				}
 
@@ -141,11 +147,9 @@ namespace
 				hResult = imfSinkWriter->BeginWriting();
 				if (FAILED(hResult))
 				{
+					CaptureResetVariablesMedia();
 					return false;
 				}
-
-				//Update loop status
-				vMediaWriteLoop = true;
 
 				//Loop media write
 				std::thread threadLoopMedia(WriteMediaLoop, imfSinkWriter);
@@ -167,14 +171,17 @@ namespace
 			{
 				//Stop video capture loop
 				vMediaCapturing = false;
-				vMediaWriteLoop = false;
+				vMediaWriteLoopAllowed = false;
+
+				//Wait for loop to finish
+				while (!vMediaWriteLoopFinished) { Sleep(100); }
 
 				//Finalize media write
 				hResult = imfSinkWriter->Finalize();
 
 				//Release resources
-				//CaptureResetVariablesTexture();
-				//CaptureResetVariablesMedia();
+				CaptureResetVariablesTexture();
+				CaptureResetVariablesMedia();
 
 				return true;
 			}
