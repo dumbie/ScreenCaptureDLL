@@ -3,7 +3,7 @@
 
 namespace
 {
-	BYTE* Texture2DConvertToBitmapBytes(CComPtr<ID3D11Texture2D1>& textureTarget)
+	BOOL Texture2DConvertToScreenBytesCache(CComPtr<ID3D11Texture2D1>& textureTarget, BOOL textureFlip)
 	{
 		try
 		{
@@ -12,29 +12,47 @@ namespace
 			hResult = iD3D11DeviceContext4->Map(textureTarget, 0, D3D11_MAP_READ, 0, &iD3DMappedSubResource);
 			if (FAILED(hResult))
 			{
-				return NULL;
+				return false;
 			}
 
-			//Create image byte array
-			BYTE* BitmapBuffer = new BYTE[vCaptureDetails.TotalByteSize];
-			BYTE* BitmapBufferReturn = BitmapBuffer;
+			//Clear image byte array
+			vScreenBytesCache.clear();
+
+			//Resize image byte array
+			vScreenBytesCache.resize(vCaptureDetails.TotalByteSize);
+
+			//Write image byte array
 			BYTE* SourceBuffer = (BYTE*)iD3DMappedSubResource.pData;
-			for (int i = 0; i < vCaptureDetails.Height; i++)
+			if (textureFlip)
 			{
-				memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
-				SourceBuffer += iD3DMappedSubResource.RowPitch;
-				BitmapBuffer += vCaptureDetails.WidthByteSize;
+				BYTE* BitmapBuffer = vScreenBytesCache.data() + vCaptureDetails.TotalByteSize - vCaptureDetails.WidthByteSize;
+				for (UINT i = 0; i < vCaptureDetails.Height; i++)
+				{
+					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
+					SourceBuffer += iD3DMappedSubResource.RowPitch;
+					BitmapBuffer -= vCaptureDetails.WidthByteSize;
+				}
+			}
+			else
+			{
+				BYTE* BitmapBuffer = vScreenBytesCache.data();
+				for (UINT i = 0; i < vCaptureDetails.Height; i++)
+				{
+					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
+					SourceBuffer += iD3DMappedSubResource.RowPitch;
+					BitmapBuffer += vCaptureDetails.WidthByteSize;
+				}
 			}
 
 			//Unmap texture from subresource
 			iD3D11DeviceContext4->Unmap(textureTarget, 0);
 
-			//Return image byte array
-			return BitmapBufferReturn;
+			//Return result
+			return true;
 		}
 		catch (...)
 		{
-			return NULL;
+			return false;
 		}
 	}
 
@@ -79,8 +97,11 @@ namespace
 			textureTarget->GetDesc1(&iD3DTexture2D1DescResize);
 
 			//Update texture description
-			iD3DTexture2D1DescResize.MipLevels = vCaptureTextureMipLevels;
+			iD3DTexture2D1DescResize.Usage = D3D11_USAGE_DEFAULT;
+			iD3DTexture2D1DescResize.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+			iD3DTexture2D1DescResize.CPUAccessFlags = 0;
 			iD3DTexture2D1DescResize.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
+			iD3DTexture2D1DescResize.MipLevels = vCaptureTextureMipLevels;
 
 			//Create resize texture
 			hResult = iD3D11Device5->CreateTexture2D1(&iD3DTexture2D1DescResize, NULL, &iD3D11Texture2D1Resize);
@@ -119,6 +140,9 @@ namespace
 			textureTarget->GetDesc1(&iD3DTexture2D1DescCursor);
 
 			//Update texture description
+			iD3DTexture2D1DescCursor.Usage = D3D11_USAGE_DEFAULT;
+			iD3DTexture2D1DescCursor.BindFlags = D3D11_BIND_RENDER_TARGET;
+			iD3DTexture2D1DescCursor.CPUAccessFlags = 0;
 			iD3DTexture2D1DescCursor.MiscFlags = D3D11_RESOURCE_MISC_GDI_COMPATIBLE;
 
 			//Create cursor texture
