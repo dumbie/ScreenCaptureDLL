@@ -10,8 +10,9 @@ namespace
 		try
 		{
 			//Create D3D11 Device
+			UINT iD3DCreateFlags = 0;
 			D3D_FEATURE_LEVEL iD3DFeatureLevel;
-			hResult = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, D3DFeatureLevelsArray, D3DFeatureLevelsCount, D3D11_SDK_VERSION, &iD3D11Device0, &iD3DFeatureLevel, &iD3D11DeviceContext0);
+			hResult = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, iD3DCreateFlags, D3DFeatureLevelsArray, D3DFeatureLevelsCount, D3D11_SDK_VERSION, &iD3D11Device0, &iD3DFeatureLevel, &iD3D11DeviceContext0);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll();
@@ -415,12 +416,15 @@ namespace
 		}
 	}
 
-	BOOL InitializeCapture(CaptureSettings captureSettings, CaptureDetails* captureDetails)
+	BOOL InitializeCapture(CaptureSettings captureSettings, CaptureDetails& captureDetails)
 	{
 		try
 		{
 			//Disable assert reporting
 			_CrtSetReportMode(_CRT_ASSERT, 0);
+
+			//Set process dpi awareness
+			SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 
 			//Reset all used variables
 			CaptureResetVariablesAll();
@@ -447,7 +451,7 @@ namespace
 			if (!SetShaderVariables()) { return false; }
 
 			//Return capture details
-			*captureDetails = vCaptureDetails;
+			captureDetails = vCaptureDetails;
 			return true;
 		}
 		catch (...)
