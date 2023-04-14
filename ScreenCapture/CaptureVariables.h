@@ -1,5 +1,4 @@
 #pragma once
-#include "CaptureIncludes.h"
 #include "CaptureClasses.h"
 
 namespace
@@ -51,8 +50,12 @@ namespace
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Cursor;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1RenderTargetView;
 
-	//Screen
-	BYTE* vScreenBytesCache;
+	//Media
+	std::vector<BYTE> vScreenBytesCache;
+	std::vector<BYTE> vAudioBytesCache;
+	ULONGLONG vMediaTimeStart;
+	ULONGLONG vMediaTimeDuration;
+	BOOL vAudioIsMuted = true;
 
 	//Image
 	WICPixelFormatGUID iWicPixelFormatGuidSource;
