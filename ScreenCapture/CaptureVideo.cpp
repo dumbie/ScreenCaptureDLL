@@ -29,38 +29,6 @@ namespace
 		}
 	}
 
-	BOOL SetVideoTransformDetails(CComPtr<IMFSinkWriterEx> imfSinkWriter)
-	{
-		try
-		{
-			GUID transformType;
-			DWORD transformIndex = 0;
-			CComPtr<IMFVideoProcessorControl> imfVideoProcessorControl;
-			while (true)
-			{
-				CComPtr<IMFTransform> imfTransform;
-				hResult = imfSinkWriter->GetTransformForStream(vOutVideoStreamIndex, transformIndex, &transformType, &imfTransform);
-				if (transformType == MFT_CATEGORY_VIDEO_PROCESSOR)
-				{
-					imfTransform->QueryInterface(&imfVideoProcessorControl);
-					break;
-				}
-				transformIndex++;
-			}
-
-			if (imfVideoProcessorControl)
-			{
-				imfVideoProcessorControl->SetMirror(MIRROR_VERTICAL);
-			}
-
-			return true;
-		}
-		catch (...)
-		{
-			return false;
-		}
-	}
-
 	BOOL SetVideoMediaType(CComPtr<IMFSinkWriterEx> imfSinkWriter)
 	{
 		try
@@ -95,7 +63,7 @@ namespace
 			}
 
 			imfMediaTypeVideoIn->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
-			imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_ARGB32); //SDR
+			imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_RGB32); //SDR
 			//imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_A16B16G16R16F); //HDR
 			MFSetAttributeSize(imfMediaTypeVideoIn, MF_MT_FRAME_SIZE, vCaptureDetails.Width, vCaptureDetails.Height);
 			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_FRAME_RATE, vMediaSettings.VideoFrameRate, 1);
