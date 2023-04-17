@@ -116,6 +116,7 @@ namespace
 			//Update capture variables
 			vCaptureDetails.Width = iDxgiOutputDuplicationDescription.ModeDesc.Width;
 			vCaptureDetails.Height = iDxgiOutputDuplicationDescription.ModeDesc.Height;
+			vCaptureDetails.RefreshRate = iDxgiOutputDuplicationDescription.ModeDesc.RefreshRate.Numerator;
 			vCaptureTextureResizing = vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.Width > vCaptureSettings.MaxPixelDimension && vCaptureDetails.Height > vCaptureSettings.MaxPixelDimension;
 			if (vCaptureTextureResizing)
 			{

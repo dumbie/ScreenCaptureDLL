@@ -50,13 +50,6 @@ namespace
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Cursor;
 	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1RenderTargetView;
 
-	//Media
-	std::vector<BYTE> vScreenBytesCache;
-	std::vector<BYTE> vAudioBytesCache;
-	ULONGLONG vMediaTimeStart;
-	ULONGLONG vMediaTimeDuration;
-	BOOL vAudioIsMuted = true;
-
 	//Image
 	WICPixelFormatGUID iWicPixelFormatGuidSource;
 	WICPixelFormatGUID iWicPixelFormatGuidJpeg = GUID_WICPixelFormat24bppBGR;
@@ -68,6 +61,14 @@ namespace
 	CComPtr<IWICMetadataQueryWriter> iWICMetadataQueryWriter;
 	CComPtr<IWICFormatConverter> iWICFormatConverter;
 	CComPtr<IWICBitmap> iWICBitmap;
+
+	//Media
+	std::vector<BYTE> vScreenBytesCache;
+	std::vector<BYTE> vAudioBytesCache;
+	ULONGLONG vMediaTimeLast;
+	ULONGLONG vMediaTimeStart;
+	ULONGLONG vMediaTimeDuration;
+	BOOL vAudioIsMuted = true;
 
 	//Media foundation
 	CComPtr<IMFSinkWriterEx> imfSinkWriter;

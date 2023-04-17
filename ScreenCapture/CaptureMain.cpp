@@ -11,7 +11,7 @@ namespace
 {
 	extern "C"
 	{
-		__declspec(dllexport) BOOL CaptureInitialize(CaptureSettings captureSettings, CaptureDetails* captureDetails)
+		__declspec(dllexport) BOOL CaptureInitialize(CaptureSettings captureSettings, CaptureDetails& captureDetails)
 		{
 			try
 			{
@@ -63,29 +63,17 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureFreeMemory(BYTE* bitmapData)
-		{
-			try
-			{
-				delete[] bitmapData;
-				return true;
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-
 		__declspec(dllexport) BYTE* CaptureScreenshot()
 		{
-			UpdateScreenBytesCache(true);
-			return vScreenBytesCache;
+			UpdateScreenBytesCache(true, false);
+			return vScreenBytesCache.data();
 		}
 
-		__declspec(dllexport) BOOL CaptureImage(BYTE* bitmapData, WCHAR* filePath, UINT imageQualityPercentage, ImageFormats imageFormat)
+		__declspec(dllexport) BOOL CaptureImage(BYTE* bitmapData, WCHAR* filePath, UINT imageQuality, ImageFormats imageFormat)
 		{
 			try
 			{
+				//Check image save format
 				GUID imageSaveFormat{};
 				if (imageFormat == JXR)
 				{
@@ -116,7 +104,9 @@ namespace
 					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatHeif;
 				}
-				return BitmapDataSaveFile(bitmapData, filePath, imageSaveFormat, imageQualityPercentage);
+
+				//Save bitmap data to file
+				return BitmapDataSaveFile(bitmapData, filePath, imageSaveFormat, imageQuality);
 			}
 			catch (...)
 			{
@@ -124,7 +114,7 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureVideoStart()
+		__declspec(dllexport) BOOL CaptureVideoStart(WCHAR* filePath)
 		{
 			try
 			{
@@ -136,7 +126,7 @@ namespace
 				vMediaWriteLoopFinished = false;
 
 				//Initialize media foundation
-				bool initialized = InitializeMediaFoundation();
+				bool initialized = InitializeMediaFoundation(filePath);
 				if (!initialized)
 				{
 					CaptureResetVariablesMedia();
@@ -189,25 +179,6 @@ namespace
 			{
 				CaptureResetVariablesTexture();
 				CaptureResetVariablesMedia();
-				return false;
-			}
-		}
-
-		__declspec(dllexport) BOOL CaptureVideoStartStop()
-		{
-			try
-			{
-				if (vMediaCapturing)
-				{
-					return CaptureVideoStop();
-				}
-				else
-				{
-					return CaptureVideoStart();
-				}
-			}
-			catch (...)
-			{
 				return false;
 			}
 		}

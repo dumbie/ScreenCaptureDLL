@@ -19,6 +19,9 @@ namespace
 			iD3D11Texture2D1Resize.Release();
 			iD3D11Texture2D1Cursor.Release();
 
+			//Release output duplication frame
+			iDxgiOutputDuplication0->ReleaseFrame();
+
 			return true;
 		}
 		catch (...)
@@ -64,8 +67,9 @@ namespace
 			iAudioCaptureClient.Release();
 			iAudioWaveFormatEx.Free();
 
-			//Video
-			//free(vScreenBytesCache);
+			//Bytes cache
+			vScreenBytesCache.clear();
+			vAudioBytesCache.clear();
 
 			return true;
 		}
@@ -120,6 +124,8 @@ namespace
 
 			//Media
 			CaptureResetVariablesMedia();
+
+			std::cout << "Reset all capture variables." << std::endl;
 
 			return true;
 		}

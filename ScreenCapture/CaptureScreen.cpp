@@ -5,7 +5,7 @@
 
 namespace
 {
-	BOOL UpdateScreenBytesCache(BOOL waitNextFrame)
+	BOOL UpdateScreenBytesCache(BOOL waitNextFrame, BOOL flipScreen)
 	{
 		try
 		{
@@ -14,8 +14,19 @@ namespace
 			if (waitNextFrame) { timeoutInMilliseconds = INFINITE; }
 			DXGI_OUTDUPL_FRAME_INFO iDxgiOutputDuplicationFrameInfo;
 			hResult = iDxgiOutputDuplication0->AcquireNextFrame(timeoutInMilliseconds, &iDxgiOutputDuplicationFrameInfo, &iDxgiResource0);
+
+			//Check if screen captured
 			if (FAILED(hResult))
 			{
+				//std::cout << "Failed to acquire next frame: " << hResult << std::endl;
+				CaptureResetVariablesTexture();
+				return false;
+			}
+
+			//Check mouse movement updates
+			if (iDxgiOutputDuplicationFrameInfo.LastPresentTime.HighPart == 0)
+			{
+				//std::cout << "Acquire next frame, skipping mouse movement." << std::endl;
 				CaptureResetVariablesTexture();
 				return false;
 			}
@@ -27,6 +38,9 @@ namespace
 				CaptureResetVariablesTexture();
 				return false;
 			}
+
+			////Draw cursor to texture
+			//Texture2DDrawCursor(iD3D11Texture2D1Capture);
 
 			//Check if texture is resizing
 			if (vCaptureTextureResizing)
@@ -42,7 +56,7 @@ namespace
 				if (!Texture2DApplyShaders(iD3D11Texture2D1Resize))
 				{
 					CaptureResetVariablesTexture();
-					return NULL;
+					return false;
 				}
 			}
 			else
@@ -59,15 +73,11 @@ namespace
 			if (!Texture2DConvertToCpuRead(iD3D11Texture2D1RenderTargetView))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return false;
 			}
 
-			//Convert texture to bitmap bytes
-			BYTE* bitmapBytes = Texture2DConvertToBitmapBytes(iD3D11Texture2D1CpuRead);
-
-			//Release output duplication frame
-			hResult = iDxgiOutputDuplication0->ReleaseFrame();
-			if (FAILED(hResult))
+			//Convert texture to screen bytes cache
+			if (!Texture2DConvertToScreenBytesCache(iD3D11Texture2D1CpuRead, flipScreen))
 			{
 				CaptureResetVariablesTexture();
 				return false;
@@ -75,16 +85,6 @@ namespace
 
 			//Release resources
 			CaptureResetVariablesTexture();
-
-			//Update bitmap bytes cache
-			if (bitmapBytes != NULL)
-			{
-				//Release cached bytes
-				free(vScreenBytesCache);
-
-				//Update cached bytes
-				vScreenBytesCache = bitmapBytes;
-			}
 
 			return true;
 		}

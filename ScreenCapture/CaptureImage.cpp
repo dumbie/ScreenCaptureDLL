@@ -4,7 +4,7 @@
 
 namespace
 {
-	BOOL BitmapDataSaveFile(BYTE* bitmapData, WCHAR* filePath, GUID iWicFormatGuid, UINT imageQualityPercentage)
+	BOOL BitmapDataSaveFile(BYTE* bitmapData, WCHAR* filePath, GUID iWicFormatGuid, UINT imageQuality)
 	{
 		try
 		{
@@ -61,7 +61,7 @@ namespace
 
 				VARIANT variantValue{};
 				variantValue.vt = VT_R4;
-				variantValue.fltVal = imageQualityPercentage / 100.0F;
+				variantValue.fltVal = imageQuality / 100.0F;
 
 				iPropertyBag2->Write(1, &propertyValue, &variantValue);
 			}

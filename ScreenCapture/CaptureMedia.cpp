@@ -95,51 +95,59 @@ namespace
 	{
 		try
 		{
-			ULONGLONG mediaTimeStartAudio = 0;
-			ULONGLONG mediaTimeStartVideo = 0;
+			vMediaTimeLast = 0;
+			vMediaTimeStart = 0;
+			vMediaTimeDuration = 0;
+			vAudioIsMuted = true;
 			while (vMediaWriteLoopAllowed)
 			{
-				//Update screen bytes and check cache
-				UpdateScreenBytesCache(false);
-				ULONGLONG mediaTimeDurationVideo = vReferenceTimeToSeconds / vMediaSettings.VideoFrameRate;
-				if (vScreenBytesCache == NULL)
+				//Fix add code to delay loop when writing to fast
+
+				//Update screen bytes and check
+				UpdateScreenBytesCache(false, true);
+				if (vScreenBytesCache.empty())
 				{
 					continue;
 				}
-				WriteMediaDataBytes(imfSinkWriter, vScreenBytesCache, vCaptureDetails.TotalByteSize, vOutVideoStreamIndex, mediaTimeStartVideo, mediaTimeDurationVideo);
-				mediaTimeStartVideo += mediaTimeDurationVideo;
 
-				////Get audio bytes
-				//MediaFrameBytes mediaFrameAudio = CaptureAudioBytes();
-				//ULONGLONG mediaTimeDurationAudio = mediaFrameAudio.TimeDuration;
-				//if (mediaFrameAudio.Bytes == NULL)
-				//{
-				//	continue;
-				//}
-				//WriteMediaDataBytes(imfSinkWriter, mediaFrameAudio.Bytes, mediaFrameAudio.Size, vOutAudioStreamIndex, mediaTimeStartAudio, mediaTimeDurationAudio);
-				//mediaTimeStartAudio += mediaTimeDurationAudio;
+				//Update audio bytes and check
+				UpdateAudioBytesCache();
+				if (vAudioBytesCache.empty())
+				{
+					continue;
+				}
+
+				//Write media data bytes
+				WriteMediaDataBytes(imfSinkWriter, vScreenBytesCache.data(), vScreenBytesCache.size(), vOutVideoStreamIndex, vMediaTimeStart, vMediaTimeDuration);
+				WriteMediaDataBytes(imfSinkWriter, vAudioBytesCache.data(), vAudioBytesCache.size(), vOutAudioStreamIndex, vMediaTimeStart, vMediaTimeDuration);
+				//std::cout << "Written media at: " << vMediaTimeStart << " duration: " << vMediaTimeDuration << std::endl;
+
+				//Update media time start
+				vMediaTimeStart += vMediaTimeDuration;
 			}
 		}
 		catch (...) {}
 		vMediaWriteLoopFinished = true;
 	}
 
-	BOOL InitializeMediaFoundation()
+	BOOL InitializeMediaFoundation(WCHAR* filePath)
 	{
 		try
 		{
 			//Initialize media foundation
-			MFStartup(MFSTARTUP_FULL); //MFSTARTUP_LITE
+			MFStartup(MFSTARTUP_LITE);
 
 			//Create IMF attributes
 			CComPtr<IMFAttributes> imfAttributes;
 			hResult = MFCreateAttributes(&imfAttributes, 0);
-			imfAttributes->SetUINT32(MF_READWRITE_ENABLE_HARDWARE_TRANSFORMS, true);
+			//imfAttributes->SetUINT32(MF_LOW_LATENCY, 1);
+			imfAttributes->SetUINT32(MF_SINK_WRITER_DISABLE_THROTTLING, 1);
+			imfAttributes->SetUINT32(MF_READWRITE_ENABLE_HARDWARE_TRANSFORMS, 1);
 			imfAttributes->SetGUID(MF_TRANSCODE_CONTAINERTYPE, MFTranscodeContainerType_MPEG4);
 
 			//Create IMF sink writer
 			CComPtr<IMFSinkWriter> imfSinkWriterNormal;
-			hResult = MFCreateSinkWriterFromURL(vMediaSettings.FileName, NULL, imfAttributes, &imfSinkWriterNormal);
+			hResult = MFCreateSinkWriterFromURL(filePath, NULL, imfAttributes, &imfSinkWriterNormal);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -148,20 +156,17 @@ namespace
 			//Convert variables
 			imfSinkWriterNormal->QueryInterface(&imfSinkWriter);
 
-			//Set video media type
-			SetVideoMediaType(imfSinkWriter);
-
 			//Set video encoder details
 			SetVideoEncoderDetails(imfSinkWriter);
 
-			//Set video transform details
-			SetVideoTransformDetails(imfSinkWriter);
+			//Set video media type
+			SetVideoMediaType(imfSinkWriter);
 
-			////Set audio device
-			//if (!SetAudioDevice(imfSinkWriter)) { return false; }
+			//Set audio device
+			if (!SetAudioDevice(imfSinkWriter)) { return false; }
 
-			////Set audio media type
-			//SetAudioMediaType(imfSinkWriter);
+			//Set audio media type
+			SetAudioMediaType(imfSinkWriter);
 
 			return true;
 		}

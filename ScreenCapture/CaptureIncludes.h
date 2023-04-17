@@ -5,13 +5,16 @@
 #pragma comment(lib, "mfplat.lib")
 #pragma comment(lib, "mfreadwrite.lib")
 #pragma comment(lib, "mfuuid.lib")
+#pragma comment(lib, "shcore.lib")
 
 //General
 #include <atlbase.h>
+#include <shellscalingapi.h>
 #include <functional>
 #include <vector>
 #include <memory>
 #include <thread>
+#include <iostream>
 
 //DirectX
 #include <directxmath.h>

@@ -100,6 +100,10 @@ namespace
 				//Update muted variable
 				vAudioIsMuted = true;
 			}
+			else
+			{
+				//std::cout << "Not writing audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << std::endl;
+			}
 
 			//Return result
 			return true;
@@ -153,7 +157,7 @@ namespace
 			iAudioWaveFormatEx->Samples.wValidBitsPerSample = iAudioWaveFormatEx->Format.wBitsPerSample;
 
 			//Initialize default audio device
-			REFERENCE_TIME initBufferDuration = 0;
+			REFERENCE_TIME initBufferDuration = vReferenceTimeToSeconds;
 			DWORD initFlags = AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
 			hResult = iAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, 0, (WAVEFORMATEX*)iAudioWaveFormatEx.m_pData, 0);
 			if (FAILED(hResult))

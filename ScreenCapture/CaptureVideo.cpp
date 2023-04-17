@@ -41,9 +41,13 @@ namespace
 				return false;
 			}
 
+			//Calculate target bitrate
+			UINT32 videoBitrate = 10000000 * vMediaSettings.VideoQuality;
+
 			imfMediaTypeVideoOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
 			imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, vMediaSettings.VideoFormat);
-			imfMediaTypeVideoOut->SetUINT32(MF_MT_AVG_BITRATE, vMediaSettings.VideoBitRate * 1000);
+			imfMediaTypeVideoOut->SetUINT32(MF_MT_AVG_BITRATE, videoBitrate);
+			imfMediaTypeVideoOut->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
 			MFSetAttributeSize(imfMediaTypeVideoOut, MF_MT_FRAME_SIZE, vCaptureDetails.Width, vCaptureDetails.Height);
 			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_FRAME_RATE, vMediaSettings.VideoFrameRate, 1);
