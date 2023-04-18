@@ -34,6 +34,7 @@
     <ClCompile Include="CaptureScreen.cpp" />
     <ClCompile Include="CaptureTexture.cpp" />
     <ClCompile Include="CaptureVideo.cpp" />
+    <ClCompile Include="PlayAudio.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AssemblyInfo.rc" />

@@ -48,6 +48,9 @@
     <ClCompile Include="CaptureReset.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="PlayAudio.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AssemblyInfo.rc">
