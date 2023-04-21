@@ -6,6 +6,7 @@
 #include "CaptureScreen.cpp"
 #include "CaptureInitialize.cpp"
 #include "CaptureTexture.cpp"
+#include "CaptureLoop.cpp"
 
 namespace
 {
@@ -142,7 +143,7 @@ namespace
 				}
 
 				//Loop media write
-				std::thread threadLoopMedia(WriteMediaLoop, imfSinkWriter);
+				std::thread threadLoopMedia(LoopWriteMedia);
 				threadLoopMedia.detach();
 
 				return true;
@@ -181,6 +182,11 @@ namespace
 				CaptureResetVariablesMedia();
 				return false;
 			}
+		}
+
+		__declspec(dllexport) BOOL CaptureVideoIsRecording()
+		{
+			return vMediaCapturing;
 		}
 	}
 };
