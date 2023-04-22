@@ -65,10 +65,10 @@ namespace
 	//Media
 	std::vector<BYTE> vScreenBytesCache;
 	std::vector<BYTE> vAudioBytesCache;
-	ULONGLONG vMediaTimeLast;
+	ULONGLONG vMediaTimeNext;
 	ULONGLONG vMediaTimeStart;
 	ULONGLONG vMediaTimeDuration;
-	BOOL vAudioIsMuted = true;
+	BOOL vAudioIsMuted;
 
 	//Media foundation
 	CComPtr<IMFSinkWriterEx> imfSinkWriter;
@@ -78,10 +78,12 @@ namespace
 	BOOL vMediaWriteLoopFinished;
 	DWORD vOutVideoStreamIndex = 0;
 	DWORD vOutAudioStreamIndex = 0;
-	UINT vReferenceTimeToSeconds = 10000000;
 	UINT vReferenceTimeFrameDuration = 100000;
+	UINT vReferenceTimeToSeconds = 10000000;
+	UINT vReferenceTimeToMilliseconds = 10000;
+	UINT vReferenceTimeToMicroseconds = 1000;
 
-	//Audio
+	//Audio device
 	CComPtr<IMMDevice> iDevice;
 	CComPtr<IAudioClient3> iAudioClient;
 	CComPtr<IAudioCaptureClient> iAudioCaptureClient;

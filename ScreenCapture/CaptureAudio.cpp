@@ -90,7 +90,7 @@ namespace
 				vAudioBytesCache.resize(mediaFramesSize);
 
 				//Fill bytes cache with silence
-				std::fill(vAudioBytesCache.begin(), vAudioBytesCache.end(), 0);
+				memset(vAudioBytesCache.data(), 0, mediaFramesSize);
 
 				//Calculate media duration
 				vMediaTimeDuration = mediaFramesTarget;
@@ -110,6 +110,7 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "UpdateAudioBytesCache failed." << std::endl;
 			return false;
 		}
 	}
@@ -157,28 +158,36 @@ namespace
 			iAudioWaveFormatEx->Samples.wValidBitsPerSample = iAudioWaveFormatEx->Format.wBitsPerSample;
 
 			//Initialize default audio device
-			REFERENCE_TIME initBufferDuration = vReferenceTimeToSeconds;
+			REFERENCE_TIME initPeriodicity = 0;
+			REFERENCE_TIME initBufferDuration = vReferenceTimeFrameDuration * 4;
 			DWORD initFlags = AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
-			hResult = iAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, 0, (WAVEFORMATEX*)iAudioWaveFormatEx.m_pData, 0);
+			hResult = iAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)iAudioWaveFormatEx.m_pData, 0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Get audio device service
-			hResult = iAudioClient->GetService(__uuidof(IAudioCaptureClient), (LPVOID*)&iAudioCaptureClient);
+			hResult = iAudioClient->GetService(IID_PPV_ARGS(&iAudioCaptureClient));
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Start audio device
-			iAudioClient->Start();
+			hResult = iAudioClient->Start();
+			if (FAILED(hResult))
+			{
+				return false;
+			}
 
+			//Return result
+			std::cout << "Audio device started." << std::endl;
 			return true;
 		}
 		catch (...)
 		{
+			std::cout << "SetAudioDevice failed." << std::endl;
 			return false;
 		}
 	}
@@ -192,6 +201,7 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeAudioOut);
 			if (FAILED(hResult))
 			{
+				std::cout << "MFCreateMediaType audio out failed." << std::endl;
 				return false;
 			}
 
@@ -222,6 +232,7 @@ namespace
 			hResult = imfSinkWriter->AddStream(imfMediaTypeAudioOut, &vOutAudioStreamIndex);
 			if (FAILED(hResult))
 			{
+				std::cout << "AddStream audio failed." << std::endl;
 				return false;
 			}
 
@@ -230,6 +241,7 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeAudioIn);
 			if (FAILED(hResult))
 			{
+				std::cout << "MFCreateMediaType audio in failed." << std::endl;
 				return false;
 			}
 
@@ -243,6 +255,7 @@ namespace
 			hResult = imfSinkWriter->SetInputMediaType(vOutAudioStreamIndex, imfMediaTypeAudioIn, NULL);
 			if (FAILED(hResult))
 			{
+				std::cout << "SetInputMediaType audio failed." << std::endl;
 				return false;
 			}
 
@@ -250,6 +263,7 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "SetAudioMediaType failed." << std::endl;
 			return false;
 		}
 	}

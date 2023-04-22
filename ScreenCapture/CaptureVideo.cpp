@@ -12,6 +12,7 @@ namespace
 			hResult = imfSinkWriter->GetServiceForStream(vOutVideoStreamIndex, GUID_NULL, IID_PPV_ARGS(&iCodecApi));
 			if (FAILED(hResult))
 			{
+				std::cout << "GetServiceForStream video failed." << std::endl;
 				return false;
 			}
 
@@ -25,6 +26,7 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "SetVideoEncoderDetails failed." << std::endl;
 			return false;
 		}
 	}
@@ -38,10 +40,11 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeVideoOut);
 			if (FAILED(hResult))
 			{
+				std::cout << "MFCreateMediaType video out failed." << std::endl;
 				return false;
 			}
 
-			//Calculate target bitrate
+			//Calculate video out bitrate
 			UINT32 videoBitrate = 10000000 * vMediaSettings.VideoQuality;
 
 			imfMediaTypeVideoOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
@@ -55,6 +58,7 @@ namespace
 			hResult = imfSinkWriter->AddStream(imfMediaTypeVideoOut, &vOutVideoStreamIndex);
 			if (FAILED(hResult))
 			{
+				std::cout << "AddStream video failed." << std::endl;
 				return false;
 			}
 
@@ -63,18 +67,28 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeVideoIn);
 			if (FAILED(hResult))
 			{
+				std::cout << "MFCreateMediaType video in failed." << std::endl;
 				return false;
 			}
 
 			imfMediaTypeVideoIn->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
-			imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_RGB32); //SDR
-			//imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_A16B16G16R16F); //HDR
+			imfMediaTypeVideoIn->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
 			MFSetAttributeSize(imfMediaTypeVideoIn, MF_MT_FRAME_SIZE, vCaptureDetails.Width, vCaptureDetails.Height);
-			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_FRAME_RATE, vMediaSettings.VideoFrameRate, 1);
+			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_FRAME_RATE, vCaptureDetails.RefreshRate, 1);
 			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
+			//HDR and SDR settings
+			if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR)
+			{
+				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_A16B16G16R16F);
+			}
+			else
+			{
+				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_RGB32);
+			}
 			hResult = imfSinkWriter->SetInputMediaType(vOutVideoStreamIndex, imfMediaTypeVideoIn, NULL);
 			if (FAILED(hResult))
 			{
+				std::cout << "SetInputMediaType video failed." << std::endl;
 				return false;
 			}
 
@@ -82,6 +96,7 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "SetVideoMediaType failed." << std::endl;
 			return false;
 		}
 	}

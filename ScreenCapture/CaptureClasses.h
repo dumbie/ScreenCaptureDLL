@@ -17,14 +17,13 @@ namespace
 	//Structures
 	struct MediaSettings
 	{
-		WCHAR* FileName = L"E:\\ScreenCaptureTool.mp4";
 		GUID AudioFormat = MFAudioFormat_AAC;
 		UINT AudioChannels = 2;
 		UINT AudioBitRate = 320;
 		UINT AudioBits = 16;
 		UINT AudioFrequency = 48000;
 		GUID VideoFormat = MFVideoFormat_HEVC;
-		FLOAT VideoQuality = 0.75;
+		FLOAT VideoQuality = 0.80;
 		UINT VideoFrameRate = 60;
 	};
 

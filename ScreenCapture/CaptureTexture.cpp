@@ -156,7 +156,11 @@ namespace
 			iD3D11DeviceContext4->CopySubresourceRegion(iD3D11Texture2D1Cursor, 0, 0, 0, 0, textureTarget, 0, NULL);
 
 			//Convert variables
-			iD3D11Texture2D1Cursor->QueryInterface(&iDxgiSurface2);
+			hResult = iD3D11Texture2D1Cursor->QueryInterface(&iDxgiSurface2);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
 
 			//Draw cursor to texture surface
 			CURSORINFO cursorInfo{};

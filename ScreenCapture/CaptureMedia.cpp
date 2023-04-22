@@ -87,47 +87,9 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "WriteMediaDataBytes failed." << std::endl;
 			return false;
 		}
-	}
-
-	VOID WriteMediaLoop(CComPtr<IMFSinkWriterEx> imfSinkWriter)
-	{
-		try
-		{
-			vMediaTimeLast = 0;
-			vMediaTimeStart = 0;
-			vMediaTimeDuration = 0;
-			vAudioIsMuted = true;
-			while (vMediaWriteLoopAllowed)
-			{
-				//Fix add code to delay loop when writing to fast
-
-				//Update screen bytes and check
-				UpdateScreenBytesCache(false, true);
-				if (vScreenBytesCache.empty())
-				{
-					continue;
-				}
-
-				//Update audio bytes and check
-				UpdateAudioBytesCache();
-				if (vAudioBytesCache.empty())
-				{
-					continue;
-				}
-
-				//Write media data bytes
-				WriteMediaDataBytes(imfSinkWriter, vScreenBytesCache.data(), vScreenBytesCache.size(), vOutVideoStreamIndex, vMediaTimeStart, vMediaTimeDuration);
-				WriteMediaDataBytes(imfSinkWriter, vAudioBytesCache.data(), vAudioBytesCache.size(), vOutAudioStreamIndex, vMediaTimeStart, vMediaTimeDuration);
-				//std::cout << "Written media at: " << vMediaTimeStart << " duration: " << vMediaTimeDuration << std::endl;
-
-				//Update media time start
-				vMediaTimeStart += vMediaTimeDuration;
-			}
-		}
-		catch (...) {}
-		vMediaWriteLoopFinished = true;
 	}
 
 	BOOL InitializeMediaFoundation(WCHAR* filePath)
@@ -154,24 +116,31 @@ namespace
 			}
 
 			//Convert variables
-			imfSinkWriterNormal->QueryInterface(&imfSinkWriter);
-
-			//Set video encoder details
-			SetVideoEncoderDetails(imfSinkWriter);
+			hResult = imfSinkWriterNormal->QueryInterface(&imfSinkWriter);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
 
 			//Set video media type
-			SetVideoMediaType(imfSinkWriter);
+			if (!SetVideoMediaType(imfSinkWriter)) { return false; }
+
+			//Set video encoder details
+			if (!SetVideoEncoderDetails(imfSinkWriter)) { return false; }
 
 			//Set audio device
 			if (!SetAudioDevice(imfSinkWriter)) { return false; }
 
 			//Set audio media type
-			SetAudioMediaType(imfSinkWriter);
+			if (!SetAudioMediaType(imfSinkWriter)) { return false; }
 
+			//Return result
+			std::cout << "Media foundation initialized." << std::endl;
 			return true;
 		}
 		catch (...)
 		{
+			std::cout << "InitializeMediaFoundation failed." << std::endl;
 			return false;
 		}
 	}

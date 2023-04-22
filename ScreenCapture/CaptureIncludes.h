@@ -7,6 +7,7 @@
 #pragma comment(lib, "mfuuid.lib")
 #pragma comment(lib, "shcore.lib")
 #pragma comment(lib, "strmiids.lib")
+#pragma comment(lib, "avrt.lib")
 
 //General
 #include <atlbase.h>
@@ -38,3 +39,4 @@
 #include <mmdeviceapi.h>
 #include <audioclient.h>
 #include <dshow.h>
+#include <avrt.h>
