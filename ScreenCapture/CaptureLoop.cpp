@@ -8,22 +8,32 @@
 
 namespace
 {
-	VOID LoopWriteMedia()
+	VOID LoopWriteScreen()
 	{
 		try
 		{
-			//Set thread variables
-			vMediaTimeNext = 0;
-			vMediaTimeStart = 0;
-			vMediaTimeDuration = 0;
+			//Get media frame duration time
+			ULONGLONG mediaTimeDuration;
+			MFFrameRateToAverageTimePerFrame(vMediaSettings.VideoFrameRate, 1, &mediaTimeDuration);
 
+			//Set thread characteristics
+			DWORD taskIndex = 0;
+			HANDLE mmThread = AvSetMmThreadCharacteristicsW(L"Pro Audio", &taskIndex);
+			if (mmThread)
+			{
+				AvSetMmThreadPriority(mmThread, AVRT_PRIORITY_CRITICAL);
+			}
+
+			//Write media in loop while allowed
 			while (vMediaWriteLoopAllowed)
 			{
-				//Check next write time
-				LARGE_INTEGER qpcTimeStart;
-				QueryPerformanceCounter(&qpcTimeStart);
-				LONGLONG differenceTime = qpcTimeStart.QuadPart - vMediaTimeNext;
-				if (differenceTime < vReferenceTimeFrameDuration)
+				//Get media frame start time
+				LARGE_INTEGER qpcTimeCurrent;
+				QueryPerformanceCounter(&qpcTimeCurrent);
+
+				//Check next media write time
+				ULONGLONG differenceTime = qpcTimeCurrent.QuadPart - vMediaTimeNextScreen;
+				if (differenceTime < mediaTimeDuration)
 				{
 					//std::cout << "Delaying media write, writing to fast: " << differenceTime << std::endl;
 					continue;
@@ -36,6 +46,51 @@ namespace
 					continue;
 				}
 
+				//Write media bytes to sink
+				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
+				WriteMediaDataBytes(imfSinkWriter, vScreenBytesCache.data(), vScreenBytesCache.size(), vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+				//std::cout << "Written media screen at: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << vScreenBytesCache.size() << std::endl;
+
+				//Update media next time
+				vMediaTimeNextScreen = qpcTimeCurrent.QuadPart;
+			}
+		}
+		catch (...) {}
+
+		//Reset thread variables
+		vMediaWriteLoopFinishedScreen = true;
+	}
+
+	VOID LoopWriteAudio()
+	{
+		try
+		{
+			//Get media frame duration time
+			ULONGLONG mediaTimeDuration = vReferenceTimeFrameDuration;
+
+			//Set thread characteristics
+			DWORD taskIndex = 0;
+			HANDLE mmThread = AvSetMmThreadCharacteristicsW(L"Pro Audio", &taskIndex);
+			if (mmThread)
+			{
+				AvSetMmThreadPriority(mmThread, AVRT_PRIORITY_CRITICAL);
+			}
+
+			//Write media in loop while allowed
+			while (vMediaWriteLoopAllowed)
+			{
+				//Get media frame start time
+				LARGE_INTEGER qpcTimeCurrent;
+				QueryPerformanceCounter(&qpcTimeCurrent);
+
+				//Check next media write time
+				ULONGLONG differenceTime = qpcTimeCurrent.QuadPart - vMediaTimeNextAudio;
+				if (differenceTime < mediaTimeDuration)
+				{
+					//std::cout << "Delaying media write, writing to fast: " << differenceTime << std::endl;
+					continue;
+				}
+
 				//Update audio bytes and check
 				UpdateAudioBytesCache();
 				if (vAudioBytesCache.empty())
@@ -43,22 +98,18 @@ namespace
 					continue;
 				}
 
-				WriteMediaDataBytes(imfSinkWriter, vScreenBytesCache.data(), vScreenBytesCache.size(), vOutVideoStreamIndex, vMediaTimeStart, vMediaTimeDuration);
-				WriteMediaDataBytes(imfSinkWriter, vAudioBytesCache.data(), vAudioBytesCache.size(), vOutAudioStreamIndex, vMediaTimeStart, vMediaTimeDuration);
-				std::cout << "Written media at: " << (vMediaTimeStart / vReferenceTimeToSeconds) << "s/" << vMediaTimeStart << " duration: " << vMediaTimeDuration << " last: " << vMediaTimeNext << std::endl;
-				//std::cout << "Written screen size: " << vScreenBytesCache.size() << std::endl;
-				//std::cout << "Written audio size: " << vAudioBytesCache.size() << std::endl;
+				//Write media bytes to sink
+				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
+				WriteMediaDataBytes(imfSinkWriter, vAudioBytesCache.data(), vAudioBytesCache.size(), vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
+				//std::cout << "Written media audio at: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << vAudioBytesCache.size() << std::endl;
 
-				//Update media time start
-				vMediaTimeStart += vMediaTimeDuration;
-
-				//Update media time next
-				vMediaTimeNext = qpcTimeStart.QuadPart;
+				//Update media next time
+				vMediaTimeNextAudio = qpcTimeCurrent.QuadPart;
 			}
 		}
 		catch (...) {}
 
 		//Reset thread variables
-		vMediaWriteLoopFinished = true;
+		vMediaWriteLoopFinishedAudio = true;
 	}
 }

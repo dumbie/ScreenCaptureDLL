@@ -65,9 +65,9 @@ namespace
 	//Media
 	std::vector<BYTE> vScreenBytesCache;
 	std::vector<BYTE> vAudioBytesCache;
-	ULONGLONG vMediaTimeNext;
-	ULONGLONG vMediaTimeStart;
-	ULONGLONG vMediaTimeDuration;
+	ULONGLONG vMediaTimeNextScreen;
+	ULONGLONG vMediaTimeNextAudio;
+	ULONGLONG vMediaTimeStartLoop;
 	BOOL vAudioIsMuted;
 
 	//Media foundation
@@ -75,7 +75,8 @@ namespace
 	MediaSettings vMediaSettings{};
 	BOOL vMediaCapturing;
 	BOOL vMediaWriteLoopAllowed;
-	BOOL vMediaWriteLoopFinished;
+	BOOL vMediaWriteLoopFinishedScreen;
+	BOOL vMediaWriteLoopFinishedAudio;
 	DWORD vOutVideoStreamIndex = 0;
 	DWORD vOutAudioStreamIndex = 0;
 	UINT vReferenceTimeFrameDuration = 100000;

@@ -124,7 +124,8 @@ namespace
 				//Start video capture loop
 				vMediaCapturing = true;
 				vMediaWriteLoopAllowed = true;
-				vMediaWriteLoopFinished = false;
+				vMediaWriteLoopFinishedScreen = false;
+				vMediaWriteLoopFinishedAudio = false;
 
 				//Initialize media foundation
 				bool initialized = InitializeMediaFoundation(filePath);
@@ -142,9 +143,18 @@ namespace
 					return false;
 				}
 
-				//Loop media write
-				std::thread threadLoopMedia(LoopWriteMedia);
-				threadLoopMedia.detach();
+				//Set media loop start time
+				LARGE_INTEGER qpcTimeCurrent;
+				QueryPerformanceCounter(&qpcTimeCurrent);
+				vMediaTimeStartLoop = qpcTimeCurrent.QuadPart;
+
+				//Loop media write screen
+				std::thread threadLoopWriteScreen(LoopWriteScreen);
+				threadLoopWriteScreen.detach();
+
+				//Loop media write audio
+				std::thread threadLoopWriteAudio(LoopWriteAudio);
+				threadLoopWriteAudio.detach();
 
 				return true;
 			}
@@ -165,7 +175,7 @@ namespace
 				vMediaWriteLoopAllowed = false;
 
 				//Wait for loop to finish
-				while (!vMediaWriteLoopFinished) { Sleep(100); }
+				while (!vMediaWriteLoopFinishedScreen && !vMediaWriteLoopFinishedAudio) { Sleep(100); }
 
 				//Finalize media write
 				hResult = imfSinkWriter->Finalize();

@@ -9,7 +9,6 @@ namespace
 		{
 			//Reset audio bytes
 			vAudioBytesCache.clear();
-			vMediaTimeDuration = 0;
 
 			//Get audio buffer
 			DWORD mediaFlags;
@@ -71,11 +70,6 @@ namespace
 				//Copy buffer to bytes cache
 				memcpy(vAudioBytesCache.data(), mediaBuffer, mediaFramesSize);
 
-				//Calculate media duration
-				vMediaTimeDuration = mediaFramesRead;
-				vMediaTimeDuration *= vReferenceTimeToSeconds;
-				vMediaTimeDuration /= iAudioWaveFormatEx->Format.nSamplesPerSec;
-
 				//Update muted variable
 				vAudioIsMuted = false;
 			}
@@ -91,11 +85,6 @@ namespace
 
 				//Fill bytes cache with silence
 				memset(vAudioBytesCache.data(), 0, mediaFramesSize);
-
-				//Calculate media duration
-				vMediaTimeDuration = mediaFramesTarget;
-				vMediaTimeDuration *= vReferenceTimeToSeconds;
-				vMediaTimeDuration /= iAudioWaveFormatEx->Format.nSamplesPerSec;
 
 				//Update muted variable
 				vAudioIsMuted = true;
