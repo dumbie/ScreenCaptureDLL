@@ -6,7 +6,7 @@
 
 namespace
 {
-	BOOL WriteMediaDataBytes(CComPtr<IMFSinkWriterEx> imfSinkWriter, BYTE* mediaBytes, UINT mediaSize, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
+	BOOL WriteMediaDataBytes(BYTE* mediaBytes, UINT mediaSize, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
 	{
 		try
 		{
@@ -96,13 +96,30 @@ namespace
 	{
 		try
 		{
-			//Initialize media foundation
-			MFStartup(MFSTARTUP_LITE);
+			//CoInitialize
+			hResult = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Start media foundation
+			hResult = MFStartup(MFSTARTUP_LITE);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
 
 			//Create IMF attributes
 			CComPtr<IMFAttributes> imfAttributes;
 			hResult = MFCreateAttributes(&imfAttributes, 0);
-			//imfAttributes->SetUINT32(MF_LOW_LATENCY, 1);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Set IMF attributes
+			imfAttributes->SetUINT32(MF_LOW_LATENCY, 1);
 			imfAttributes->SetUINT32(MF_SINK_WRITER_DISABLE_THROTTLING, 1);
 			imfAttributes->SetUINT32(MF_READWRITE_ENABLE_HARDWARE_TRANSFORMS, 1);
 			imfAttributes->SetGUID(MF_TRANSCODE_CONTAINERTYPE, MFTranscodeContainerType_MPEG4);
@@ -123,16 +140,16 @@ namespace
 			}
 
 			//Set video media type
-			if (!SetVideoMediaType(imfSinkWriter)) { return false; }
+			if (!SetVideoMediaType()) { return false; }
 
 			//Set video encoder details
-			if (!SetVideoEncoderDetails(imfSinkWriter)) { return false; }
+			if (!SetVideoEncoderDetails()) { return false; }
 
 			//Set audio device
-			if (!SetAudioDevice(imfSinkWriter)) { return false; }
+			if (!SetAudioDevice()) { return false; }
 
 			//Set audio media type
-			if (!SetAudioMediaType(imfSinkWriter)) { return false; }
+			if (!SetAudioMediaType()) { return false; }
 
 			//Return result
 			std::cout << "Media foundation initialized." << std::endl;

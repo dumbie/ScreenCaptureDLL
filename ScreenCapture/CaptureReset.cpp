@@ -3,6 +3,22 @@
 
 namespace
 {
+	BOOL DeleteDataBytes(BYTE* bitmapData)
+	{
+		try
+		{
+			if (bitmapData != NULL)
+			{
+				delete[] bitmapData;
+			}
+			return true;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
 	BOOL CaptureResetVariablesTexture()
 	{
 		try
@@ -20,7 +36,10 @@ namespace
 			iD3D11Texture2D1Cursor.Release();
 
 			//Release output duplication frame
-			iDxgiOutputDuplication0->ReleaseFrame();
+			if (iDxgiOutputDuplication0 != NULL)
+			{
+				iDxgiOutputDuplication0->ReleaseFrame();
+			}
 
 			return true;
 		}
@@ -66,10 +85,6 @@ namespace
 			iAudioClient.Release();
 			iAudioCaptureClient.Release();
 			iAudioWaveFormatEx.Free();
-
-			//Bytes cache
-			vScreenBytesCache.clear();
-			vAudioBytesCache.clear();
 
 			return true;
 		}

@@ -3,13 +3,10 @@
 
 namespace
 {
-	BOOL UpdateAudioBytesCache()
+	BYTE* GetAudioBytes(UINT32& audioBytesSize)
 	{
 		try
 		{
-			//Reset audio bytes
-			vAudioBytesCache.clear();
-
 			//Get audio buffer
 			DWORD mediaFlags;
 			UINT32 mediaFramesRead;
@@ -19,14 +16,14 @@ namespace
 			hResult = iAudioCaptureClient->GetBuffer(&mediaBuffer, &mediaFramesRead, &mediaFlags, &devicePosition, &qpcPosition);
 			if (FAILED(hResult))
 			{
-				return false;
+				return NULL;
 			}
 
 			//Release audio buffer
 			hResult = iAudioCaptureClient->ReleaseBuffer(mediaFramesRead);
 			if (FAILED(hResult))
 			{
-				return false;
+				return NULL;
 			}
 
 			//Check if audio needs to be silenced
@@ -56,19 +53,22 @@ namespace
 			//Calculate target frames read
 			UINT32 mediaFramesTarget = iAudioWaveFormatEx->Format.nSamplesPerSec / 100;
 
+			//Create bytes array
+			BYTE* audioBytes = NULL;
+
 			//Check media frames read
 			if (!silenceAudioBuffer && mediaFramesRead == mediaFramesTarget)
 			{
 				//std::cout << "Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << std::endl;
 
 				//Calculate media size
-				UINT32 mediaFramesSize = mediaFramesRead * iAudioWaveFormatEx->Format.nBlockAlign;
+				audioBytesSize = mediaFramesRead * iAudioWaveFormatEx->Format.nBlockAlign;
 
 				//Resize bytes cache
-				vAudioBytesCache.resize(mediaFramesSize);
+				audioBytes = new BYTE[audioBytesSize];
 
 				//Copy buffer to bytes cache
-				memcpy(vAudioBytesCache.data(), mediaBuffer, mediaFramesSize);
+				memcpy(audioBytes, mediaBuffer, audioBytesSize);
 
 				//Update muted variable
 				vAudioIsMuted = false;
@@ -78,13 +78,13 @@ namespace
 				//std::cout << "Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << std::endl;
 
 				//Calculate media size
-				UINT32 mediaFramesSize = mediaFramesTarget * iAudioWaveFormatEx->Format.nBlockAlign;
+				UINT32 audioBytesSize = mediaFramesTarget * iAudioWaveFormatEx->Format.nBlockAlign;
 
 				//Resize bytes cache
-				vAudioBytesCache.resize(mediaFramesSize);
+				audioBytes = new BYTE[audioBytesSize];
 
 				//Fill bytes cache with silence
-				memset(vAudioBytesCache.data(), 0, mediaFramesSize);
+				memset(audioBytes, 0, audioBytesSize);
 
 				//Update muted variable
 				vAudioIsMuted = true;
@@ -95,16 +95,16 @@ namespace
 			}
 
 			//Return result
-			return true;
+			return audioBytes;
 		}
 		catch (...)
 		{
 			std::cout << "UpdateAudioBytesCache failed." << std::endl;
-			return false;
+			return NULL;
 		}
 	}
 
-	BOOL SetAudioDevice(CComPtr<IMFSinkWriterEx> imfSinkWriter)
+	BOOL SetAudioDevice()
 	{
 		try
 		{
@@ -147,8 +147,8 @@ namespace
 			iAudioWaveFormatEx->Samples.wValidBitsPerSample = iAudioWaveFormatEx->Format.wBitsPerSample;
 
 			//Initialize default audio device
-			REFERENCE_TIME initPeriodicity = 0;
-			REFERENCE_TIME initBufferDuration = vReferenceTimeFrameDuration * 4;
+			UINT initPeriodicity = 0;
+			UINT initBufferDuration = vReferenceTimeFrameDuration * 4;
 			DWORD initFlags = AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
 			hResult = iAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)iAudioWaveFormatEx.m_pData, 0);
 			if (FAILED(hResult))
@@ -181,7 +181,7 @@ namespace
 		}
 	}
 
-	BOOL SetAudioMediaType(CComPtr<IMFSinkWriterEx> imfSinkWriter)
+	BOOL SetAudioMediaType()
 	{
 		try
 		{

@@ -3,7 +3,7 @@
 
 namespace
 {
-	BOOL SetVideoEncoderDetails(CComPtr<IMFSinkWriterEx> imfSinkWriter)
+	BOOL SetVideoEncoderDetails()
 	{
 		try
 		{
@@ -31,7 +31,7 @@ namespace
 		}
 	}
 
-	BOOL SetVideoMediaType(CComPtr<IMFSinkWriterEx> imfSinkWriter)
+	BOOL SetVideoMediaType()
 	{
 		try
 		{
@@ -79,10 +79,12 @@ namespace
 			//HDR and SDR settings
 			if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR)
 			{
+				std::cout << "Set media type format to HDR." << std::endl;
 				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_A16B16G16R16F);
 			}
 			else
 			{
+				std::cout << "Set media type format to SDR." << std::endl;
 				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_RGB32);
 			}
 			hResult = imfSinkWriter->SetInputMediaType(vOutVideoStreamIndex, imfMediaTypeVideoIn, NULL);

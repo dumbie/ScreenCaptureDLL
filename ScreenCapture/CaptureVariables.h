@@ -63,8 +63,6 @@ namespace
 	CComPtr<IWICBitmap> iWICBitmap;
 
 	//Media
-	std::vector<BYTE> vScreenBytesCache;
-	std::vector<BYTE> vAudioBytesCache;
 	ULONGLONG vMediaTimeNextScreen;
 	ULONGLONG vMediaTimeNextAudio;
 	ULONGLONG vMediaTimeStartLoop;

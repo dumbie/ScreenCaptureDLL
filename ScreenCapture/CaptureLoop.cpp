@@ -39,17 +39,20 @@ namespace
 					continue;
 				}
 
-				//Update screen bytes and check
-				UpdateScreenBytesCache(false, true);
-				if (vScreenBytesCache.empty())
+				//Get screen bytes and check
+				BYTE* screenBytes = GetScreenBytes(false, true);
+				if (screenBytes == NULL)
 				{
 					continue;
 				}
 
 				//Write media bytes to sink
 				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
-				WriteMediaDataBytes(imfSinkWriter, vScreenBytesCache.data(), vScreenBytesCache.size(), vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
-				//std::cout << "Written media screen at: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << vScreenBytesCache.size() << std::endl;
+				WriteMediaDataBytes(screenBytes, vCaptureDetails.TotalByteSize, vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+				//std::cout << "Written media screen at: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << vCaptureDetails.TotalByteSize << std::endl;
+
+				//Clear screen bytes
+				DeleteDataBytes(screenBytes);
 
 				//Update media next time
 				vMediaTimeNextScreen = qpcTimeCurrent.QuadPart;
@@ -91,17 +94,21 @@ namespace
 					continue;
 				}
 
-				//Update audio bytes and check
-				UpdateAudioBytesCache();
-				if (vAudioBytesCache.empty())
+				//Get audio bytes and check
+				UINT32 audioBytesSize;
+				BYTE* audioBytes = GetAudioBytes(audioBytesSize);
+				if (audioBytes == NULL)
 				{
 					continue;
 				}
 
 				//Write media bytes to sink
 				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
-				WriteMediaDataBytes(imfSinkWriter, vAudioBytesCache.data(), vAudioBytesCache.size(), vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
-				//std::cout << "Written media audio at: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << vAudioBytesCache.size() << std::endl;
+				WriteMediaDataBytes(audioBytes, audioBytesSize, vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
+				//std::cout << "Written media audio at: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << audioBytesSize << std::endl;
+
+				//Clear audio bytes
+				DeleteDataBytes(audioBytes);
 
 				//Update media next time
 				vMediaTimeNextAudio = qpcTimeCurrent.QuadPart;

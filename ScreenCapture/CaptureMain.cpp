@@ -64,10 +64,21 @@ namespace
 			}
 		}
 
+		__declspec(dllexport) BOOL CaptureFreeMemory(BYTE* bitmapData)
+		{
+			try
+			{
+				return DeleteDataBytes(bitmapData);
+			}
+			catch (...)
+			{
+				return false;
+			}
+		}
+
 		__declspec(dllexport) BYTE* CaptureScreenshot()
 		{
-			UpdateScreenBytesCache(true, false);
-			return vScreenBytesCache.data();
+			return GetScreenBytes(true, false);
 		}
 
 		__declspec(dllexport) BOOL CaptureImage(BYTE* bitmapData, WCHAR* filePath, UINT imageQuality, ImageFormats imageFormat)
@@ -128,8 +139,8 @@ namespace
 				vMediaWriteLoopFinishedAudio = false;
 
 				//Initialize media foundation
-				bool initialized = InitializeMediaFoundation(filePath);
-				if (!initialized)
+				bool initializeMedia = InitializeMediaFoundation(filePath);
+				if (!initializeMedia)
 				{
 					CaptureResetVariablesMedia();
 					return false;
@@ -179,6 +190,12 @@ namespace
 
 				//Finalize media write
 				hResult = imfSinkWriter->Finalize();
+
+				//Shutdown media foundation
+				MFShutdown();
+
+				//CoUninitialize
+				CoUninitialize();
 
 				//Release resources
 				CaptureResetVariablesTexture();

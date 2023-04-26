@@ -5,7 +5,7 @@
 
 namespace
 {
-	BOOL UpdateScreenBytesCache(BOOL waitNextFrame, BOOL flipScreen)
+	BYTE* GetScreenBytes(BOOL waitNextFrame, BOOL flipScreen)
 	{
 		try
 		{
@@ -20,15 +20,7 @@ namespace
 			{
 				//std::cout << "Failed to acquire next frame: " << hResult << std::endl;
 				CaptureResetVariablesTexture();
-				return false;
-			}
-
-			//Check mouse movement updates
-			if (iDxgiOutputDuplicationFrameInfo.LastPresentTime.HighPart == 0)
-			{
-				//std::cout << "Acquire next frame, skipping mouse movement." << std::endl;
-				CaptureResetVariablesTexture();
-				return false;
+				return NULL;
 			}
 
 			//Convert variables
@@ -36,62 +28,52 @@ namespace
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return false;
+				return NULL;
 			}
 
-			////Draw cursor to texture
-			//Texture2DDrawCursor(iD3D11Texture2D1Capture);
+			//Draw cursor to texture
+			if (vCaptureSettings.DrawCursor)
+			{
+				Texture2DDrawCursor(Texture2DGetCurrent());
+			}
 
-			//Check if texture is resizing
+			//Resize texture using mips
 			if (vCaptureTextureResizing)
 			{
-				//Resize texture using mips
-				if (!Texture2DResizeMips(iD3D11Texture2D1Capture))
+				if (!Texture2DResizeMips(Texture2DGetCurrent()))
 				{
 					CaptureResetVariablesTexture();
-					return false;
-				}
-
-				//Apply shaders to texture
-				if (!Texture2DApplyShaders(iD3D11Texture2D1Resize))
-				{
-					CaptureResetVariablesTexture();
-					return false;
+					return NULL;
 				}
 			}
-			else
+
+			//Apply shaders to texture
+			if (!Texture2DApplyShaders(Texture2DGetCurrent()))
 			{
-				//Apply shaders to texture
-				if (!Texture2DApplyShaders(iD3D11Texture2D1Capture))
-				{
-					CaptureResetVariablesTexture();
-					return false;
-				}
+				CaptureResetVariablesTexture();
+				return NULL;
 			}
 
 			//Convert to cpu read texture
 			if (!Texture2DConvertToCpuRead(iD3D11Texture2D1RenderTargetView))
 			{
 				CaptureResetVariablesTexture();
-				return false;
+				return NULL;
 			}
 
-			//Convert texture to screen bytes cache
-			if (!Texture2DConvertToScreenBytesCache(iD3D11Texture2D1CpuRead, flipScreen))
-			{
-				CaptureResetVariablesTexture();
-				return false;
-			}
+			//Convert texture to screen bytes
+			BYTE* screenBytes = Texture2DConvertToScreenBytes(iD3D11Texture2D1CpuRead, flipScreen);
 
 			//Release resources
 			CaptureResetVariablesTexture();
 
-			return true;
+			//Return result
+			return screenBytes;
 		}
 		catch (...)
 		{
 			CaptureResetVariablesTexture();
-			return false;
+			return NULL;
 		}
 	}
 }

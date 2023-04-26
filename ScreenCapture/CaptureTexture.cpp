@@ -3,7 +3,14 @@
 
 namespace
 {
-	BOOL Texture2DConvertToScreenBytesCache(CComPtr<ID3D11Texture2D1>& textureTarget, BOOL textureFlip)
+	CComPtr<ID3D11Texture2D1> Texture2DGetCurrent()
+	{
+		if (iD3D11Texture2D1Resize != NULL) { return iD3D11Texture2D1Resize; }
+		if (iD3D11Texture2D1Cursor != NULL) { return iD3D11Texture2D1Cursor; }
+		return iD3D11Texture2D1Capture;
+	}
+
+	BYTE* Texture2DConvertToScreenBytes(CComPtr<ID3D11Texture2D1>& textureTarget, BOOL textureFlip)
 	{
 		try
 		{
@@ -12,20 +19,17 @@ namespace
 			hResult = iD3D11DeviceContext4->Map(textureTarget, 0, D3D11_MAP_READ, 0, &iD3DMappedSubResource);
 			if (FAILED(hResult))
 			{
-				return false;
+				return NULL;
 			}
 
-			//Clear image byte array
-			vScreenBytesCache.clear();
-
-			//Resize image byte array
-			vScreenBytesCache.resize(vCaptureDetails.TotalByteSize);
+			//Create image byte array
+			BYTE* BitmapBytes = new BYTE[vCaptureDetails.TotalByteSize];
 
 			//Write image byte array
 			BYTE* SourceBuffer = (BYTE*)iD3DMappedSubResource.pData;
 			if (textureFlip)
 			{
-				BYTE* BitmapBuffer = vScreenBytesCache.data() + vCaptureDetails.TotalByteSize - vCaptureDetails.WidthByteSize;
+				BYTE* BitmapBuffer = BitmapBytes + vCaptureDetails.TotalByteSize - vCaptureDetails.WidthByteSize;
 				for (UINT i = 0; i < vCaptureDetails.Height; i++)
 				{
 					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
@@ -35,7 +39,7 @@ namespace
 			}
 			else
 			{
-				BYTE* BitmapBuffer = vScreenBytesCache.data();
+				BYTE* BitmapBuffer = BitmapBytes;
 				for (UINT i = 0; i < vCaptureDetails.Height; i++)
 				{
 					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
@@ -48,11 +52,11 @@ namespace
 			iD3D11DeviceContext4->Unmap(textureTarget, 0);
 
 			//Return result
-			return true;
+			return BitmapBytes;
 		}
 		catch (...)
 		{
-			return false;
+			return NULL;
 		}
 	}
 
@@ -138,6 +142,13 @@ namespace
 			//Read texture description
 			D3D11_TEXTURE2D_DESC1 iD3DTexture2D1DescCursor{};
 			textureTarget->GetDesc1(&iD3DTexture2D1DescCursor);
+
+			//Check texture format
+			if (iD3DTexture2D1DescCursor.Format != DXGI_FORMAT_B8G8R8A8_UNORM && iD3DTexture2D1DescCursor.Format != DXGI_FORMAT_B8G8R8A8_UNORM_SRGB)
+			{
+				//std::cout << "Cursor can't be drawn on this texture format." << std::endl;
+				return false;
+			}
 
 			//Update texture description
 			iD3DTexture2D1DescCursor.Usage = D3D11_USAGE_DEFAULT;
