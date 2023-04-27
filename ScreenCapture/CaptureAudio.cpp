@@ -13,14 +13,14 @@ namespace
 			BYTE* mediaBuffer;
 			UINT64 devicePosition;
 			UINT64 qpcPosition;
-			hResult = iAudioCaptureClient->GetBuffer(&mediaBuffer, &mediaFramesRead, &mediaFlags, &devicePosition, &qpcPosition);
+			hResult = iAudioClientCapture->GetBuffer(&mediaBuffer, &mediaFramesRead, &mediaFlags, &devicePosition, &qpcPosition);
 			if (FAILED(hResult))
 			{
 				return NULL;
 			}
 
 			//Release audio buffer
-			hResult = iAudioCaptureClient->ReleaseBuffer(mediaFramesRead);
+			hResult = iAudioClientCapture->ReleaseBuffer(mediaFramesRead);
 			if (FAILED(hResult))
 			{
 				return NULL;
@@ -32,66 +32,40 @@ namespace
 			{
 				//std::cout << "AUDCLNT_BUFFERFLAGS_SILENT" << std::endl;
 				silenceAudioBuffer = true;
-				vAudioIsMuted = true;
-			}
-			else if (vAudioIsMuted && mediaFlags & AUDCLNT_BUFFERFLAGS_TIMESTAMP_ERROR)
-			{
-				//std::cout << "AUDCLNT_BUFFERFLAGS_TIMESTAMP_ERROR" << std::endl;
-				silenceAudioBuffer = true;
-			}
-			else if (vAudioIsMuted && mediaFlags & AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY)
-			{
-				//std::cout << "AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY" << std::endl;
-				silenceAudioBuffer = true;
-			}
-			else if (vAudioIsMuted && mediaFramesRead == 0)
-			{
-				//std::cout << "AUDCLNT_BUFFERFLAGS_NO_FRAMES_READ" << std::endl;
-				silenceAudioBuffer = true;
 			}
 
 			//Calculate target frames read
-			UINT32 mediaFramesTarget = iAudioWaveFormatEx->Format.nSamplesPerSec / 100;
+			UINT32 mediaFramesTarget = iAudioWaveFormatExCapture->Format.nSamplesPerSec / 100;
 
 			//Create bytes array
 			BYTE* audioBytes = NULL;
 
 			//Check media frames read
-			if (!silenceAudioBuffer && mediaFramesRead == mediaFramesTarget)
+			if (mediaFramesRead == mediaFramesTarget)
 			{
-				//std::cout << "Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << std::endl;
+				//std::cout << "Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags << std::endl;
 
 				//Calculate media size
-				audioBytesSize = mediaFramesRead * iAudioWaveFormatEx->Format.nBlockAlign;
+				audioBytesSize = mediaFramesRead * iAudioWaveFormatExCapture->Format.nBlockAlign;
 
 				//Resize bytes cache
 				audioBytes = new BYTE[audioBytesSize];
 
 				//Copy buffer to bytes cache
 				memcpy(audioBytes, mediaBuffer, audioBytesSize);
-
-				//Update muted variable
-				vAudioIsMuted = false;
 			}
-			else if (vAudioIsMuted || silenceAudioBuffer)
+			else if (silenceAudioBuffer)
 			{
-				//std::cout << "Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << std::endl;
+				//std::cout << "Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags << std::endl;
 
 				//Calculate media size
-				UINT32 audioBytesSize = mediaFramesTarget * iAudioWaveFormatEx->Format.nBlockAlign;
+				UINT32 audioBytesSize = mediaFramesTarget * iAudioWaveFormatExCapture->Format.nBlockAlign;
 
 				//Resize bytes cache
 				audioBytes = new BYTE[audioBytesSize];
 
 				//Fill bytes cache with silence
 				memset(audioBytes, 0, audioBytesSize);
-
-				//Update muted variable
-				vAudioIsMuted = true;
-			}
-			else
-			{
-				//std::cout << "Not writing audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << std::endl;
 			}
 
 			//Return result
@@ -104,7 +78,7 @@ namespace
 		}
 	}
 
-	BOOL SetAudioDevice()
+	BOOL SetAudioDeviceRender()
 	{
 		try
 		{
@@ -124,59 +98,127 @@ namespace
 			}
 
 			//Activate default audio device
-			hResult = iDevice->Activate(__uuidof(IAudioClient3), CLSCTX_ALL, NULL, (LPVOID*)&iAudioClient);
+			hResult = iDevice->Activate(__uuidof(IAudioClient3), CLSCTX_ALL, NULL, (LPVOID*)&iAudioDeviceRender);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Get audio wave format information
-			hResult = iAudioClient->GetMixFormat((WAVEFORMATEX**)&iAudioWaveFormatEx);
+			hResult = iAudioDeviceRender->GetMixFormat((WAVEFORMATEX**)&iAudioWaveFormatExRender);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
-			//Set audio wave format information
-			iAudioWaveFormatEx->SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-			iAudioWaveFormatEx->Format.wBitsPerSample = vMediaSettings.AudioBits;
-			iAudioWaveFormatEx->Format.nSamplesPerSec = vMediaSettings.AudioFrequency;
-			iAudioWaveFormatEx->Format.nChannels = vMediaSettings.AudioChannels;
-			iAudioWaveFormatEx->Format.nBlockAlign = iAudioWaveFormatEx->Format.nChannels * iAudioWaveFormatEx->Format.wBitsPerSample / 8;
-			iAudioWaveFormatEx->Format.nAvgBytesPerSec = iAudioWaveFormatEx->Format.nSamplesPerSec * iAudioWaveFormatEx->Format.nBlockAlign;
-			iAudioWaveFormatEx->Samples.wValidBitsPerSample = iAudioWaveFormatEx->Format.wBitsPerSample;
-
 			//Initialize default audio device
 			UINT initPeriodicity = 0;
-			UINT initBufferDuration = vReferenceTimeFrameDuration * 4;
-			DWORD initFlags = AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
-			hResult = iAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)iAudioWaveFormatEx.m_pData, 0);
+			UINT initBufferDuration = 0;
+			DWORD initFlags = 0;
+			hResult = iAudioDeviceRender->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)iAudioWaveFormatExRender.m_pData, 0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Get audio device service
-			hResult = iAudioClient->GetService(IID_PPV_ARGS(&iAudioCaptureClient));
+			hResult = iAudioDeviceRender->GetService(IID_PPV_ARGS(&iAudioClientRender));
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Start audio device
-			hResult = iAudioClient->Start();
+			hResult = iAudioDeviceRender->Start();
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Return result
-			std::cout << "Audio device started." << std::endl;
+			std::cout << "Audio render device started." << std::endl;
 			return true;
 		}
 		catch (...)
 		{
-			std::cout << "SetAudioDevice failed." << std::endl;
+			std::cout << "SetAudioDeviceRender failed." << std::endl;
+			return false;
+		}
+	}
+
+	BOOL SetAudioDeviceCapture()
+	{
+		try
+		{
+			//Create device enumerator
+			CComPtr<IMMDeviceEnumerator> deviceEnumerator;
+			hResult = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (LPVOID*)&deviceEnumerator);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Get default audio device
+			hResult = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &iDevice);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Activate default audio device
+			hResult = iDevice->Activate(__uuidof(IAudioClient3), CLSCTX_ALL, NULL, (LPVOID*)&iAudioDeviceCapture);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Get audio wave format information
+			hResult = iAudioDeviceCapture->GetMixFormat((WAVEFORMATEX**)&iAudioWaveFormatExCapture);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Set audio wave format information
+			iAudioWaveFormatExCapture->SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
+			iAudioWaveFormatExCapture->Format.wBitsPerSample = vMediaSettings.AudioBits;
+			iAudioWaveFormatExCapture->Format.nSamplesPerSec = vMediaSettings.AudioFrequency;
+			iAudioWaveFormatExCapture->Format.nChannels = vMediaSettings.AudioChannels;
+			iAudioWaveFormatExCapture->Format.nBlockAlign = iAudioWaveFormatExCapture->Format.nChannels * iAudioWaveFormatExCapture->Format.wBitsPerSample / 8;
+			iAudioWaveFormatExCapture->Format.nAvgBytesPerSec = iAudioWaveFormatExCapture->Format.nSamplesPerSec * iAudioWaveFormatExCapture->Format.nBlockAlign;
+			iAudioWaveFormatExCapture->Samples.wValidBitsPerSample = iAudioWaveFormatExCapture->Format.wBitsPerSample;
+
+			//Initialize default audio device
+			UINT initPeriodicity = 0;
+			UINT initBufferDuration = 0;
+			DWORD initFlags = AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
+			hResult = iAudioDeviceCapture->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)iAudioWaveFormatExCapture.m_pData, 0);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Get audio device service
+			hResult = iAudioDeviceCapture->GetService(IID_PPV_ARGS(&iAudioClientCapture));
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Start audio device
+			hResult = iAudioDeviceCapture->Start();
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Return result
+			std::cout << "Audio capture device started." << std::endl;
+			return true;
+		}
+		catch (...)
+		{
+			std::cout << "SetAudioDeviceCapture failed." << std::endl;
 			return false;
 		}
 	}
@@ -204,19 +246,19 @@ namespace
 			if (vMediaSettings.AudioFormat == MFAudioFormat_AAC)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_AAC);
-				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, iAudioWaveFormatEx->Format.wBitsPerSample);
+				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, iAudioWaveFormatExCapture->Format.wBitsPerSample);
 			}
 
 			//FLAC
 			if (vMediaSettings.AudioFormat == MFAudioFormat_FLAC)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_FLAC);
-				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, iAudioWaveFormatEx->Format.wBitsPerSample);
+				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, iAudioWaveFormatExCapture->Format.wBitsPerSample);
 			}
 
 			imfMediaTypeAudioOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, iAudioWaveFormatEx->Format.nChannels);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, iAudioWaveFormatEx->Format.nSamplesPerSec);
+			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, iAudioWaveFormatExCapture->Format.nChannels);
+			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, iAudioWaveFormatExCapture->Format.nSamplesPerSec);
 			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, vMediaSettings.AudioBitRate * 1000 / 8);
 			hResult = imfSinkWriter->AddStream(imfMediaTypeAudioOut, &vOutAudioStreamIndex);
 			if (FAILED(hResult))
@@ -236,11 +278,11 @@ namespace
 
 			imfMediaTypeAudioIn->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
 			imfMediaTypeAudioIn->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, iAudioWaveFormatEx->Format.wBitsPerSample);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, iAudioWaveFormatEx->Format.nChannels);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, iAudioWaveFormatEx->Format.nSamplesPerSec);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, iAudioWaveFormatEx->Format.nAvgBytesPerSec);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, iAudioWaveFormatEx->Format.nBlockAlign);
+			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, iAudioWaveFormatExCapture->Format.wBitsPerSample);
+			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, iAudioWaveFormatExCapture->Format.nChannels);
+			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, iAudioWaveFormatExCapture->Format.nSamplesPerSec);
+			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, iAudioWaveFormatExCapture->Format.nAvgBytesPerSec);
+			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, iAudioWaveFormatExCapture->Format.nBlockAlign);
 			hResult = imfSinkWriter->SetInputMediaType(vOutAudioStreamIndex, imfMediaTypeAudioIn, NULL);
 			if (FAILED(hResult))
 			{

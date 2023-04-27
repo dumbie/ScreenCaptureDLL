@@ -31,31 +31,25 @@ namespace
 				LARGE_INTEGER qpcTimeCurrent;
 				QueryPerformanceCounter(&qpcTimeCurrent);
 
-				//Check next media write time
-				ULONGLONG differenceTime = qpcTimeCurrent.QuadPart - vMediaTimeNextScreen;
-				if (differenceTime < mediaTimeDuration)
+				//Get screen bytes
+				BYTE* screenBytes = GetScreenBytes(true, true);
+
+				//Check screen bytes
+				if (screenBytes != NULL)
 				{
-					//std::cout << "Delaying media write, writing to fast: " << differenceTime << std::endl;
-					continue;
-				}
+					//Write media bytes to sink
+					ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
+					WriteMediaDataBytes(screenBytes, vCaptureDetails.TotalByteSize, vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+					std::cout << "Written media screen at: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << vCaptureDetails.TotalByteSize << std::endl;
 
-				//Get screen bytes and check
-				BYTE* screenBytes = GetScreenBytes(false, true);
-				if (screenBytes == NULL)
+					//Clear screen bytes
+					DeleteDataBytes(screenBytes);
+				}
+				else
 				{
-					continue;
+					//Delay screen capture
+					Sleep(1);
 				}
-
-				//Write media bytes to sink
-				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
-				WriteMediaDataBytes(screenBytes, vCaptureDetails.TotalByteSize, vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
-				//std::cout << "Written media screen at: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << vCaptureDetails.TotalByteSize << std::endl;
-
-				//Clear screen bytes
-				DeleteDataBytes(screenBytes);
-
-				//Update media next time
-				vMediaTimeNextScreen = qpcTimeCurrent.QuadPart;
 			}
 		}
 		catch (...) {}
@@ -86,32 +80,26 @@ namespace
 				LARGE_INTEGER qpcTimeCurrent;
 				QueryPerformanceCounter(&qpcTimeCurrent);
 
-				//Check next media write time
-				ULONGLONG differenceTime = qpcTimeCurrent.QuadPart - vMediaTimeNextAudio;
-				if (differenceTime < mediaTimeDuration)
-				{
-					//std::cout << "Delaying media write, writing to fast: " << differenceTime << std::endl;
-					continue;
-				}
-
-				//Get audio bytes and check
+				//Get audio bytes
 				UINT32 audioBytesSize;
 				BYTE* audioBytes = GetAudioBytes(audioBytesSize);
-				if (audioBytes == NULL)
+
+				//Check audio bytes
+				if (audioBytes != NULL)
 				{
-					continue;
+					//Write media bytes to sink
+					ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
+					WriteMediaDataBytes(audioBytes, audioBytesSize, vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
+					std::cout << "Written media audio at: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << audioBytesSize << std::endl;
+
+					//Clear audio bytes
+					DeleteDataBytes(audioBytes);
 				}
-
-				//Write media bytes to sink
-				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
-				WriteMediaDataBytes(audioBytes, audioBytesSize, vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
-				//std::cout << "Written media audio at: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << audioBytesSize << std::endl;
-
-				//Clear audio bytes
-				DeleteDataBytes(audioBytes);
-
-				//Update media next time
-				vMediaTimeNextAudio = qpcTimeCurrent.QuadPart;
+				else
+				{
+					//Delay audio capture
+					Sleep(1);
+				}
 			}
 		}
 		catch (...) {}

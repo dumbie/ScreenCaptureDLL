@@ -145,8 +145,11 @@ namespace
 			//Set video encoder details
 			if (!SetVideoEncoderDetails()) { return false; }
 
-			//Set audio device
-			if (!SetAudioDevice()) { return false; }
+			//Set audio device capture
+			if (!SetAudioDeviceCapture()) { return false; }
+
+			//Set audio device render (fills buffer)
+			if (!SetAudioDeviceRender()) { return false; }
 
 			//Set audio media type
 			if (!SetAudioMediaType()) { return false; }

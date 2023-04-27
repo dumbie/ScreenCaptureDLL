@@ -82,9 +82,12 @@ namespace
 
 			//Audio
 			iDevice.Release();
-			iAudioClient.Release();
-			iAudioCaptureClient.Release();
-			iAudioWaveFormatEx.Free();
+			iAudioDeviceCapture.Release();
+			iAudioDeviceRender.Release();
+			iAudioClientCapture.Release();
+			iAudioClientRender.Release();
+			iAudioWaveFormatExCapture.Free();
+			iAudioWaveFormatExRender.Free();
 
 			return true;
 		}

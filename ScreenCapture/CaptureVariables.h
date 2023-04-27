@@ -62,12 +62,6 @@ namespace
 	CComPtr<IWICFormatConverter> iWICFormatConverter;
 	CComPtr<IWICBitmap> iWICBitmap;
 
-	//Media
-	ULONGLONG vMediaTimeNextScreen;
-	ULONGLONG vMediaTimeNextAudio;
-	ULONGLONG vMediaTimeStartLoop;
-	BOOL vAudioIsMuted;
-
 	//Media foundation
 	CComPtr<IMFSinkWriterEx> imfSinkWriter;
 	MediaSettings vMediaSettings{};
@@ -77,6 +71,7 @@ namespace
 	BOOL vMediaWriteLoopFinishedAudio;
 	DWORD vOutVideoStreamIndex = 0;
 	DWORD vOutAudioStreamIndex = 0;
+	ULONGLONG vMediaTimeStartLoop = 0;
 	UINT vReferenceTimeFrameDuration = 100000;
 	UINT vReferenceTimeToSeconds = 10000000;
 	UINT vReferenceTimeToMilliseconds = 10000;
@@ -84,9 +79,12 @@ namespace
 
 	//Audio device
 	CComPtr<IMMDevice> iDevice;
-	CComPtr<IAudioClient3> iAudioClient;
-	CComPtr<IAudioCaptureClient> iAudioCaptureClient;
-	CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatEx;
+	CComPtr<IAudioClient3> iAudioDeviceCapture;
+	CComPtr<IAudioClient3> iAudioDeviceRender;
+	CComPtr<IAudioCaptureClient> iAudioClientCapture;
+	CComPtr<IAudioRenderClient> iAudioClientRender;
+	CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatExCapture;
+	CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatExRender;
 
 	//Arrays
 	FLOAT ColorRgbaBlack[] = { 0.0f, 0.0f, 0.0f, 0.0f };
