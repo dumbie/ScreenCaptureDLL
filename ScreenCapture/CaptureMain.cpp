@@ -64,27 +64,38 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureFreeMemory(BYTE* bitmapData)
+		__declspec(dllexport) BYTE* CaptureScreenBytes()
 		{
 			try
 			{
-				return DeleteDataBytes(bitmapData);
+				//Clear screen bytes cache
+				vScreenBytesCacheCapture.clear();
+
+				//Update screen bytes cache
+				vScreenBytesCacheCapture = GetScreenBytes(true, false);
+
+				//Return result
+				return vScreenBytesCacheCapture.data();
 			}
 			catch (...)
 			{
-				return false;
+				return NULL;
 			}
 		}
 
-		__declspec(dllexport) BYTE* CaptureScreenshot()
-		{
-			return GetScreenBytes(true, false);
-		}
-
-		__declspec(dllexport) BOOL CaptureImage(BYTE* bitmapData, WCHAR* filePath, UINT imageQuality, ImageFormats imageFormat)
+		__declspec(dllexport) BOOL CaptureImage(WCHAR* filePath, UINT imageQuality, ImageFormats imageFormat)
 		{
 			try
 			{
+				//Get screen bytes
+				std::vector<BYTE> screenBytes = GetScreenBytes(true, false);
+
+				//Check screen bytes
+				if (screenBytes.empty())
+				{
+					return false;
+				}
+
 				//Check image save format
 				GUID imageSaveFormat{};
 				if (imageFormat == JXR)
@@ -118,7 +129,7 @@ namespace
 				}
 
 				//Save bitmap data to file
-				return BitmapDataSaveFile(bitmapData, filePath, imageSaveFormat, imageQuality);
+				return BitmapDataSaveFile(screenBytes.data(), filePath, imageSaveFormat, imageQuality);
 			}
 			catch (...)
 			{

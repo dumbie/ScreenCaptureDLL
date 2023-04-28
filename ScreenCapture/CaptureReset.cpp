@@ -3,22 +3,6 @@
 
 namespace
 {
-	BOOL DeleteDataBytes(BYTE* bitmapData)
-	{
-		try
-		{
-			if (bitmapData != NULL)
-			{
-				delete[] bitmapData;
-			}
-			return true;
-		}
-		catch (...)
-		{
-			return false;
-		}
-	}
-
 	BOOL CaptureResetVariablesTexture()
 	{
 		try
@@ -88,6 +72,10 @@ namespace
 			iAudioClientRender.Release();
 			iAudioWaveFormatExCapture.Free();
 			iAudioWaveFormatExRender.Free();
+
+			//Bytes
+			vScreenBytesCacheCapture.clear();
+			vScreenBytesCacheVideo.clear();
 
 			return true;
 		}
