@@ -34,6 +34,7 @@
 #include <mfapi.h>
 #include <mfidl.h>
 #include <mfapi.h>
+#include <mfobjects.h>
 #include <mfreadwrite.h>
 #include <mfmediaengine.h>
 

@@ -6,13 +6,19 @@
 
 namespace
 {
-	BOOL WriteMediaDataBytes(BYTE* mediaBytes, UINT mediaSize, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
+	BOOL WriteMediaDataBytes(SafeBytes mediaBytes, BOOL releaseBytes, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
 	{
 		try
 		{
+			//Check media bytes
+			if (mediaBytes.IsEmpty())
+			{
+				return false;
+			}
+
 			//Create media buffer
 			CComPtr<IMFMediaBuffer> imfMediaBuffer;
-			hResult = MFCreateMemoryBuffer(mediaSize, &imfMediaBuffer);
+			hResult = MFCreateMemoryBuffer(mediaBytes.Size, &imfMediaBuffer);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -27,7 +33,7 @@ namespace
 			}
 
 			//Set media bytes
-			memcpy(mediaBufferBytes, mediaBytes, mediaSize);
+			memcpy(mediaBufferBytes, mediaBytes.Data, mediaBytes.Size);
 
 			//Unlock media bytes
 			hResult = imfMediaBuffer->Unlock();
@@ -37,7 +43,7 @@ namespace
 			}
 
 			//Set media length
-			hResult = imfMediaBuffer->SetCurrentLength(mediaSize);
+			hResult = imfMediaBuffer->SetCurrentLength(mediaBytes.Size);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -79,10 +85,18 @@ namespace
 				return false;
 			}
 
+			//Release media bytes
+			if (releaseBytes)
+			{
+				mediaBytes.Release();
+			}
+
 			//Release resources
 			imfMediaSample.Release();
 			imfMediaBuffer.Release();
 
+			//Return result
+			//std::cout << "Written media sample: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << mediaBytes.Size << " type: " << mediaIndex << std::endl;
 			return true;
 		}
 		catch (...)

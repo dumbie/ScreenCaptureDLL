@@ -3,7 +3,7 @@
 
 namespace
 {
-	BYTE* GetAudioBytes(UINT32& audioBytesSize)
+	SafeBytes GetAudioBytes()
 	{
 		try
 		{
@@ -16,14 +16,14 @@ namespace
 			hResult = iAudioClientCapture->GetBuffer(&mediaBuffer, &mediaFramesRead, &mediaFlags, &devicePosition, &qpcPosition);
 			if (FAILED(hResult))
 			{
-				return NULL;
+				return SafeBytes();
 			}
 
 			//Release audio buffer
 			hResult = iAudioClientCapture->ReleaseBuffer(mediaFramesRead);
 			if (FAILED(hResult))
 			{
-				return NULL;
+				return SafeBytes();
 			}
 
 			//Check if audio needs to be silenced
@@ -37,44 +37,49 @@ namespace
 			//Calculate target frames read
 			UINT32 mediaFramesTarget = iAudioWaveFormatExCapture->Format.nSamplesPerSec / 100;
 
-			//Create bytes array
-			BYTE* audioBytes = NULL;
-
 			//Check media frames read
 			if (mediaFramesRead == mediaFramesTarget)
 			{
 				//std::cout << "Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags << std::endl;
 
 				//Calculate media size
-				audioBytesSize = mediaFramesRead * iAudioWaveFormatExCapture->Format.nBlockAlign;
+				UINT audioBytesSize = mediaFramesRead * iAudioWaveFormatExCapture->Format.nBlockAlign;
 
-				//Resize bytes cache
-				audioBytes = new BYTE[audioBytesSize];
+				//Create bytes array
+				SafeBytes audioBytes(audioBytesSize);
 
 				//Copy buffer to bytes cache
-				memcpy(audioBytes, mediaBuffer, audioBytesSize);
+				memcpy(audioBytes.Data, mediaBuffer, audioBytesSize);
+
+				//Return result
+				return audioBytes;
 			}
 			else if (silenceAudioBuffer)
 			{
 				//std::cout << "Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags << std::endl;
 
 				//Calculate media size
-				UINT32 audioBytesSize = mediaFramesTarget * iAudioWaveFormatExCapture->Format.nBlockAlign;
+				UINT audioBytesSize = mediaFramesTarget * iAudioWaveFormatExCapture->Format.nBlockAlign;
 
-				//Resize bytes cache
-				audioBytes = new BYTE[audioBytesSize];
+				//Create bytes array
+				SafeBytes audioBytes(audioBytesSize);
 
 				//Fill bytes cache with silence
-				memset(audioBytes, 0, audioBytesSize);
-			}
+				memset(audioBytes.Data, 0, audioBytesSize);
 
-			//Return result
-			return audioBytes;
+				//Return result
+				return audioBytes;
+			}
+			else
+			{
+				//std::cout << "No audio bytes read." << std::endl;
+				return SafeBytes();
+			}
 		}
 		catch (...)
 		{
-			std::cout << "UpdateAudioBytesCache failed." << std::endl;
-			return NULL;
+			std::cout << "GetAudioBytes failed." << std::endl;
+			return SafeBytes();
 		}
 	}
 

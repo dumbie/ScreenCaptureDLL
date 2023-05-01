@@ -14,7 +14,7 @@ namespace
 	DXGI_FORMAT vCaptureDxgiFormat;
 	ULONGLONG vCaptureSDRWhiteLevelTicks;
 
-	//Devices
+	//Device Direct3D
 	CComPtr<IDXGIDevice4> iDxgiDevice4;
 	CComPtr<IDXGIAdapter4> iDxgiAdapter4;
 	CComPtr<IDXGIOutput> iDxgiOutput0;
@@ -62,6 +62,10 @@ namespace
 	CComPtr<IWICFormatConverter> iWICFormatConverter;
 	CComPtr<IWICBitmap> iWICBitmap;
 
+	//Bytes
+	SafeBytes vScreenBytesCacheCapture;
+	SafeBytes vScreenBytesCacheVideo;
+
 	//Media foundation
 	CComPtr<IMFSinkWriterEx> imfSinkWriter;
 	MediaSettings vMediaSettings{};
@@ -77,7 +81,7 @@ namespace
 	UINT vReferenceTimeToMilliseconds = 10000;
 	UINT vReferenceTimeToMicroseconds = 1000;
 
-	//Audio device
+	//Device Audio
 	CComPtr<IMMDevice> iDevice;
 	CComPtr<IAudioClient3> iAudioDeviceCapture;
 	CComPtr<IAudioClient3> iAudioDeviceRender;

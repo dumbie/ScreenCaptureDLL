@@ -15,6 +15,46 @@ namespace
 	};
 
 	//Structures
+	struct SafeBytes
+	{
+		//Variables
+		BYTE* Data = NULL;
+		size_t Size = 0;
+
+		//Create
+		SafeBytes() {}
+		SafeBytes(size_t bytesSize)
+		{
+			Data = new BYTE[bytesSize];
+			Size = bytesSize;
+		}
+
+		//Check
+		BOOL IsEmpty()
+		{
+			return Data == NULL;
+		}
+
+		//Release
+		BOOL Release()
+		{
+			try
+			{
+				if (Data != NULL)
+				{
+					delete[] Data;
+					Data = NULL;
+					Size = 0;
+				}
+				return true;
+			}
+			catch (...)
+			{
+				return false;
+			}
+		}
+	};
+
 	struct MediaSettings
 	{
 		GUID AudioFormat = MFAudioFormat_AAC;

@@ -74,8 +74,8 @@ namespace
 			iAudioWaveFormatExRender.Free();
 
 			//Bytes
-			vScreenBytesCacheCapture.clear();
-			vScreenBytesCacheVideo.clear();
+			vScreenBytesCacheCapture.Release();
+			vScreenBytesCacheVideo.Release();
 
 			return true;
 		}

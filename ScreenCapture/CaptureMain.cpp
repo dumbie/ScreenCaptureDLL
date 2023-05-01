@@ -68,14 +68,14 @@ namespace
 		{
 			try
 			{
-				//Clear screen bytes cache
-				vScreenBytesCacheCapture.clear();
+				//Release screen bytes cache
+				vScreenBytesCacheCapture.Release();
 
 				//Update screen bytes cache
 				vScreenBytesCacheCapture = GetScreenBytes(true, false);
 
 				//Return result
-				return vScreenBytesCacheCapture.data();
+				return vScreenBytesCacheCapture.Data;
 			}
 			catch (...)
 			{
@@ -88,10 +88,10 @@ namespace
 			try
 			{
 				//Get screen bytes
-				std::vector<BYTE> screenBytes = GetScreenBytes(true, false);
+				SafeBytes screenBytes = GetScreenBytes(true, false);
 
 				//Check screen bytes
-				if (screenBytes.empty())
+				if (screenBytes.IsEmpty())
 				{
 					return false;
 				}
@@ -129,7 +129,7 @@ namespace
 				}
 
 				//Save bitmap data to file
-				return BitmapDataSaveFile(screenBytes.data(), filePath, imageSaveFormat, imageQuality);
+				return BitmapDataSaveFile(screenBytes.Data, filePath, imageSaveFormat, imageQuality);
 			}
 			catch (...)
 			{

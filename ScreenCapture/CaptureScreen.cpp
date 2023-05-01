@@ -5,7 +5,7 @@
 
 namespace
 {
-	BYTE* GetScreenBytes(BOOL waitNextFrame, BOOL flipScreen)
+	SafeBytes GetScreenBytes(BOOL waitNextFrame, BOOL flipScreen)
 	{
 		try
 		{
@@ -20,7 +20,15 @@ namespace
 			{
 				//std::cout << "Failed to acquire next frame: " << hResult << std::endl;
 				CaptureResetVariablesTexture();
-				return NULL;
+				return SafeBytes();
+			}
+
+			//Check mouse movement updates
+			if (iDxgiOutputDuplicationFrameInfo.LastPresentTime.QuadPart == 0)
+			{
+				//std::cout << "Acquire next frame, skipping mouse movement." << std::endl;
+				CaptureResetVariablesTexture();
+				return SafeBytes();
 			}
 
 			//Convert variables
@@ -28,7 +36,7 @@ namespace
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return SafeBytes();
 			}
 
 			//Draw cursor to texture
@@ -43,7 +51,7 @@ namespace
 				if (!Texture2DResizeMips(Texture2DGetCurrent()))
 				{
 					CaptureResetVariablesTexture();
-					return NULL;
+					return SafeBytes();
 				}
 			}
 
@@ -51,18 +59,18 @@ namespace
 			if (!Texture2DApplyShaders(Texture2DGetCurrent()))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return SafeBytes();
 			}
 
 			//Convert to cpu read texture
 			if (!Texture2DConvertToCpuRead(iD3D11Texture2D1RenderTargetView))
 			{
 				CaptureResetVariablesTexture();
-				return NULL;
+				return SafeBytes();
 			}
 
 			//Convert texture to screen bytes
-			BYTE* screenBytes = Texture2DConvertToScreenBytes(iD3D11Texture2D1CpuRead, flipScreen);
+			SafeBytes screenBytes = Texture2DConvertToScreenBytes(iD3D11Texture2D1CpuRead, flipScreen);
 
 			//Release resources
 			CaptureResetVariablesTexture();
@@ -72,8 +80,9 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "GetScreenBytes failed." << std::endl;
 			CaptureResetVariablesTexture();
-			return NULL;
+			return SafeBytes();
 		}
 	}
 }

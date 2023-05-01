@@ -10,7 +10,7 @@ namespace
 		return iD3D11Texture2D1Capture;
 	}
 
-	BYTE* Texture2DConvertToScreenBytes(CComPtr<ID3D11Texture2D1>& textureTarget, BOOL textureFlip)
+	SafeBytes Texture2DConvertToScreenBytes(CComPtr<ID3D11Texture2D1>& textureTarget, BOOL textureFlip)
 	{
 		try
 		{
@@ -19,17 +19,17 @@ namespace
 			hResult = iD3D11DeviceContext4->Map(textureTarget, 0, D3D11_MAP_READ, 0, &iD3DMappedSubResource);
 			if (FAILED(hResult))
 			{
-				return NULL;
+				return SafeBytes();
 			}
 
 			//Create image byte array
-			BYTE* BitmapBytes = new BYTE[vCaptureDetails.TotalByteSize];
+			SafeBytes BitmapBytes(vCaptureDetails.TotalByteSize);
 
 			//Write image byte array
 			BYTE* SourceBuffer = (BYTE*)iD3DMappedSubResource.pData;
 			if (textureFlip)
 			{
-				BYTE* BitmapBuffer = BitmapBytes + vCaptureDetails.TotalByteSize - vCaptureDetails.WidthByteSize;
+				BYTE* BitmapBuffer = BitmapBytes.Data + vCaptureDetails.TotalByteSize - vCaptureDetails.WidthByteSize;
 				for (UINT i = 0; i < vCaptureDetails.Height; i++)
 				{
 					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
@@ -39,7 +39,7 @@ namespace
 			}
 			else
 			{
-				BYTE* BitmapBuffer = BitmapBytes;
+				BYTE* BitmapBuffer = BitmapBytes.Data;
 				for (UINT i = 0; i < vCaptureDetails.Height; i++)
 				{
 					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
@@ -56,7 +56,7 @@ namespace
 		}
 		catch (...)
 		{
-			return NULL;
+			return SafeBytes();
 		}
 	}
 
