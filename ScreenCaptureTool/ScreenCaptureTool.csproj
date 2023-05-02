@@ -117,7 +117,7 @@
     </Compile>
     <Compile Include="AppCheck.cs" />
     <Compile Include="AppClose.cs" />
-    <Compile Include="CaptureMedia.cs" />
+    <Compile Include="CaptureVideo.cs" />
     <Compile Include="Settings\SettingsShortcut.cs" />
     <Compile Include="SocketHandler.cs" />
     <Compile Include="SocketServer.cs" />
@@ -161,14 +161,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\ScreenCaptureShared\Assets\Screenshot.mp3">
-      <Link>Assets\Screenshot.mp3</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\ScreenCaptureShared\Assets\ScreenshotFail.mp3">
-      <Link>Assets\ScreenshotFail.mp3</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="Assets\AppIcon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +174,20 @@
       <Project>{478ed5d3-38af-47fc-ae14-b67976ab952c}</Project>
       <Name>ArnoldVinkCode</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Screenshot.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\CaptureFail.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\VideoStart.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\VideoStop.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

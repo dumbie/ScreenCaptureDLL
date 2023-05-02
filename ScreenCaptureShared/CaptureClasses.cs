@@ -17,6 +17,7 @@
         public CaptureSettings() { }
         public int MonitorId { get; set; } = 0;
         public int MaxPixelDimension { get; set; } = 0;
+        public bool DrawCursor { get; set; } = false;
         public bool HDRtoSDR { get; set; } = false;
         public float HDRPaperWhite { get; set; } = 80.0F;
         public float HDRMaximumNits { get; set; } = 1000.0F;
@@ -34,6 +35,7 @@
     {
         public int Width { get; set; }
         public int Height { get; set; }
+        public int RefreshRate { get; set; }
         public bool HDREnabled { get; set; }
         public float SDRWhiteLevel { get; set; }
         public int PixelByteSize { get; set; }

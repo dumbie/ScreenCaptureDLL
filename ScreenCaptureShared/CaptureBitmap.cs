@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -56,6 +57,23 @@ namespace ScreenCapture
                 Debug.WriteLine("Failed to convert BitmapIntPtr to BitmapSource: " + ex.Message);
                 return null;
             }
+        }
+
+        //Convert BitmapSource to image file png
+        public static bool BitmapSourceToImageFilePng(BitmapSource bitmapSource, string fileName)
+        {
+            try
+            {
+                using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
+                {
+                    BitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                    encoder.Save(fileStream);
+                    return true;
+                }
+            }
+            catch { }
+            return false;
         }
     }
 }

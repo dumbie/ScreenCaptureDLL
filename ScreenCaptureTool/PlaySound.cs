@@ -8,7 +8,7 @@ namespace ScreenCapture
     public partial class CaptureScreen
     {
         //Play capture sound
-        public static void PlayCaptureSound(bool failSound)
+        public static void PlayCaptureSound(string soundName)
         {
             try
             {
@@ -16,18 +16,9 @@ namespace ScreenCapture
                 {
                     AVActions.DispatcherInvoke(delegate
                     {
-                        if (!failSound)
-                        {
-                            vWindowsMediaPlayer.Volume = 1.0;
-                            vWindowsMediaPlayer.Open(new Uri("Assets\\Screenshot.mp3", UriKind.RelativeOrAbsolute));
-                            vWindowsMediaPlayer.Play();
-                        }
-                        else
-                        {
-                            vWindowsMediaPlayer.Volume = 1.0;
-                            vWindowsMediaPlayer.Open(new Uri("Assets\\ScreenshotFail.mp3", UriKind.RelativeOrAbsolute));
-                            vWindowsMediaPlayer.Play();
-                        }
+                        vWindowsMediaPlayer.Volume = 1.00;
+                        vWindowsMediaPlayer.Open(new Uri("Assets\\" + soundName + ".mp3", UriKind.RelativeOrAbsolute));
+                        vWindowsMediaPlayer.Play();
                     });
                 }
             }

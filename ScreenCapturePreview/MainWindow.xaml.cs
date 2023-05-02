@@ -30,6 +30,7 @@ namespace ScreenCapture
                     MonitorId = 0,
                     MaxPixelDimension = 1000,
                     HDRtoSDR = true,
+                    DrawCursor = true,
                     HDRPaperWhite = (float)slider_HDRPaperWhite.Value,
                     HDRMaximumNits = (float)slider_HDRMaximumNits.Value,
                     Saturation = (float)slider_Saturation.Value,
@@ -48,6 +49,7 @@ namespace ScreenCapture
                 //Set capture details string
                 string captureDetails = "Width: " + vCaptureDetails.Width;
                 captureDetails += "\nHeight: " + vCaptureDetails.Height;
+                captureDetails += "\nRefreshRate: " + vCaptureDetails.RefreshRate;
                 captureDetails += "\nPixelByteSize: " + vCaptureDetails.PixelByteSize;
                 captureDetails += "\nWidthByteSize: " + vCaptureDetails.WidthByteSize;
                 captureDetails += "\nTotalByteSize: " + vCaptureDetails.TotalByteSize;
@@ -82,7 +84,6 @@ namespace ScreenCapture
                 //Loop and capture screen
                 while (true)
                 {
-                    IntPtr bitmapIntPtr = IntPtr.Zero;
                     try
                     {
                         //Check window state
@@ -92,17 +93,18 @@ namespace ScreenCapture
                             continue;
                         }
 
-                        //Capture screenshot
+                        //Capture screen bytes
+                        IntPtr bitmapIntPtr = IntPtr.Zero;
                         try
                         {
-                            bitmapIntPtr = CaptureImport.CaptureScreenshot();
+                            bitmapIntPtr = CaptureImport.CaptureScreenBytes();
                         }
                         catch { }
 
-                        //Check screenshot
+                        //Check screen bytes
                         if (bitmapIntPtr == IntPtr.Zero)
                         {
-                            Debug.WriteLine("Screenshot is corrupted, restarting capture.");
+                            Debug.WriteLine("Screen bytes are corrupted, restarting capture.");
                             await InitializeScreenCapture(200);
                             continue;
                         }
@@ -116,14 +118,8 @@ namespace ScreenCapture
                     }
                     finally
                     {
-                        //Clear screen capture resources
-                        if (bitmapIntPtr != IntPtr.Zero)
-                        {
-                            CaptureImport.CaptureFreeMemory(bitmapIntPtr);
-                        }
-
                         //Delay next screen capture
-                        await Task.Delay(250);
+                        await Task.Delay(200);
                     }
                 }
             }

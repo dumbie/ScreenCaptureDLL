@@ -45,9 +45,13 @@ namespace ScreenCapture
                 if (DeserializeBytesToObject(receivedBytes, out string deserializedBytes))
                 {
                     Debug.WriteLine("Received socket string: " + deserializedBytes);
-                    if (deserializedBytes == "TakeScreenshot")
+                    if (deserializedBytes == "CaptureImage")
                     {
                         await CaptureScreen.CaptureImageToFile();
+                    }
+                    else if (deserializedBytes == "CaptureVideo")
+                    {
+                        await CaptureScreen.CaptureVideoToFile();
                     }
                 }
             }
