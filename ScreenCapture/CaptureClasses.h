@@ -35,6 +35,23 @@ namespace
 			return Data == NULL;
 		}
 
+		//Copy
+		BOOL CopyTo(SafeBytes& destination)
+		{
+			try
+			{
+				destination.Release();
+				destination.Data = new BYTE[Size];
+				destination.Size = Size;
+				memcpy(destination.Data, Data, Size);
+				return true;
+			}
+			catch (...)
+			{
+				return false;
+			}
+		}
+
 		//Release
 		BOOL Release()
 		{
@@ -63,7 +80,7 @@ namespace
 		UINT AudioBits = 16;
 		UINT AudioFrequency = 48000;
 		GUID VideoFormat = MFVideoFormat_HEVC;
-		FLOAT VideoQuality = 0.80;
+		FLOAT VideoQuality = 0.80F;
 		UINT VideoFrameRate = 60;
 	};
 
