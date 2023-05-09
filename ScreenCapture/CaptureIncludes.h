@@ -2,6 +2,7 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "windowscodecs.lib")
+#pragma comment(lib, "wmcodecdspuuid.lib")
 #pragma comment(lib, "mf.lib")
 #pragma comment(lib, "mfplat.lib")
 #pragma comment(lib, "mfreadwrite.lib")
@@ -29,14 +30,15 @@
 #include <wincodec.h>
 #include <strmif.h>
 #include <codecapi.h>
+#include <wmcodecdsp.h>
 
 //Video
 #include <mfapi.h>
 #include <mfidl.h>
-#include <mfapi.h>
 #include <mfobjects.h>
 #include <mfreadwrite.h>
 #include <mfmediaengine.h>
+#include <mftransform.h>
 
 //Audio
 #include <mmdeviceapi.h>

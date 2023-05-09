@@ -10,8 +10,8 @@ namespace
 		try
 		{
 			//Create D3D11 Device
-			UINT iD3DCreateFlags = 0;
 			D3D_FEATURE_LEVEL iD3DFeatureLevel;
+			UINT iD3DCreateFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
 			hResult = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, iD3DCreateFlags, D3DFeatureLevelsArray, D3DFeatureLevelsCount, D3D11_SDK_VERSION, &iD3D11Device0, &iD3DFeatureLevel, &iD3D11DeviceContext0);
 			if (FAILED(hResult))
 			{
@@ -36,7 +36,23 @@ namespace
 			}
 
 			//Convert variables
+			hResult = iD3D11Device5->QueryInterface(&iD3D11Multithread);
+			if (FAILED(hResult))
+			{
+				CaptureResetVariablesAll();
+				return false;
+			}
+
+			//Convert variables
 			hResult = iD3D11DeviceContext0->QueryInterface(&iD3D11DeviceContext4);
+			if (FAILED(hResult))
+			{
+				CaptureResetVariablesAll();
+				return false;
+			}
+
+			//Set multithread protected
+			hResult = iD3D11Multithread->SetMultithreadProtected(true);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll();

@@ -63,6 +63,7 @@ namespace
 			vMediaCapturing = false;
 			vMediaWriteLoopAllowed = false;
 			imfSinkWriter.Release();
+			imfDXGIDeviceManager.Release();
 
 			//Audio
 			iDevice.Release();
@@ -74,8 +75,7 @@ namespace
 			iAudioWaveFormatExRender.Free();
 
 			//Bytes
-			vScreenBytesCacheCapture.Release();
-			vScreenBytesCacheVideo.Release();
+			vScreenBytesCache.Release();
 
 			return true;
 		}
@@ -97,6 +97,7 @@ namespace
 			iDxgiOutputDuplication0.Release();
 			iD3D11Device0.Release();
 			iD3D11Device5.Release();
+			iD3D11Multithread.Release();
 			iD3D11DeviceContext0.Release();
 			iD3D11DeviceContext4.Release();
 

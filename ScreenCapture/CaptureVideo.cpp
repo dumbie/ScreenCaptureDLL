@@ -3,34 +3,6 @@
 
 namespace
 {
-	BOOL SetVideoEncoderDetails()
-	{
-		try
-		{
-			//Get service for stream
-			CComPtr<ICodecAPI> iCodecApi;
-			hResult = imfSinkWriter->GetServiceForStream(vOutVideoStreamIndex, GUID_NULL, IID_PPV_ARGS(&iCodecApi));
-			if (FAILED(hResult))
-			{
-				std::cout << "GetServiceForStream video failed." << std::endl;
-				return false;
-			}
-
-			//Set encoder common rate control
-			VARIANT encCommonRateControl{};
-			encCommonRateControl.vt = VT_UI4;
-			encCommonRateControl.ulVal = eAVEncCommonRateControlMode_CBR;
-			iCodecApi->SetValue(&CODECAPI_AVEncCommonRateControlMode, &encCommonRateControl);
-
-			return true;
-		}
-		catch (...)
-		{
-			std::cout << "SetVideoEncoderDetails failed." << std::endl;
-			return false;
-		}
-	}
-
 	BOOL SetVideoMediaType()
 	{
 		try
@@ -44,11 +16,33 @@ namespace
 				return false;
 			}
 
+			//HDR and SDR settings
+			GUID setOutSubType{};
+			if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR)
+			{
+				setOutSubType = MFVideoFormat_HEVC;
+				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_HEVC);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH265VLevel5);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_10);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT2020);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_2084); //PQ
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT2020_10);
+			}
+			else
+			{
+				setOutSubType = vMediaSettings.VideoFormat;
+				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, vMediaSettings.VideoFormat);
+			}
+
 			//Calculate video out bitrate
 			UINT32 videoBitrate = 10000000 * vMediaSettings.VideoQuality;
+			if (setOutSubType == MFVideoFormat_HEVC)
+			{
+				videoBitrate /= 2;
+			}
+			std::cout << "Set video bitrate to: " << videoBitrate << std::endl;
 
 			imfMediaTypeVideoOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
-			imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, vMediaSettings.VideoFormat);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_AVG_BITRATE, videoBitrate);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
@@ -61,6 +55,11 @@ namespace
 				std::cout << "AddStream video failed." << std::endl;
 				return false;
 			}
+
+			//Create video encoding parameters
+			CComPtr<IMFAttributes> imfAttributesEncoding;
+			MFCreateAttributes(&imfAttributesEncoding, 0);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_CBR);
 
 			//Create video in media type
 			CComPtr<IMFMediaType> imfMediaTypeVideoIn;
@@ -87,10 +86,10 @@ namespace
 				std::cout << "Set media type format to SDR." << std::endl;
 				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_RGB32);
 			}
-			hResult = imfSinkWriter->SetInputMediaType(vOutVideoStreamIndex, imfMediaTypeVideoIn, NULL);
+			hResult = imfSinkWriter->SetInputMediaType(vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
 			if (FAILED(hResult))
 			{
-				std::cout << "SetInputMediaType video failed." << std::endl;
+				std::cout << "SetInputMediaType video failed: " << hResult << std::endl;
 				return false;
 			}
 

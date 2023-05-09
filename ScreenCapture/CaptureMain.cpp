@@ -69,13 +69,13 @@ namespace
 			try
 			{
 				//Release screen bytes cache
-				vScreenBytesCacheCapture.Release();
+				vScreenBytesCache.Release();
 
 				//Update screen bytes cache
-				vScreenBytesCacheCapture = GetScreenBytes(true, false);
+				vScreenBytesCache = GetScreenBytes(true, false);
 
 				//Return result
-				return vScreenBytesCacheCapture.Data;
+				return vScreenBytesCache.Data;
 			}
 			catch (...)
 			{
@@ -149,6 +149,14 @@ namespace
 				vMediaWriteLoopFinishedScreen = false;
 				vMediaWriteLoopFinishedAudio = false;
 
+				//Initialize DXGI device manager
+				bool initializeDXGI = InitializeDxgiDeviceManager();
+				if (!initializeDXGI)
+				{
+					CaptureResetVariablesMedia();
+					return false;
+				}
+
 				//Initialize media foundation
 				bool initializeMedia = InitializeMediaFoundation(filePath);
 				if (!initializeMedia)
@@ -204,9 +212,6 @@ namespace
 
 				//Shutdown media foundation
 				MFShutdown();
-
-				//CoUninitialize
-				CoUninitialize();
 
 				//Release resources
 				CaptureResetVariablesTexture();

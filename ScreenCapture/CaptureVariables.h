@@ -22,6 +22,7 @@ namespace
 	CComPtr<IDXGIOutputDuplication> iDxgiOutputDuplication0;
 	CComPtr<ID3D11Device> iD3D11Device0;
 	CComPtr<ID3D11Device5> iD3D11Device5;
+	CComPtr<ID3D11Multithread> iD3D11Multithread;
 	CComPtr<ID3D11DeviceContext> iD3D11DeviceContext0;
 	CComPtr<ID3D11DeviceContext4> iD3D11DeviceContext4;
 
@@ -63,11 +64,11 @@ namespace
 	CComPtr<IWICBitmap> iWICBitmap;
 
 	//Bytes
-	SafeBytes vScreenBytesCacheCapture;
-	SafeBytes vScreenBytesCacheVideo;
+	SafeBytes vScreenBytesCache;
 
 	//Media foundation
 	CComPtr<IMFSinkWriterEx> imfSinkWriter;
+	CComPtr<IMFDXGIDeviceManager> imfDXGIDeviceManager;
 	MediaSettings vMediaSettings{};
 	BOOL vMediaCapturing;
 	BOOL vMediaWriteLoopAllowed;
@@ -95,8 +96,8 @@ namespace
 
 	D3D_FEATURE_LEVEL D3DFeatureLevelsArray[] =
 	{
-		D3D_FEATURE_LEVEL_12_0,
-		D3D_FEATURE_LEVEL_11_0
+		D3D_FEATURE_LEVEL_12_2,
+		D3D_FEATURE_LEVEL_11_1
 	};
 	UINT D3DFeatureLevelsCount = ARRAYSIZE(D3DFeatureLevelsArray);
 
