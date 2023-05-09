@@ -30,33 +30,23 @@ namespace
 				//Get media frame start time
 				LARGE_INTEGER qpcTimeCurrent;
 				QueryPerformanceCounter(&qpcTimeCurrent);
+				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
 
 				//Get screen bytes
-				SafeBytes screenBytes = GetScreenBytes(false, true);
+				SafeBytes screenBytes = GetScreenBytes(true, false);
 
 				//Update screen bytes
 				if (!screenBytes.IsEmpty())
 				{
-					//Release screen bytes cache
-					vScreenBytesCacheVideo.Release();
-
-					//Update screen bytes cache
-					vScreenBytesCacheVideo = screenBytes;
-				}
-
-				//Check screen bytes
-				if (!vScreenBytesCacheVideo.IsEmpty())
-				{
 					//Write media bytes to sink
-					ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
-					WriteMediaDataBytes(vScreenBytesCacheVideo, false, vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+					std::thread threadWriteSample(WriteMediaDataBytes, screenBytes, true, true, vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+					threadWriteSample.detach();
 				}
 				else
 				{
-					//std::cout << "Empty media screen, delaying capture." << std::endl;
-
 					//Delay screen capture
-					Sleep(1 / vReferenceTimeToMilliseconds);
+					//std::cout << "Empty media screen, delaying capture." << std::endl;
+					Sleep(1);
 				}
 			}
 		}
@@ -87,6 +77,7 @@ namespace
 				//Get media frame start time
 				LARGE_INTEGER qpcTimeCurrent;
 				QueryPerformanceCounter(&qpcTimeCurrent);
+				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
 
 				//Get audio bytes
 				SafeBytes audioBytes = GetAudioBytes();
@@ -95,15 +86,13 @@ namespace
 				if (!audioBytes.IsEmpty())
 				{
 					//Write media bytes to sink
-					ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
-					WriteMediaDataBytes(audioBytes, true, vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
+					WriteMediaDataBytes(audioBytes, true, false, vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
 				}
 				else
 				{
-					//std::cout << "Empty media audio, delaying capture." << std::endl;
-
 					//Delay audio capture
-					Sleep(1 / vReferenceTimeToMilliseconds);
+					//std::cout << "Empty media audio, delaying capture." << std::endl;
+					Sleep(1);
 				}
 			}
 		}
