@@ -28,7 +28,7 @@ namespace ScreenCapture
                     CaptureImport.CaptureReset();
 
                     //Play capture sound
-                    PlayCaptureSound("VideoStop");
+                    PlayCaptureSound("CaptureVideoStop");
 
                     return;
                 }
@@ -43,7 +43,7 @@ namespace ScreenCapture
                     Debug.WriteLine("Failed to initialize screen capture.");
 
                     //Play capture sound
-                    PlayCaptureSound("CaptureFail");
+                    PlayCaptureSound("CaptureFailed");
                     return;
                 }
                 else
@@ -94,12 +94,12 @@ namespace ScreenCapture
                 //Play capture sound
                 if (captureStarted)
                 {
-                    PlayCaptureSound("VideoStart");
+                    PlayCaptureSound("CaptureVideoStart");
                     Debug.WriteLine("Started screen capturing video.");
                 }
                 else
                 {
-                    PlayCaptureSound("CaptureFail");
+                    PlayCaptureSound("CaptureFailed");
                     Debug.WriteLine("Failed screen capturing video.");
                 }
             }
@@ -108,7 +108,7 @@ namespace ScreenCapture
                 Debug.WriteLine("Screen video capture failed: " + ex.Message);
 
                 //Play capture sound
-                PlayCaptureSound("CaptureFail");
+                PlayCaptureSound("CaptureFailed");
             }
         }
     }

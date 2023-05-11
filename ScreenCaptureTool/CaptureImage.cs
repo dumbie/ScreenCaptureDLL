@@ -34,7 +34,7 @@ namespace ScreenCapture
                     Debug.WriteLine("Failed to initialize screen capture.");
 
                     //Play capture sound
-                    PlayCaptureSound("CaptureFail");
+                    PlayCaptureSound("CaptureFailed");
                     return;
                 }
                 else
@@ -115,11 +115,11 @@ namespace ScreenCapture
                 //Play capture sound
                 if (screenshotSaved)
                 {
-                    PlayCaptureSound("Screenshot");
+                    PlayCaptureSound("CaptureScreenshot");
                 }
                 else
                 {
-                    PlayCaptureSound("CaptureFail");
+                    PlayCaptureSound("CaptureFailed");
                 }
             }
             catch (Exception ex)
@@ -127,7 +127,7 @@ namespace ScreenCapture
                 Debug.WriteLine("Screen image capture failed: " + ex.Message);
 
                 //Play capture sound
-                PlayCaptureSound("CaptureFail");
+                PlayCaptureSound("CaptureFailed");
             }
             finally
             {

@@ -176,16 +176,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Screenshot.mp3">
+    <Content Include="Assets\CaptureScreenshot.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\CaptureFail.mp3">
+    <Content Include="Assets\CaptureFailed.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\VideoStart.mp3">
+    <Content Include="Assets\CaptureVideoStart.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\VideoStop.mp3">
+    <Content Include="Assets\CaptureVideoStop.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
