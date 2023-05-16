@@ -54,6 +54,9 @@
     <ClCompile Include="CaptureLoop.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="CaptureWrite.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AssemblyInfo.rc">
