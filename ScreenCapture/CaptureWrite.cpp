@@ -22,7 +22,18 @@ namespace
 			}
 
 			//Set buffer length
-			hResult = imfMediaBuffer->SetCurrentLength(mediaSize);
+			if (mediaSize == 0)
+			{
+				DWORD imf2DBufferLength;
+				CComPtr<IMF2DBuffer> imf2DBuffer;
+				imfMediaBuffer->QueryInterface(__uuidof(IMF2DBuffer), (void**)&imf2DBuffer);
+				imf2DBuffer->GetContiguousLength(&imf2DBufferLength);
+				hResult = imfMediaBuffer->SetCurrentLength(imf2DBufferLength);
+			}
+			else
+			{
+				hResult = imfMediaBuffer->SetCurrentLength(mediaSize);
+			}
 			if (FAILED(hResult))
 			{
 				return false;
