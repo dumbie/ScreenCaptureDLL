@@ -22,6 +22,23 @@ struct PS_INPUT
 	float2 TexCoord : TEXCOORD;
 };
 
+float4 ColorSrgbToLinear(float4 color)
+{
+	float3 sRGB = color.rgb;
+	float3 sRGBNew = sRGB * (sRGB * (sRGB * 0.305306011 + 0.682171111) + 0.012522878);
+	return float4(sRGBNew, color.a);
+}
+
+float4 ColorLinearToSrgb(float4 color)
+{
+	float3 RGB = color.rgb;
+	float3 S1 = sqrt(RGB);
+	float3 S2 = sqrt(S1);
+	float3 S3 = sqrt(S2);
+	float3 RGBNew = 0.662002687 * S1 + 0.684122060 * S2 - 0.323583601 * S3 - 0.0225411470 * RGB;
+	return float4(RGBNew, color.a);
+}
+
 float ColorLinearToST2084(float color)
 {
 	float colorPow = pow(abs(color), 0.1593017578F);
