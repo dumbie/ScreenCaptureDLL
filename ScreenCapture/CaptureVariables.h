@@ -12,7 +12,6 @@ namespace
 	BOOL vCaptureTextureResizing;
 	UINT vCaptureTextureMipLevels;
 	DXGI_FORMAT vCaptureDxgiFormat;
-	ULONGLONG vCaptureSDRWhiteLevelTicks;
 
 	//Device Direct3D
 	CComPtr<IDXGIDevice4> iDxgiDevice4;
@@ -96,8 +95,8 @@ namespace
 
 	D3D_FEATURE_LEVEL D3DFeatureLevelsArray[] =
 	{
-		D3D_FEATURE_LEVEL_12_2,
-		D3D_FEATURE_LEVEL_11_1
+		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0
 	};
 	UINT D3DFeatureLevelsCount = ARRAYSIZE(D3DFeatureLevelsArray);
 
