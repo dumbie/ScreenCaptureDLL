@@ -16,34 +16,41 @@ namespace
 				return false;
 			}
 
-			//HDR and SDR settings
-			GUID setOutSubType{};
-			if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR)
+			//Check if HDR is enabled
+			BOOL hdrEnabled = vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR;
+
+			//Set encoder settings
+			GUID setOutSubType = vMediaSettings.VideoFormat;
+			if (hdrEnabled)
 			{
 				setOutSubType = MFVideoFormat_HEVC;
+			}
+
+			if (setOutSubType == MFVideoFormat_HEVC)
+			{
 				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_HEVC);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH265VLevel5);
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_10);
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT2020);
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_2084); //PQ
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT2020_10);
+				//HDR and SDR settings
+				if (hdrEnabled)
+				{
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_10);
+					//imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT2020);
+					//imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_2084); //PQ
+					//imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT2020_10);
+				}
+				else
+				{
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_8);
+				}
 			}
 			else
 			{
-				setOutSubType = vMediaSettings.VideoFormat;
 				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, vMediaSettings.VideoFormat);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH264VLevel5);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH264VProfile_Main);
 			}
-
-			//Calculate video out bitrate
-			UINT32 videoBitrate = 10000000 * vMediaSettings.VideoQuality;
-			if (setOutSubType == MFVideoFormat_HEVC)
-			{
-				videoBitrate /= 2;
-			}
-			std::cout << "Set video bitrate to: " << videoBitrate << std::endl;
 
 			imfMediaTypeVideoOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
-			imfMediaTypeVideoOut->SetUINT32(MF_MT_AVG_BITRATE, videoBitrate);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
 			MFSetAttributeSize(imfMediaTypeVideoOut, MF_MT_FRAME_SIZE, vCaptureDetails.Width, vCaptureDetails.Height);
@@ -59,7 +66,11 @@ namespace
 			//Create video encoding parameters
 			CComPtr<IMFAttributes> imfAttributesEncoding;
 			MFCreateAttributes(&imfAttributesEncoding, 0);
-			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_CBR);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_Quality);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQuality, vMediaSettings.VideoQuality);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQualityVsSpeed, 80);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRealTime, 1);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVLowLatencyMode, 1);
 
 			//Create video in media type
 			CComPtr<IMFMediaType> imfMediaTypeVideoIn;
@@ -76,7 +87,7 @@ namespace
 			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_FRAME_RATE, vCaptureDetails.RefreshRate, 1);
 			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
 			//HDR and SDR settings
-			if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR)
+			if (hdrEnabled)
 			{
 				std::cout << "Set media type format to HDR." << std::endl;
 				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_A16B16G16R16F);
@@ -84,7 +95,7 @@ namespace
 			else
 			{
 				std::cout << "Set media type format to SDR." << std::endl;
-				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_RGB32);
+				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_ARGB32);
 			}
 			hResult = imfSinkWriter->SetInputMediaType(vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
 			if (FAILED(hResult))

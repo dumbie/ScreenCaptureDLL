@@ -80,7 +80,7 @@ namespace
 		UINT AudioBits = 16;
 		UINT AudioFrequency = 48000;
 		GUID VideoFormat = MFVideoFormat_HEVC;
-		FLOAT VideoQuality = 0.80F;
+		UINT VideoQuality = 60;
 		UINT VideoFrameRate = 60;
 	};
 
