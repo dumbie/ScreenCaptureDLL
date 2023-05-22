@@ -14,9 +14,6 @@ namespace ScreenCapture
         public static extern bool CaptureUpdateSettings(CaptureSettings captureSettings);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureUpdateSDRWhiteLevel();
-
-        [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CaptureReset();
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]

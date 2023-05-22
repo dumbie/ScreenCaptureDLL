@@ -40,18 +40,6 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureUpdateSDRWhiteLevel()
-		{
-			try
-			{
-				return UpdateMonitorSDRWhiteLevel();
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-
 		__declspec(dllexport) BOOL CaptureReset()
 		{
 			try

@@ -110,6 +110,8 @@ namespace
 				return false;
 			}
 
+			std::cout << "Bitmap frame size: W" << vCaptureDetails.Width << "/H" << vCaptureDetails.Height << std::endl;
+
 			//Bitmap frame set resolution
 			hResult = iWICBitmapFrameEncode->SetResolution(96, 96);
 			if (FAILED(hResult))

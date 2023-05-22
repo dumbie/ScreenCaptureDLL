@@ -29,8 +29,8 @@ namespace ScreenCapture
                 {
                     MonitorId = 0,
                     MaxPixelDimension = 1000,
+                    MouseDrawCursor = true,
                     HDRtoSDR = true,
-                    DrawCursor = true,
                     HDRPaperWhite = (float)slider_HDRPaperWhite.Value,
                     HDRMaximumNits = (float)slider_HDRMaximumNits.Value,
                     Saturation = (float)slider_Saturation.Value,

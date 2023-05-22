@@ -167,6 +167,39 @@ namespace
 		catch (...)
 		{
 			CaptureResetVariablesAll();
+			std::cout << "InitializeDirectX failed: " << hResult << std::endl;
+			return false;
+		}
+	}
+
+	BOOL InitializeTextures()
+	{
+		try
+		{
+			//Create render target view texture
+			D3D11_TEXTURE2D_DESC1 iD3DTexture2D1DescRenderTargetView{};
+			iD3DTexture2D1DescRenderTargetView.Width = vCaptureDetails.Width;
+			iD3DTexture2D1DescRenderTargetView.Height = vCaptureDetails.Height;
+			iD3DTexture2D1DescRenderTargetView.MipLevels = 1;
+			iD3DTexture2D1DescRenderTargetView.ArraySize = 1;
+			iD3DTexture2D1DescRenderTargetView.Format = vCaptureDxgiFormat;
+			iD3DTexture2D1DescRenderTargetView.SampleDesc.Count = 1;
+			iD3DTexture2D1DescRenderTargetView.SampleDesc.Quality = 0;
+			iD3DTexture2D1DescRenderTargetView.Usage = D3D11_USAGE_DEFAULT;
+			iD3DTexture2D1DescRenderTargetView.BindFlags = D3D11_BIND_RENDER_TARGET;
+			iD3DTexture2D1DescRenderTargetView.CPUAccessFlags = 0;
+			iD3DTexture2D1DescRenderTargetView.MiscFlags = 0;
+			hResult = iD3D11Device5->CreateTexture2D1(&iD3DTexture2D1DescRenderTargetView, NULL, &iD3D11Texture2D1RenderTargetView);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			return true;
+		}
+		catch (...)
+		{
+			std::cout << "InitializeTextures failed: " << hResult << std::endl;
 			return false;
 		}
 	}
@@ -208,6 +241,7 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "InitializeSamplerState failed: " << hResult << std::endl;
 			return false;
 		}
 	}
@@ -216,25 +250,6 @@ namespace
 	{
 		try
 		{
-			//Create render target view texture
-			D3D11_TEXTURE2D_DESC1 iD3DTexture2D1DescRenderTargetView{};
-			iD3DTexture2D1DescRenderTargetView.Width = vCaptureDetails.Width;
-			iD3DTexture2D1DescRenderTargetView.Height = vCaptureDetails.Height;
-			iD3DTexture2D1DescRenderTargetView.MipLevels = 1;
-			iD3DTexture2D1DescRenderTargetView.ArraySize = 1;
-			iD3DTexture2D1DescRenderTargetView.Format = vCaptureDxgiFormat;
-			iD3DTexture2D1DescRenderTargetView.SampleDesc.Count = 1;
-			iD3DTexture2D1DescRenderTargetView.SampleDesc.Quality = 0;
-			iD3DTexture2D1DescRenderTargetView.Usage = D3D11_USAGE_DEFAULT;
-			iD3DTexture2D1DescRenderTargetView.BindFlags = D3D11_BIND_RENDER_TARGET;
-			iD3DTexture2D1DescRenderTargetView.CPUAccessFlags = 0;
-			iD3DTexture2D1DescRenderTargetView.MiscFlags = 0;
-			hResult = iD3D11Device5->CreateTexture2D1(&iD3DTexture2D1DescRenderTargetView, NULL, &iD3D11Texture2D1RenderTargetView);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
 			//Create and set render target view
 			hResult = iD3D11Device5->CreateRenderTargetView(iD3D11Texture2D1RenderTargetView, NULL, &iD3D11RenderTargetView0);
 			if (FAILED(hResult))
@@ -251,6 +266,7 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "InitializeRenderTargetView failed: " << hResult << std::endl;
 			return false;
 		}
 	}
@@ -269,6 +285,7 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "InitializeViewPort failed: " << hResult << std::endl;
 			return false;
 		}
 	}
@@ -351,6 +368,7 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "InitializeShaders failed: " << hResult << std::endl;
 			return false;
 		}
 	}
@@ -407,28 +425,7 @@ namespace
 		}
 		catch (...)
 		{
-			return false;
-		}
-	}
-
-	BOOL UpdateMonitorSDRWhiteLevel()
-	{
-		try
-		{
-			//Get and check SDR white level
-			FLOAT currentSDRWhiteLevel = GetMonitorSDRWhiteLevel();
-			if (vCaptureDetails.SDRWhiteLevel != currentSDRWhiteLevel)
-			{
-				//Update capture details
-				vCaptureDetails.SDRWhiteLevel = currentSDRWhiteLevel;
-
-				//Set shader variables
-				return SetShaderVariables();
-			}
-			return true;
-		}
-		catch (...)
-		{
+			std::cout << "SetShaderVariables failed: " << hResult << std::endl;
 			return false;
 		}
 	}
@@ -452,6 +449,9 @@ namespace
 			//Initialize DirectX
 			if (!InitializeDirectX()) { return false; }
 
+			//Initialize Textures
+			if (!InitializeTextures()) { return false; }
+
 			//Initialize sampler state
 			if (!InitializeSamplerState()) { return false; }
 
@@ -473,6 +473,7 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "InitializeCapture failed: " << hResult << std::endl;
 			return false;
 		}
 	}

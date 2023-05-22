@@ -92,49 +92,6 @@ namespace
 		}
 	}
 
-	BOOL Texture2DResizeMips(CComPtr<ID3D11Texture2D1>& textureTarget)
-	{
-		try
-		{
-			//Read texture description
-			D3D11_TEXTURE2D_DESC1 iD3DTexture2D1DescResize{};
-			textureTarget->GetDesc1(&iD3DTexture2D1DescResize);
-
-			//Update texture description
-			iD3DTexture2D1DescResize.Usage = D3D11_USAGE_DEFAULT;
-			iD3DTexture2D1DescResize.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-			iD3DTexture2D1DescResize.CPUAccessFlags = 0;
-			iD3DTexture2D1DescResize.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
-			iD3DTexture2D1DescResize.MipLevels = vCaptureTextureMipLevels;
-
-			//Create resize texture
-			hResult = iD3D11Device5->CreateTexture2D1(&iD3DTexture2D1DescResize, NULL, &iD3D11Texture2D1Resize);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
-			//Copy target to resize texture
-			iD3D11DeviceContext4->CopySubresourceRegion(iD3D11Texture2D1Resize, 0, 0, 0, 0, textureTarget, 0, NULL);
-
-			//Create shader resource view
-			hResult = iD3D11Device5->CreateShaderResourceView(iD3D11Texture2D1Resize, NULL, &iD3D11ShaderResourceView0Resize);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
-			//Generate texture mips to resize
-			iD3D11DeviceContext4->GenerateMips(iD3D11ShaderResourceView0Resize);
-
-			return true;
-		}
-		catch (...)
-		{
-			return false;
-		}
-	}
-
 	BOOL Texture2DDrawCursor(CComPtr<ID3D11Texture2D1>& textureTarget)
 	{
 		try

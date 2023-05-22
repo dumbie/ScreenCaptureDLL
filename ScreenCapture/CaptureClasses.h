@@ -88,7 +88,8 @@ namespace
 	{
 		UINT MonitorId = 0;
 		UINT MaxPixelDimension = 0;
-		BOOL DrawCursor = false;
+		BOOL MouseIgnoreMovement = false;
+		BOOL MouseDrawCursor = false;
 		BOOL HDRtoSDR = false;
 		FLOAT HDRPaperWhite = 80.0F;
 		FLOAT HDRMaximumNits = 1000.0F;
