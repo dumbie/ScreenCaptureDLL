@@ -73,6 +73,9 @@ float4 AdjustHDRtoSDR(float4 color)
 	//Adjust HDR maximum nits
 	color = AdjustHDRMaximumNits(color);
 
+	//Convert Linear to SRGB
+	color = ColorLinearToSrgb(color);
+
 	return color;
 }
 

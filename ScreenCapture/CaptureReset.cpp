@@ -8,16 +8,14 @@ namespace
 		try
 		{
 			//Views
-			iD3D11ShaderResourceView0Shaders.Release();
-			iD3D11ShaderResourceView0Resize.Release();
+			iD3D11ShaderResourceView0.Release();
 
 			//Textures
 			iDxgiSurface2.Release();
 			iDxgiResource0.Release();
-			iD3D11Texture2D1CpuRead.Release();
-			iD3D11Texture2D1Capture.Release();
-			iD3D11Texture2D1Resize.Release();
-			iD3D11Texture2D1Cursor.Release();
+			iD3D11Texture2D0CpuRead.Release();
+			iD3D11Texture2D0Capture.Release();
+			iD3D11Texture2D0Cursor.Release();
 
 			//Release output duplication frame
 			if (iDxgiOutputDuplication0 != NULL)
@@ -75,7 +73,7 @@ namespace
 			iAudioWaveFormatExRender.Free();
 
 			//Bytes
-			vScreenBytesCache.Release();
+			vScreenBytesCache.clear();
 
 			return true;
 		}
@@ -107,8 +105,7 @@ namespace
 			//Views
 			iD3D11InputLayout0.Release();
 			iD3D11RenderTargetView0.Release();
-			iD3D11ShaderResourceView0Shaders.Release();
-			iD3D11ShaderResourceView0Resize.Release();
+			iD3D11ShaderResourceView0.Release();
 
 			//Shaders
 			iD3D11Buffer0.Release();
@@ -120,11 +117,10 @@ namespace
 			//Textures
 			iDxgiSurface2.Release();
 			iDxgiResource0.Release();
-			iD3D11Texture2D1CpuRead.Release();
-			iD3D11Texture2D1Capture.Release();
-			iD3D11Texture2D1Resize.Release();
-			iD3D11Texture2D1Cursor.Release();
-			iD3D11Texture2D1RenderTargetView.Release();
+			iD3D11Texture2D0CpuRead.Release();
+			iD3D11Texture2D0Capture.Release();
+			iD3D11Texture2D0Cursor.Release();
+			iD3D11Texture2D0RenderTargetView.Release();
 
 			//Bitmap
 			CaptureResetVariablesBitmapImage();

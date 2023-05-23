@@ -3,14 +3,7 @@
 
 namespace
 {
-	CComPtr<ID3D11Texture2D1> Texture2DGetCurrent()
-	{
-		if (iD3D11Texture2D1Resize != NULL) { return iD3D11Texture2D1Resize; }
-		if (iD3D11Texture2D1Cursor != NULL) { return iD3D11Texture2D1Cursor; }
-		return iD3D11Texture2D1Capture;
-	}
-
-	SafeBytes Texture2DConvertToScreenBytes(CComPtr<ID3D11Texture2D1>& textureTarget, BOOL textureFlip)
+	std::vector<BYTE> Texture2DConvertToScreenBytes(CComPtr<ID3D11Texture2D>& textureTarget, BOOL textureFlip)
 	{
 		try
 		{
@@ -19,17 +12,17 @@ namespace
 			hResult = iD3D11DeviceContext4->Map(textureTarget, 0, D3D11_MAP_READ, 0, &iD3DMappedSubResource);
 			if (FAILED(hResult))
 			{
-				return SafeBytes();
+				return {};
 			}
 
 			//Create image byte array
-			SafeBytes BitmapBytes(vCaptureDetails.TotalByteSize);
+			std::vector<BYTE> BitmapBytes(vCaptureDetails.TotalByteSize);
 
 			//Write image byte array
 			BYTE* SourceBuffer = (BYTE*)iD3DMappedSubResource.pData;
 			if (textureFlip)
 			{
-				BYTE* BitmapBuffer = BitmapBytes.Data + vCaptureDetails.TotalByteSize - vCaptureDetails.WidthByteSize;
+				BYTE* BitmapBuffer = BitmapBytes.data() + vCaptureDetails.TotalByteSize - vCaptureDetails.WidthByteSize;
 				for (UINT i = 0; i < vCaptureDetails.Height; i++)
 				{
 					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
@@ -39,7 +32,7 @@ namespace
 			}
 			else
 			{
-				BYTE* BitmapBuffer = BitmapBytes.Data;
+				BYTE* BitmapBuffer = BitmapBytes.data();
 				for (UINT i = 0; i < vCaptureDetails.Height; i++)
 				{
 					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
@@ -56,33 +49,33 @@ namespace
 		}
 		catch (...)
 		{
-			return SafeBytes();
+			return {};
 		}
 	}
 
-	BOOL Texture2DConvertToCpuRead(CComPtr<ID3D11Texture2D1>& textureTarget)
+	BOOL Texture2DConvertToCpuRead(CComPtr<ID3D11Texture2D>& textureTarget)
 	{
 		try
 		{
 			//Read texture description
-			D3D11_TEXTURE2D_DESC1 iD3DTexture2D1DescCpuRead{};
-			textureTarget->GetDesc1(&iD3DTexture2D1DescCpuRead);
+			D3D11_TEXTURE2D_DESC iD3DTexture2D0DescCpuRead{};
+			textureTarget->GetDesc(&iD3DTexture2D0DescCpuRead);
 
 			//Update texture description
-			iD3DTexture2D1DescCpuRead.Usage = D3D11_USAGE_STAGING;
-			iD3DTexture2D1DescCpuRead.BindFlags = 0;
-			iD3DTexture2D1DescCpuRead.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-			iD3DTexture2D1DescCpuRead.MiscFlags = 0;
+			iD3DTexture2D0DescCpuRead.Usage = D3D11_USAGE_STAGING;
+			iD3DTexture2D0DescCpuRead.BindFlags = 0;
+			iD3DTexture2D0DescCpuRead.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+			iD3DTexture2D0DescCpuRead.MiscFlags = 0;
 
 			//Create cpu texture
-			hResult = iD3D11Device5->CreateTexture2D1(&iD3DTexture2D1DescCpuRead, NULL, &iD3D11Texture2D1CpuRead);
+			hResult = iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCpuRead, NULL, &iD3D11Texture2D0CpuRead);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Copy target to cpu texture
-			iD3D11DeviceContext4->CopySubresourceRegion(iD3D11Texture2D1CpuRead, 0, 0, 0, 0, textureTarget, 0, NULL);
+			iD3D11DeviceContext4->CopySubresourceRegion(iD3D11Texture2D0CpuRead, 0, 0, 0, 0, textureTarget, 0, NULL);
 
 			return true;
 		}
@@ -92,39 +85,36 @@ namespace
 		}
 	}
 
-	BOOL Texture2DDrawCursor(CComPtr<ID3D11Texture2D1>& textureTarget)
+	BOOL Texture2DDrawCursor(CComPtr<ID3D11Texture2D>& textureTarget)
 	{
 		try
 		{
 			//Read texture description
-			D3D11_TEXTURE2D_DESC1 iD3DTexture2D1DescCursor{};
-			textureTarget->GetDesc1(&iD3DTexture2D1DescCursor);
+			D3D11_TEXTURE2D_DESC iD3DTexture2D0DescCursor{};
+			textureTarget->GetDesc(&iD3DTexture2D0DescCursor);
 
 			//Check texture format
-			if (iD3DTexture2D1DescCursor.Format != DXGI_FORMAT_B8G8R8A8_UNORM && iD3DTexture2D1DescCursor.Format != DXGI_FORMAT_B8G8R8A8_UNORM_SRGB)
+			if (iD3DTexture2D0DescCursor.Format != DXGI_FORMAT_B8G8R8A8_UNORM && iD3DTexture2D0DescCursor.Format != DXGI_FORMAT_B8G8R8A8_UNORM_SRGB)
 			{
 				//std::cout << "Cursor can't be drawn on this texture format." << std::endl;
 				return false;
 			}
 
 			//Update texture description
-			iD3DTexture2D1DescCursor.Usage = D3D11_USAGE_DEFAULT;
-			iD3DTexture2D1DescCursor.BindFlags = D3D11_BIND_RENDER_TARGET;
-			iD3DTexture2D1DescCursor.CPUAccessFlags = 0;
-			iD3DTexture2D1DescCursor.MiscFlags = D3D11_RESOURCE_MISC_GDI_COMPATIBLE;
+			iD3DTexture2D0DescCursor.MiscFlags = D3D11_RESOURCE_MISC_GDI_COMPATIBLE;
 
 			//Create cursor texture
-			hResult = iD3D11Device5->CreateTexture2D1(&iD3DTexture2D1DescCursor, NULL, &iD3D11Texture2D1Cursor);
+			hResult = iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCursor, NULL, &iD3D11Texture2D0Cursor);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Copy target to cursor texture
-			iD3D11DeviceContext4->CopySubresourceRegion(iD3D11Texture2D1Cursor, 0, 0, 0, 0, textureTarget, 0, NULL);
+			iD3D11DeviceContext4->CopySubresourceRegion(iD3D11Texture2D0Cursor, 0, 0, 0, 0, textureTarget, 0, NULL);
 
 			//Convert variables
-			hResult = iD3D11Texture2D1Cursor->QueryInterface(&iDxgiSurface2);
+			hResult = iD3D11Texture2D0Cursor->QueryInterface(&iDxgiSurface2);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -153,19 +143,19 @@ namespace
 		}
 	}
 
-	BOOL Texture2DApplyShaders(CComPtr<ID3D11Texture2D1>& textureTarget)
+	BOOL Texture2DApplyShaders(CComPtr<ID3D11Texture2D>& textureTarget)
 	{
 		try
 		{
 			//Create shader resource view
-			hResult = iD3D11Device5->CreateShaderResourceView(textureTarget, NULL, &iD3D11ShaderResourceView0Shaders);
+			hResult = iD3D11Device5->CreateShaderResourceView(textureTarget, NULL, &iD3D11ShaderResourceView0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Set shader resource view
-			iD3D11DeviceContext4->PSSetShaderResources(0, 1, &iD3D11ShaderResourceView0Shaders);
+			iD3D11DeviceContext4->PSSetShaderResources(0, 1, &iD3D11ShaderResourceView0);
 
 			//Draw texture with shaders
 			iD3D11DeviceContext4->Draw(VertexVerticesCount, 0);

@@ -3,7 +3,7 @@
 
 namespace
 {
-	BOOL WriteMediaTexture2D(CComPtr<ID3D11Texture2D1> mediaTexture, UINT mediaSize, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
+	BOOL WriteMediaTexture2D(CComPtr<ID3D11Texture2D> mediaTexture, UINT mediaSize, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
 	{
 		try
 		{
@@ -42,7 +42,6 @@ namespace
 			//Create media sample
 			CComPtr<IMFSample> imfMediaSample;
 			hResult = MFCreateSample(&imfMediaSample);
-			//hResult = MFCreateVideoSampleFromSurface(NULL, &imfMediaSample);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -100,19 +99,19 @@ namespace
 		}
 	}
 
-	BOOL WriteMediaDataBytes(SafeBytes mediaBytes, BOOL releaseBytes, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
+	BOOL WriteMediaDataBytes(std::vector<BYTE> mediaBytes, BOOL releaseBytes, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
 	{
 		try
 		{
 			//Check media bytes
-			if (mediaBytes.IsEmpty())
+			if (mediaBytes.empty())
 			{
 				return false;
 			}
 
 			//Create media buffer
 			CComPtr<IMFMediaBuffer> imfMediaBuffer;
-			hResult = MFCreateMemoryBuffer(mediaBytes.Size, &imfMediaBuffer);
+			hResult = MFCreateMemoryBuffer(mediaBytes.size(), &imfMediaBuffer);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -127,7 +126,7 @@ namespace
 			}
 
 			//Set media bytes
-			memcpy(mediaBufferBytes, mediaBytes.Data, mediaBytes.Size);
+			memcpy(mediaBufferBytes, mediaBytes.data(), mediaBytes.size());
 
 			//Unlock media bytes
 			hResult = imfMediaBuffer->Unlock();
@@ -137,7 +136,7 @@ namespace
 			}
 
 			//Set media length
-			hResult = imfMediaBuffer->SetCurrentLength(mediaBytes.Size);
+			hResult = imfMediaBuffer->SetCurrentLength(mediaBytes.size());
 			if (FAILED(hResult))
 			{
 				return false;
@@ -189,10 +188,10 @@ namespace
 			//Console debug output
 			//std::cout << "Written media bytes sample: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << mediaBytes.Size << " index: " << mediaIndex << std::endl;
 
-			//Release media bytes
+			//Clear media bytes
 			if (releaseBytes)
 			{
-				mediaBytes.Release();
+				mediaBytes.clear();
 			}
 
 			//Release resources

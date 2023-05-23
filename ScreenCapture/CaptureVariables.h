@@ -31,8 +31,7 @@ namespace
 	//Views
 	CComPtr<ID3D11InputLayout> iD3D11InputLayout0;
 	CComPtr<ID3D11RenderTargetView> iD3D11RenderTargetView0;
-	CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0Shaders;
-	CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0Resize;
+	CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0;
 
 	//Shaders
 	CComPtr<ID3D11Buffer> iD3D11Buffer0;
@@ -44,11 +43,10 @@ namespace
 	//Textures
 	CComPtr<IDXGISurface2> iDxgiSurface2;
 	CComPtr<IDXGIResource> iDxgiResource0;
-	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1CpuRead;
-	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Capture;
-	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Resize;
-	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1Cursor;
-	CComPtr<ID3D11Texture2D1> iD3D11Texture2D1RenderTargetView;
+	CComPtr<ID3D11Texture2D> iD3D11Texture2D0CpuRead;
+	CComPtr<ID3D11Texture2D> iD3D11Texture2D0Capture;
+	CComPtr<ID3D11Texture2D> iD3D11Texture2D0Cursor;
+	CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetView;
 
 	//Image
 	WICPixelFormatGUID iWicPixelFormatGuidSource;
@@ -63,7 +61,7 @@ namespace
 	CComPtr<IWICBitmap> iWICBitmap;
 
 	//Bytes
-	SafeBytes vScreenBytesCache;
+	std::vector<BYTE> vScreenBytesCache;
 
 	//Media foundation
 	CComPtr<IMFSinkWriterEx> imfSinkWriter;

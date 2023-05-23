@@ -3,7 +3,7 @@
 
 namespace
 {
-	SafeBytes GetAudioBytes()
+	std::vector<BYTE> GetAudioBytes()
 	{
 		try
 		{
@@ -16,14 +16,14 @@ namespace
 			hResult = iAudioClientCapture->GetBuffer(&mediaBuffer, &mediaFramesRead, &mediaFlags, &devicePosition, &qpcPosition);
 			if (FAILED(hResult))
 			{
-				return SafeBytes();
+				return {};
 			}
 
 			//Release audio buffer
 			hResult = iAudioClientCapture->ReleaseBuffer(mediaFramesRead);
 			if (FAILED(hResult))
 			{
-				return SafeBytes();
+				return {};
 			}
 
 			//Check if audio needs to be silenced
@@ -46,10 +46,10 @@ namespace
 				UINT audioBytesSize = mediaFramesRead * iAudioWaveFormatExCapture->Format.nBlockAlign;
 
 				//Create bytes array
-				SafeBytes audioBytes(audioBytesSize);
+				std::vector<BYTE> audioBytes(audioBytesSize);
 
 				//Copy buffer to bytes cache
-				memcpy(audioBytes.Data, mediaBuffer, audioBytesSize);
+				memcpy(audioBytes.data(), mediaBuffer, audioBytesSize);
 
 				//Return result
 				return audioBytes;
@@ -62,10 +62,10 @@ namespace
 				UINT audioBytesSize = mediaFramesTarget * iAudioWaveFormatExCapture->Format.nBlockAlign;
 
 				//Create bytes array
-				SafeBytes audioBytes(audioBytesSize);
+				std::vector<BYTE> audioBytes(audioBytesSize);
 
 				//Fill bytes cache with silence
-				memset(audioBytes.Data, 0, audioBytesSize);
+				memset(audioBytes.data(), 0, audioBytesSize);
 
 				//Return result
 				return audioBytes;
@@ -73,13 +73,13 @@ namespace
 			else
 			{
 				//std::cout << "No audio bytes read." << std::endl;
-				return SafeBytes();
+				return {};
 			}
 		}
 		catch (...)
 		{
 			std::cout << "GetAudioBytes failed." << std::endl;
-			return SafeBytes();
+			return {};
 		}
 	}
 

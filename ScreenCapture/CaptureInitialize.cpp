@@ -111,7 +111,7 @@ namespace
 				if (vCaptureSettings.HDRtoSDR)
 				{
 					iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
-					vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+					vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM; //DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
 					vCaptureDetails.PixelByteSize = 4;
 					vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel();
 				}
@@ -172,38 +172,6 @@ namespace
 		}
 	}
 
-	BOOL InitializeTextures()
-	{
-		try
-		{
-			//Create render target view texture
-			D3D11_TEXTURE2D_DESC1 iD3DTexture2D1DescRenderTargetView{};
-			iD3DTexture2D1DescRenderTargetView.Width = vCaptureDetails.Width;
-			iD3DTexture2D1DescRenderTargetView.Height = vCaptureDetails.Height;
-			iD3DTexture2D1DescRenderTargetView.MipLevels = 1;
-			iD3DTexture2D1DescRenderTargetView.ArraySize = 1;
-			iD3DTexture2D1DescRenderTargetView.Format = vCaptureDxgiFormat;
-			iD3DTexture2D1DescRenderTargetView.SampleDesc.Count = 1;
-			iD3DTexture2D1DescRenderTargetView.SampleDesc.Quality = 0;
-			iD3DTexture2D1DescRenderTargetView.Usage = D3D11_USAGE_DEFAULT;
-			iD3DTexture2D1DescRenderTargetView.BindFlags = D3D11_BIND_RENDER_TARGET;
-			iD3DTexture2D1DescRenderTargetView.CPUAccessFlags = 0;
-			iD3DTexture2D1DescRenderTargetView.MiscFlags = 0;
-			hResult = iD3D11Device5->CreateTexture2D1(&iD3DTexture2D1DescRenderTargetView, NULL, &iD3D11Texture2D1RenderTargetView);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
-			return true;
-		}
-		catch (...)
-		{
-			std::cout << "InitializeTextures failed: " << hResult << std::endl;
-			return false;
-		}
-	}
-
 	BOOL InitializeSamplerState()
 	{
 		try
@@ -250,8 +218,27 @@ namespace
 	{
 		try
 		{
+			//Create render target view texture
+			D3D11_TEXTURE2D_DESC iD3DTexture2D0DescRenderTargetView{};
+			iD3DTexture2D0DescRenderTargetView.Width = vCaptureDetails.Width;
+			iD3DTexture2D0DescRenderTargetView.Height = vCaptureDetails.Height;
+			iD3DTexture2D0DescRenderTargetView.MipLevels = 1;
+			iD3DTexture2D0DescRenderTargetView.ArraySize = 1;
+			iD3DTexture2D0DescRenderTargetView.Format = vCaptureDxgiFormat;
+			iD3DTexture2D0DescRenderTargetView.SampleDesc.Count = 1;
+			iD3DTexture2D0DescRenderTargetView.SampleDesc.Quality = 0;
+			iD3DTexture2D0DescRenderTargetView.Usage = D3D11_USAGE_DEFAULT;
+			iD3DTexture2D0DescRenderTargetView.BindFlags = D3D11_BIND_RENDER_TARGET;
+			iD3DTexture2D0DescRenderTargetView.CPUAccessFlags = 0;
+			iD3DTexture2D0DescRenderTargetView.MiscFlags = 0;
+			hResult = iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescRenderTargetView, NULL, &iD3D11Texture2D0RenderTargetView);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
 			//Create and set render target view
-			hResult = iD3D11Device5->CreateRenderTargetView(iD3D11Texture2D1RenderTargetView, NULL, &iD3D11RenderTargetView0);
+			hResult = iD3D11Device5->CreateRenderTargetView(iD3D11Texture2D0RenderTargetView, NULL, &iD3D11RenderTargetView0);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -448,9 +435,6 @@ namespace
 
 			//Initialize DirectX
 			if (!InitializeDirectX()) { return false; }
-
-			//Initialize Textures
-			if (!InitializeTextures()) { return false; }
 
 			//Initialize sampler state
 			if (!InitializeSamplerState()) { return false; }

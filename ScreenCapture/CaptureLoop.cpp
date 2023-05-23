@@ -4,7 +4,7 @@
 #include "CaptureScreen.cpp"
 #include "CaptureVideo.cpp"
 #include "CaptureAudio.cpp"
-#include "CaptureMedia.cpp"
+#include "CaptureWrite.cpp"
 
 namespace
 {
@@ -17,7 +17,7 @@ namespace
 			MFFrameRateToAverageTimePerFrame(vMediaSettings.VideoFrameRate, 1, &mediaTimeDuration);
 
 			//Set thread characteristics
-			DWORD taskIndex = 0;
+			DWORD taskIndex = 1;
 			HANDLE mmThread = AvSetMmThreadCharacteristicsW(L"Pro Audio", &taskIndex);
 			if (mmThread)
 			{
@@ -32,22 +32,16 @@ namespace
 				QueryPerformanceCounter(&qpcTimeCurrent);
 				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
 
-				//Get screen bytes
-				SafeBytes screenBytes = GetScreenBytes(true, false);
-
-				//Update screen bytes
-				if (!screenBytes.IsEmpty())
+				//Update screen texture
+				if (UpdateScreenTexture(true))
 				{
 					//Write media bytes to sink
-					std::thread threadWriteSample(WriteMediaDataBytes, screenBytes, true, true, vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+					std::thread threadWriteSample(WriteMediaTexture2D, iD3D11Texture2D0RenderTargetView, vCaptureDetails.TotalByteSize, true, vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
 					threadWriteSample.detach();
 				}
-				else
-				{
-					//Delay screen capture
-					//std::cout << "Empty media screen, delaying capture." << std::endl;
-					Sleep(1);
-				}
+
+				//Delay screen capture
+				Sleep(mediaTimeDuration / vReferenceTimeToMilliseconds);
 			}
 		}
 		catch (...) {}
@@ -80,10 +74,10 @@ namespace
 				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaTimeStartLoop;
 
 				//Get audio bytes
-				SafeBytes audioBytes = GetAudioBytes();
+				std::vector<BYTE> audioBytes = GetAudioBytes();
 
 				//Check audio bytes
-				if (!audioBytes.IsEmpty())
+				if (!audioBytes.empty())
 				{
 					//Write media bytes to sink
 					WriteMediaDataBytes(audioBytes, true, false, vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
