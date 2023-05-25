@@ -3,6 +3,41 @@
 
 namespace
 {
+	BOOL UpdateMouseCursorVertex(DXGI_OUTDUPL_FRAME_INFO cursorFrameInfo)
+	{
+		try
+		{
+			if (cursorFrameInfo.PointerPosition.Visible)
+			{
+				//Update cursor vertex vertices
+				INT cursorPositionLeft = cursorFrameInfo.PointerPosition.Position.x;
+				INT cursorPositionTop = cursorFrameInfo.PointerPosition.Position.y;
+				INT cursorWidth = vCursorWidth;
+				INT cursorHeight = vCursorHeight;
+				INT screenCenterX = vCaptureDetails.OriginalWidth / 2;
+				INT screenCenterY = vCaptureDetails.OriginalHeight / 2;
+				VertexVerticesArrayCursor[0].Position.x = (cursorPositionLeft - screenCenterX) / (FLOAT)screenCenterX;
+				VertexVerticesArrayCursor[0].Position.y = -1 * ((cursorPositionTop + cursorHeight) - screenCenterY) / (FLOAT)screenCenterY;
+				VertexVerticesArrayCursor[1].Position.x = (cursorPositionLeft - screenCenterX) / (FLOAT)screenCenterX;
+				VertexVerticesArrayCursor[1].Position.y = -1 * (cursorPositionTop - screenCenterY) / (FLOAT)screenCenterY;
+				VertexVerticesArrayCursor[2].Position.x = ((cursorPositionLeft + cursorWidth) - screenCenterX) / (FLOAT)screenCenterX;
+				VertexVerticesArrayCursor[2].Position.y = -1 * ((cursorPositionTop + cursorHeight) - screenCenterY) / (FLOAT)screenCenterY;
+				VertexVerticesArrayCursor[3].Position.x = ((cursorPositionLeft + cursorWidth) - screenCenterX) / (FLOAT)screenCenterX;
+				VertexVerticesArrayCursor[3].Position.y = -1 * (cursorPositionTop - screenCenterY) / (FLOAT)screenCenterY;
+
+				//std::cout << "Mouse cursor position, Left: " << cursorPositionLeft << " Top: " << cursorPositionTop << " Visible: " << cursorFrameInfo.PointerPosition.Visible << std::endl;
+			}
+
+			//Return result
+			return true;
+		}
+		catch (...)
+		{
+			std::cout << "UpdateMouseCursorVertex failed." << std::endl;
+			return false;
+		}
+	}
+
 	BOOL UpdateMouseCursorTexture(DXGI_OUTDUPL_FRAME_INFO cursorFrameInfo)
 	{
 		try
@@ -57,8 +92,10 @@ namespace
 				}
 
 				//std::cout << "Mouse cursor info, Size: " << pointerShapeBufferSizeRequired << " Height: " << pointerShapeInfo.Height << " Width: " << pointerShapeInfo.Width << std::endl;
-				return true;
 			}
+
+			//Return result
+			return true;
 		}
 		catch (...)
 		{
