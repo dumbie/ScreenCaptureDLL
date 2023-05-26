@@ -103,14 +103,14 @@ namespace
 			}
 
 			//Bitmap frame set size
-			hResult = iWICBitmapFrameEncode->SetSize(vCaptureDetails.Width, vCaptureDetails.Height);
+			hResult = iWICBitmapFrameEncode->SetSize(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
-			std::cout << "Bitmap frame size: W" << vCaptureDetails.Width << "/H" << vCaptureDetails.Height << std::endl;
+			std::cout << "Bitmap frame size, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight << std::endl;
 
 			//Bitmap frame set resolution
 			hResult = iWICBitmapFrameEncode->SetResolution(96, 96);
@@ -123,7 +123,7 @@ namespace
 			//Write data to bitmap frame and convert jpg
 			if (iWicFormatGuid == GUID_ContainerFormatJpeg && iWicPixelFormatGuidSource != iWicPixelFormatGuidJpeg)
 			{
-				hResult = iWICImagingFactory->CreateBitmapFromMemory(vCaptureDetails.Width, vCaptureDetails.Height, iWicPixelFormatGuidSource, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData, &iWICBitmap);
+				hResult = iWICImagingFactory->CreateBitmapFromMemory(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight, iWicPixelFormatGuidSource, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData, &iWICBitmap);
 				if (FAILED(hResult))
 				{
 					CaptureResetVariablesBitmapImage();
@@ -152,7 +152,7 @@ namespace
 					return false;
 				}
 
-				WICRect iWicRectangle = { 0, 0, (INT)vCaptureDetails.Width, (INT)vCaptureDetails.Height };
+				WICRect iWicRectangle = { 0, 0, (INT)vCaptureDetails.OutputWidth, (INT)vCaptureDetails.OutputHeight };
 				hResult = iWICBitmapFrameEncode->WriteSource(iWICFormatConverter, &iWicRectangle);
 				if (FAILED(hResult))
 				{
@@ -170,7 +170,7 @@ namespace
 					return false;
 				}
 
-				hResult = iWICBitmapFrameEncode->WritePixels(vCaptureDetails.Height, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData);
+				hResult = iWICBitmapFrameEncode->WritePixels(vCaptureDetails.OutputHeight, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData);
 				if (FAILED(hResult))
 				{
 					CaptureResetVariablesBitmapImage();

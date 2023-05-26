@@ -24,6 +24,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CaptureAudio.cpp" />
+    <ClCompile Include="CaptureCursor.cpp" />
+    <ClCompile Include="CaptureRender.cpp" />
     <ClCompile Include="CaptureImage.cpp" />
     <ClCompile Include="CaptureClasses.h" />
     <ClCompile Include="CaptureInitialize.cpp" />

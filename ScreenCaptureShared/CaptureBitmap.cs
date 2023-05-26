@@ -35,7 +35,7 @@ namespace ScreenCapture
                 {
                     bitmapPixelFormat = PixelFormats.Rgba64; //Fix Rgba64Half support missing 
                 }
-                return BitmapSource.Create(captureDetails.Width, captureDetails.Height, 96, 96, bitmapPixelFormat, null, bitmapByteArray, captureDetails.WidthByteSize);
+                return BitmapSource.Create(captureDetails.OutputWidth, captureDetails.OutputHeight, 96, 96, bitmapPixelFormat, null, bitmapByteArray, captureDetails.WidthByteSize);
             }
             catch (Exception ex)
             {

@@ -14,64 +14,6 @@ namespace
 		HEIF = 5
 	};
 
-	//Structures
-	struct SafeBytes
-	{
-		//Variables
-		BYTE* Data = NULL;
-		size_t Size = 0;
-
-		//Create
-		SafeBytes() {}
-		SafeBytes(size_t bytesSize)
-		{
-			Data = new BYTE[bytesSize];
-			Size = bytesSize;
-		}
-
-		//Check
-		BOOL IsEmpty()
-		{
-			return Data == NULL;
-		}
-
-		//Copy
-		BOOL CopyTo(SafeBytes& destination)
-		{
-			try
-			{
-				destination.Release();
-				destination.Data = new BYTE[Size];
-				destination.Size = Size;
-				memcpy(destination.Data, Data, Size);
-				return true;
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-
-		//Release
-		BOOL Release()
-		{
-			try
-			{
-				if (Data != NULL)
-				{
-					delete[] Data;
-					Data = NULL;
-					Size = 0;
-				}
-				return true;
-			}
-			catch (...)
-			{
-				return false;
-			}
-		}
-	};
-
 	struct MediaSettings
 	{
 		GUID AudioFormat = MFAudioFormat_AAC;
@@ -89,7 +31,7 @@ namespace
 		UINT MonitorId = 0;
 		UINT MaxPixelDimension = 0;
 		BOOL MouseIgnoreMovement = false;
-		BOOL MouseDrawCursor = false;
+		BOOL MouseDrawCursor = true;
 		BOOL HDRtoSDR = false;
 		FLOAT HDRPaperWhite = 80.0F;
 		FLOAT HDRMaximumNits = 1000.0F;
@@ -105,8 +47,10 @@ namespace
 
 	struct CaptureDetails
 	{
-		UINT Width;
-		UINT Height;
+		UINT OriginalWidth;
+		UINT OriginalHeight;
+		UINT OutputWidth;
+		UINT OutputHeight;
 		UINT RefreshRate;
 		BOOL HDREnabled;
 		FLOAT SDRWhiteLevel;

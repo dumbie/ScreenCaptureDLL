@@ -25,7 +25,7 @@ namespace
 	CComPtr<ID3D11DeviceContext> iD3D11DeviceContext0;
 	CComPtr<ID3D11DeviceContext4> iD3D11DeviceContext4;
 
-	//Sampler
+	//States
 	CComPtr<ID3D11SamplerState> iD3D11SamplerState0;
 
 	//Views
@@ -44,7 +44,7 @@ namespace
 	CComPtr<IDXGISurface2> iDxgiSurface2;
 	CComPtr<IDXGIResource> iDxgiResource0;
 	CComPtr<ID3D11Texture2D> iD3D11Texture2D0CpuRead;
-	CComPtr<ID3D11Texture2D> iD3D11Texture2D0Capture;
+	CComPtr<ID3D11Texture2D> iD3D11Texture2D0Screen;
 	CComPtr<ID3D11Texture2D> iD3D11Texture2D0Cursor;
 	CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetView;
 
@@ -59,6 +59,10 @@ namespace
 	CComPtr<IWICMetadataQueryWriter> iWICMetadataQueryWriter;
 	CComPtr<IWICFormatConverter> iWICFormatConverter;
 	CComPtr<IWICBitmap> iWICBitmap;
+
+	//Cursor
+	UINT vCursorWidth = 32;
+	UINT vCursorHeight = 32;
 
 	//Bytes
 	std::vector<BYTE> vScreenBytesCache;
@@ -112,12 +116,19 @@ namespace
 	};
 	UINT InputElementsCount = ARRAYSIZE(InputElementsArray);
 
-	VertexVertice VertexVerticesArray[] =
+	VertexVertice VertexVerticesArrayScreen[] =
 	{
 		{DirectX::XMFLOAT3(-1.0f, -1.0f, 0), DirectX::XMFLOAT2(0.0f, 1.0f)},
 		{DirectX::XMFLOAT3(-1.0f, 1.0f, 0), DirectX::XMFLOAT2(0.0f, 0.0f)},
 		{DirectX::XMFLOAT3(1.0f, -1.0f, 0), DirectX::XMFLOAT2(1.0f, 1.0f)},
-		{DirectX::XMFLOAT3(1.0f, 1.0f, 0), DirectX::XMFLOAT2(1.0f, 0.0f)},
+		{DirectX::XMFLOAT3(1.0f, 1.0f, 0), DirectX::XMFLOAT2(1.0f, 0.0f)}
 	};
-	UINT VertexVerticesCount = ARRAYSIZE(VertexVerticesArray);
+	VertexVertice VertexVerticesArrayCursor[] =
+	{
+		{DirectX::XMFLOAT3(-1.0f, -1.0f, 0), DirectX::XMFLOAT2(0.0f, 1.0f)},
+		{DirectX::XMFLOAT3(-1.0f, 1.0f, 0), DirectX::XMFLOAT2(0.0f, 0.0f)},
+		{DirectX::XMFLOAT3(1.0f, -1.0f, 0), DirectX::XMFLOAT2(1.0f, 1.0f)},
+		{DirectX::XMFLOAT3(1.0f, 1.0f, 0), DirectX::XMFLOAT2(1.0f, 0.0f)}
+	};
+	UINT VertexVerticesCount = ARRAYSIZE(VertexVerticesArrayScreen);
 };

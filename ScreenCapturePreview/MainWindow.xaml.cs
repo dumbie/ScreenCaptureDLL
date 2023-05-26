@@ -47,8 +47,8 @@ namespace ScreenCapture
                 bool captureInitialized = CaptureImport.CaptureInitialize(vCaptureSettings, out vCaptureDetails);
 
                 //Set capture details string
-                string captureDetails = "Width: " + vCaptureDetails.Width;
-                captureDetails += "\nHeight: " + vCaptureDetails.Height;
+                string captureDetails = "Width: " + vCaptureDetails.OutputWidth + " (" + vCaptureDetails.OriginalWidth + ")";
+                captureDetails += "\nHeight: " + vCaptureDetails.OutputHeight + " (" + vCaptureDetails.OriginalHeight + ")";
                 captureDetails += "\nRefreshRate: " + vCaptureDetails.RefreshRate;
                 captureDetails += "\nPixelByteSize: " + vCaptureDetails.PixelByteSize;
                 captureDetails += "\nWidthByteSize: " + vCaptureDetails.WidthByteSize;
@@ -119,7 +119,7 @@ namespace ScreenCapture
                     finally
                     {
                         //Delay next screen capture
-                        await Task.Delay(200);
+                        await Task.Delay(100);
                     }
                 }
             }
@@ -147,6 +147,7 @@ namespace ScreenCapture
                 {
                     MonitorId = 0,
                     MaxPixelDimension = 1000,
+                    MouseDrawCursor = true,
                     HDRtoSDR = true,
                     HDRPaperWhite = (float)slider_HDRPaperWhite.Value,
                     HDRMaximumNits = (float)slider_HDRMaximumNits.Value,

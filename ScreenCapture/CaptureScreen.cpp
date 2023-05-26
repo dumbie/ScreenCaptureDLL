@@ -2,6 +2,8 @@
 #include "CaptureVariables.h"
 #include "CaptureInitialize.cpp"
 #include "CaptureTexture.cpp"
+#include "CaptureRender.cpp"
+#include "CaptureCursor.cpp"
 
 namespace
 {
@@ -15,10 +17,10 @@ namespace
 			DXGI_OUTDUPL_FRAME_INFO iDxgiOutputDuplicationFrameInfo;
 			hResult = iDxgiOutputDuplication0->AcquireNextFrame(timeoutInMilliseconds, &iDxgiOutputDuplicationFrameInfo, &iDxgiResource0);
 
-			//Check if screen captured
+			//Check if screen capture failed
 			if (FAILED(hResult))
 			{
-				//std::cout << "Failed to acquire next frame: " << hResult << std::endl;
+				//std::cout << "Acquire next frame, failed: " << hResult << std::endl;
 				CaptureResetVariablesTexture();
 				return false;
 			}
@@ -31,19 +33,30 @@ namespace
 				return false;
 			}
 
-			//Convert variables
-			hResult = iDxgiResource0->QueryInterface(&iD3D11Texture2D0Capture);
+			//Draw screen capture to texture
+			hResult = iDxgiResource0->QueryInterface(&iD3D11Texture2D0Screen);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexture();
 				return false;
 			}
-
-			//Apply shaders to texture
-			if (!Texture2DApplyShaders(iD3D11Texture2D0Capture))
+			ResourceViewUpdateVertex(VertexVerticesArrayScreen);
+			if (!ResourceViewDrawTexture2D(iD3D11Texture2D0Screen))
 			{
 				CaptureResetVariablesTexture();
 				return false;
+			}
+
+			//Draw mouse cursor to texture
+			if (vCaptureSettings.MouseDrawCursor)
+			{
+				UpdateMouseCursorVertex(iDxgiOutputDuplicationFrameInfo);
+				UpdateMouseCursorTexture(iDxgiOutputDuplicationFrameInfo);
+				if (iD3D11Texture2D0Cursor != NULL)
+				{
+					ResourceViewUpdateVertex(VertexVerticesArrayCursor);
+					ResourceViewDrawTexture2D(iD3D11Texture2D0Cursor);
+				}
 			}
 
 			//Release resources

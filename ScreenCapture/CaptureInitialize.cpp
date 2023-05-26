@@ -130,29 +130,35 @@ namespace
 			}
 
 			//Update capture variables
-			vCaptureDetails.Width = iDxgiOutputDuplicationDescription.ModeDesc.Width;
-			vCaptureDetails.Height = iDxgiOutputDuplicationDescription.ModeDesc.Height;
+			vCaptureDetails.OriginalWidth = iDxgiOutputDuplicationDescription.ModeDesc.Width;
+			vCaptureDetails.OriginalHeight = iDxgiOutputDuplicationDescription.ModeDesc.Height;
 			vCaptureDetails.RefreshRate = iDxgiOutputDuplicationDescription.ModeDesc.RefreshRate.Numerator;
-			vCaptureTextureResizing = vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.Width > vCaptureSettings.MaxPixelDimension && vCaptureDetails.Height > vCaptureSettings.MaxPixelDimension;
+			vCaptureTextureResizing = vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.OriginalWidth > vCaptureSettings.MaxPixelDimension && vCaptureDetails.OriginalHeight > vCaptureSettings.MaxPixelDimension;
 			if (vCaptureTextureResizing)
 			{
 				DOUBLE resizedWidth = 0.01;
 				DOUBLE resizedHeight = 0.01;
-				UINT minDimension = min(vCaptureDetails.Width, vCaptureDetails.Height);
+				UINT minDimension = min(vCaptureDetails.OriginalWidth, vCaptureDetails.OriginalHeight);
 				//Find nearest full pixel dimensions to keep ratio
 				while (resizedWidth != (UINT)resizedWidth || resizedHeight != (UINT)resizedHeight)
 				{
 					DOUBLE differenceRatio = (DOUBLE)minDimension / vCaptureSettings.MaxPixelDimension;
-					resizedWidth = iDxgiOutputDuplicationDescription.ModeDesc.Width / differenceRatio;
-					resizedHeight = iDxgiOutputDuplicationDescription.ModeDesc.Height / differenceRatio;
+					resizedWidth = vCaptureDetails.OriginalWidth / differenceRatio;
+					resizedHeight = vCaptureDetails.OriginalHeight / differenceRatio;
 					vCaptureSettings.MaxPixelDimension++;
 				}
-				vCaptureDetails.Width = resizedWidth;
-				vCaptureDetails.Height = resizedHeight;
+				vCaptureDetails.OutputWidth = resizedWidth;
+				vCaptureDetails.OutputHeight = resizedHeight;
 			}
-			vCaptureDetails.WidthByteSize = vCaptureDetails.Width * vCaptureDetails.PixelByteSize;
-			vCaptureDetails.TotalByteSize = vCaptureDetails.Width * vCaptureDetails.Height * vCaptureDetails.PixelByteSize;
-			vCaptureTextureMipLevels = 1 + log2(max(vCaptureDetails.Width, vCaptureDetails.Height));
+			else
+			{
+				vCaptureDetails.OutputWidth = vCaptureDetails.OriginalWidth;
+				vCaptureDetails.OutputHeight = vCaptureDetails.OriginalHeight;
+			}
+			std::cout << "Screen capture output, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight << std::endl;
+			vCaptureDetails.WidthByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.PixelByteSize;
+			vCaptureDetails.TotalByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.OutputHeight * vCaptureDetails.PixelByteSize;
+			vCaptureTextureMipLevels = 1 + log2(max(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight));
 
 			//Release resources
 			iD3D11Device0.Release();
@@ -220,8 +226,8 @@ namespace
 		{
 			//Create render target view texture
 			D3D11_TEXTURE2D_DESC iD3DTexture2D0DescRenderTargetView{};
-			iD3DTexture2D0DescRenderTargetView.Width = vCaptureDetails.Width;
-			iD3DTexture2D0DescRenderTargetView.Height = vCaptureDetails.Height;
+			iD3DTexture2D0DescRenderTargetView.Width = vCaptureDetails.OutputWidth;
+			iD3DTexture2D0DescRenderTargetView.Height = vCaptureDetails.OutputHeight;
 			iD3DTexture2D0DescRenderTargetView.MipLevels = 1;
 			iD3DTexture2D0DescRenderTargetView.ArraySize = 1;
 			iD3DTexture2D0DescRenderTargetView.Format = vCaptureDxgiFormat;
@@ -264,8 +270,8 @@ namespace
 		{
 			//Create and set viewport
 			D3D11_VIEWPORT iD3D11ViewPort{};
-			iD3D11ViewPort.Width = vCaptureDetails.Width;
-			iD3D11ViewPort.Height = vCaptureDetails.Height;
+			iD3D11ViewPort.Width = vCaptureDetails.OutputWidth;
+			iD3D11ViewPort.Height = vCaptureDetails.OutputHeight;
 			iD3D11DeviceContext4->RSSetViewports(1, &iD3D11ViewPort);
 
 			return true;
@@ -312,32 +318,6 @@ namespace
 				return false;
 			}
 			iD3D11DeviceContext4->IASetInputLayout(iD3D11InputLayout0);
-
-			//Create buffer description
-			D3D11_BUFFER_DESC bufferDescription{};
-			bufferDescription.ByteWidth = sizeof(VertexVertice) * VertexVerticesCount;
-			bufferDescription.Usage = D3D11_USAGE_DEFAULT;
-			bufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bufferDescription.CPUAccessFlags = 0;
-			bufferDescription.MiscFlags = 0;
-			bufferDescription.StructureByteStride = 0;
-
-			//Create subresource data
-			D3D11_SUBRESOURCE_DATA subresourceData{};
-			subresourceData.pSysMem = VertexVerticesArray;
-
-			//Create vertex buffer
-			hResult = iD3D11Device5->CreateBuffer(&bufferDescription, &subresourceData, &iD3D11Buffer0);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
-			//Set vertex buffer
-			UINT bufferOffsets = 0;
-			UINT bufferStrides = sizeof(VertexVertice);
-			iD3D11DeviceContext4->IASetVertexBuffers(0, 1, &iD3D11Buffer0, &bufferStrides, &bufferOffsets);
-			iD3D11DeviceContext4->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 			//Set shaders
 			iD3D11DeviceContext4->VSSetShader(iD3D11VertexShader0, NULL, 0);
@@ -392,11 +372,11 @@ namespace
 			bufferDescription.StructureByteStride = 0;
 
 			//Create subresource data
-			D3D11_SUBRESOURCE_DATA subresourceData{};
-			subresourceData.pSysMem = &shaderVariables;
+			D3D11_SUBRESOURCE_DATA subResourceData{};
+			subResourceData.pSysMem = &shaderVariables;
 
 			//Create shader variables buffer
-			hResult = iD3D11Device5->CreateBuffer(&bufferDescription, &subresourceData, &iD3D11Buffer0);
+			hResult = iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &iD3D11Buffer0);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -461,4 +441,4 @@ namespace
 			return false;
 		}
 	}
-};
+}

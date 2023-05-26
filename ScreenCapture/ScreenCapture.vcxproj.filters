@@ -57,6 +57,12 @@
     <ClCompile Include="CaptureWrite.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="CaptureCursor.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptureRender.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AssemblyInfo.rc">

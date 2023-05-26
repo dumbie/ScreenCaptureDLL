@@ -14,8 +14,7 @@ namespace
 			iDxgiSurface2.Release();
 			iDxgiResource0.Release();
 			iD3D11Texture2D0CpuRead.Release();
-			iD3D11Texture2D0Capture.Release();
-			iD3D11Texture2D0Cursor.Release();
+			iD3D11Texture2D0Screen.Release();
 
 			//Release output duplication frame
 			if (iDxgiOutputDuplication0 != NULL)
@@ -99,7 +98,7 @@ namespace
 			iD3D11DeviceContext0.Release();
 			iD3D11DeviceContext4.Release();
 
-			//Sampler
+			//States
 			iD3D11SamplerState0.Release();
 
 			//Views
@@ -118,7 +117,7 @@ namespace
 			iDxgiSurface2.Release();
 			iDxgiResource0.Release();
 			iD3D11Texture2D0CpuRead.Release();
-			iD3D11Texture2D0Capture.Release();
+			iD3D11Texture2D0Screen.Release();
 			iD3D11Texture2D0Cursor.Release();
 			iD3D11Texture2D0RenderTargetView.Release();
 
