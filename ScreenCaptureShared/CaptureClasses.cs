@@ -11,7 +11,33 @@
         HEIF = 5
     }
 
+    public enum VideoFormats : int
+    {
+        H264 = 0,
+        HEVC = 1
+    }
+
+    public enum AudioFormats : int
+    {
+        MP3 = 0,
+        AAC = 1,
+        FLAC = 2
+    }
+
     //Structures
+    public struct MediaSettings
+    {
+        public MediaSettings() { }
+        public AudioFormats AudioFormat { get; set; } = AudioFormats.AAC;
+        public int AudioChannels { get; set; } = 2;
+        public int AudioBitRate { get; set; } = 320;
+        public int AudioBits { get; set; } = 16;
+        public int AudioFrequency { get; set; } = 48000;
+        public VideoFormats VideoFormat { get; set; } = VideoFormats.HEVC;
+        public int VideoQuality { get; set; } = 60;
+        public int VideoFrameRate { get; set; } = 60;
+    };
+
     public struct CaptureSettings
     {
         public CaptureSettings() { }

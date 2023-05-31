@@ -14,14 +14,28 @@ namespace
 		HEIF = 5
 	};
 
+	enum VideoFormats
+	{
+		H264 = 0,
+		HEVC = 1
+	};
+
+	enum AudioFormats
+	{
+		MP3 = 0,
+		AAC = 1,
+		FLAC = 2
+	};
+
+	//Structures
 	struct MediaSettings
 	{
-		GUID AudioFormat = MFAudioFormat_AAC;
+		AudioFormats AudioFormat = AAC;
 		UINT AudioChannels = 2;
 		UINT AudioBitRate = 320;
 		UINT AudioBits = 16;
 		UINT AudioFrequency = 48000;
-		GUID VideoFormat = MFVideoFormat_HEVC;
+		VideoFormats VideoFormat = HEVC;
 		UINT VideoQuality = 60;
 		UINT VideoFrameRate = 60;
 	};

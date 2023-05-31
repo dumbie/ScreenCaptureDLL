@@ -16,17 +16,26 @@ namespace
 				return false;
 			}
 
-			//Check if HDR is enabled
-			BOOL hdrEnabled = vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR;
-
-			//Set encoder settings
-			GUID setOutSubType = vMediaSettings.VideoFormat;
-			if (hdrEnabled)
+			//Set video format
+			GUID videoFormat{};
+			if (vMediaSettings.VideoFormat == H264)
 			{
-				setOutSubType = MFVideoFormat_HEVC;
+				videoFormat = MFVideoFormat_H264;
+			}
+			else if (vMediaSettings.VideoFormat == HEVC)
+			{
+				videoFormat = MFVideoFormat_HEVC;
 			}
 
-			if (setOutSubType == MFVideoFormat_HEVC)
+			//Check if HDR is enabled
+			BOOL hdrEnabled = vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR;
+			if (hdrEnabled)
+			{
+				videoFormat = MFVideoFormat_HEVC;
+			}
+
+			//Set encoder settings
+			if (videoFormat == MFVideoFormat_HEVC)
 			{
 				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_HEVC);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH265VLevel5);
@@ -45,7 +54,7 @@ namespace
 			}
 			else
 			{
-				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, vMediaSettings.VideoFormat);
+				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, videoFormat);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH264VLevel5);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH264VProfile_Main);
 			}

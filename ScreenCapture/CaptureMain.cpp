@@ -125,11 +125,14 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureVideoStart(WCHAR* filePath)
+		__declspec(dllexport) BOOL CaptureVideoStart(WCHAR* filePath, MediaSettings mediaSettings)
 		{
 			try
 			{
 				if (vMediaCapturing) { return false; }
+
+				//Update media settings
+				vMediaSettings = mediaSettings;
 
 				//Start video capture loop
 				vMediaCapturing = true;

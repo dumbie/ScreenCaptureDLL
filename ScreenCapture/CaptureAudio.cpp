@@ -242,20 +242,20 @@ namespace
 			}
 
 			//MP3
-			if (vMediaSettings.AudioFormat == MFAudioFormat_MP3)
+			if (vMediaSettings.AudioFormat == MP3)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_MP3);
 			}
 
 			//AAC
-			if (vMediaSettings.AudioFormat == MFAudioFormat_AAC)
+			if (vMediaSettings.AudioFormat == AAC)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_AAC);
 				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, iAudioWaveFormatExCapture->Format.wBitsPerSample);
 			}
 
 			//FLAC
-			if (vMediaSettings.AudioFormat == MFAudioFormat_FLAC)
+			if (vMediaSettings.AudioFormat == FLAC)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_FLAC);
 				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, iAudioWaveFormatExCapture->Format.wBitsPerSample);
