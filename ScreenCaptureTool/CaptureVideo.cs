@@ -88,8 +88,11 @@ namespace ScreenCapture
                 //Combine save path
                 string fileSavePath = fileSaveFolder + fileSaveName + ".mp4";
 
+                //Set media settings
+                MediaSettings mediaSettings = new MediaSettings();
+
                 //Start video capture
-                bool captureStarted = CaptureImport.CaptureVideoStart(fileSavePath);
+                bool captureStarted = CaptureImport.CaptureVideoStart(fileSavePath, mediaSettings);
 
                 //Play capture sound
                 if (captureStarted)
