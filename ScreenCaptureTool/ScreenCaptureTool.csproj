@@ -118,6 +118,7 @@
     <Compile Include="AppCheck.cs" />
     <Compile Include="AppClose.cs" />
     <Compile Include="CaptureVideo.cs" />
+    <Compile Include="Settings\SettingsMenu.cs" />
     <Compile Include="Settings\SettingsShortcut.cs" />
     <Compile Include="SocketHandler.cs" />
     <Compile Include="SocketServer.cs" />
@@ -188,6 +189,9 @@
     <Content Include="Assets\CaptureVideoStop.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Assets\Screenshot.png" />
+    <Resource Include="Assets\Settings.png" />
+    <Resource Include="Assets\Video.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

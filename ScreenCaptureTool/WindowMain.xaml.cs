@@ -20,6 +20,10 @@ namespace ScreenCapture
 
                 //Make sure the correct window style is set
                 StateChanged += CheckWindowStateAndStyle;
+
+                //Main menu functions
+                lb_Menu.PreviewKeyUp += lb_Menu_KeyPressUp;
+                lb_Menu.PreviewMouseUp += lb_Menu_MousePressUp;
             }
             catch { }
         }
