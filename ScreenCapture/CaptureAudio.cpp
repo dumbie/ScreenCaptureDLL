@@ -186,8 +186,8 @@ namespace
 
 			//Set audio wave format information
 			iAudioWaveFormatExCapture->SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-			iAudioWaveFormatExCapture->Format.wBitsPerSample = vMediaSettings.AudioBits;
-			iAudioWaveFormatExCapture->Format.nSamplesPerSec = vMediaSettings.AudioFrequency;
+			iAudioWaveFormatExCapture->Format.wBitsPerSample = vMediaSettings.AudioBitDepth;
+			iAudioWaveFormatExCapture->Format.nSamplesPerSec = vMediaSettings.AudioSampleRate;
 			iAudioWaveFormatExCapture->Format.nChannels = vMediaSettings.AudioChannels;
 			iAudioWaveFormatExCapture->Format.nBlockAlign = iAudioWaveFormatExCapture->Format.nChannels * iAudioWaveFormatExCapture->Format.wBitsPerSample / 8;
 			iAudioWaveFormatExCapture->Format.nAvgBytesPerSec = iAudioWaveFormatExCapture->Format.nSamplesPerSec * iAudioWaveFormatExCapture->Format.nBlockAlign;

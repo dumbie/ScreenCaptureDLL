@@ -33,8 +33,8 @@ namespace
 		AudioFormats AudioFormat = AAC;
 		UINT AudioChannels = 2;
 		UINT AudioBitRate = 320;
-		UINT AudioBits = 16;
-		UINT AudioFrequency = 48000;
+		UINT AudioBitDepth = 16;
+		UINT AudioSampleRate = 48000;
 		VideoFormats VideoFormat = HEVC;
 		UINT VideoQuality = 60;
 		UINT VideoFrameRate = 60;

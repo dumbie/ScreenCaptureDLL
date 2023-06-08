@@ -31,8 +31,8 @@
         public AudioFormats AudioFormat { get; set; } = AudioFormats.AAC;
         public int AudioChannels { get; set; } = 2;
         public int AudioBitRate { get; set; } = 320;
-        public int AudioBits { get; set; } = 16;
-        public int AudioFrequency { get; set; } = 48000;
+        public int AudioBitDepth { get; set; } = 16;
+        public int AudioSampleRate { get; set; } = 48000;
         public VideoFormats VideoFormat { get; set; } = VideoFormats.HEVC;
         public int VideoQuality { get; set; } = 60;
         public int VideoFrameRate { get; set; } = 60;
