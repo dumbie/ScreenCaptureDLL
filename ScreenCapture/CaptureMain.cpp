@@ -7,6 +7,7 @@
 #include "CaptureInitialize.cpp"
 #include "CaptureTexture.cpp"
 #include "CaptureLoop.cpp"
+#include "PlayAudio.cpp"
 
 namespace
 {
@@ -16,7 +17,17 @@ namespace
 		{
 			try
 			{
-				return InitializeCapture(captureSettings, captureDetails);
+				//Initialize capture
+				BOOL captureInitialized = InitializeCapture(captureSettings, captureDetails);
+
+				//Play sound effect
+				if (!captureInitialized)
+				{
+					PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+				}
+
+				//Return result
+				return captureInitialized;
 			}
 			catch (...)
 			{
@@ -81,6 +92,7 @@ namespace
 				//Check screen bytes
 				if (screenBytes.empty())
 				{
+					PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 					return false;
 				}
 
@@ -117,7 +129,20 @@ namespace
 				}
 
 				//Save bitmap data to file
-				return BitmapDataSaveFile(screenBytes.data(), filePath, imageSaveFormat, imageQuality);
+				BOOL savedBitmap = BitmapDataSaveFile(screenBytes.data(), filePath, imageSaveFormat, imageQuality);
+
+				//Play sound effect
+				if (savedBitmap)
+				{
+					PlayAudio(L"Assets\\Capture\\CaptureScreenshot.mp3");
+				}
+				else
+				{
+					PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+				}
+
+				//Return result
+				return savedBitmap;
 			}
 			catch (...)
 			{
@@ -177,6 +202,9 @@ namespace
 				std::thread threadLoopWriteAudio(LoopWriteAudio);
 				threadLoopWriteAudio.detach();
 
+				//Play audio effect
+				PlayAudio(L"Assets\\Capture\\CaptureVideoStart.mp3");
+
 				return true;
 			}
 			catch (...)
@@ -196,7 +224,7 @@ namespace
 				vMediaWriteLoopAllowed = false;
 
 				//Wait for loop to finish
-				while (!vMediaWriteLoopFinishedScreen && !vMediaWriteLoopFinishedAudio) { Sleep(100); }
+				while (!vMediaWriteLoopFinishedScreen && !vMediaWriteLoopFinishedAudio) { Sleep(500); }
 
 				//Finalize media write
 				hResult = imfSinkWriter->Finalize();
@@ -207,6 +235,9 @@ namespace
 				//Release resources
 				CaptureResetVariablesTexture();
 				CaptureResetVariablesMedia();
+
+				//Play audio effect
+				PlayAudio(L"Assets\\Capture\\CaptureVideoStop.mp3");
 
 				return true;
 			}

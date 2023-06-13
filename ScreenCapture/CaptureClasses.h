@@ -44,6 +44,7 @@ namespace
 	{
 		UINT MonitorId = 0;
 		UINT MaxPixelDimension = 0;
+		BOOL SoundEffect = true;
 		BOOL MouseIgnoreMovement = false;
 		BOOL MouseDrawCursor = true;
 		BOOL HDRtoSDR = false;

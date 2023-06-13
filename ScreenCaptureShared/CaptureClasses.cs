@@ -43,6 +43,7 @@
         public CaptureSettings() { }
         public int MonitorId { get; set; } = 0;
         public int MaxPixelDimension { get; set; } = 0;
+        public bool SoundEffect { get; set; } = true;
         public bool MouseIgnoreMovement { get; set; } = false;
         public bool MouseDrawCursor { get; set; } = true;
         public bool HDRtoSDR { get; set; } = false;
