@@ -19,7 +19,7 @@ namespace ScreenCapture
                 if (!SettingCheck(vConfiguration, "ServerPort")) { SettingSave(vConfiguration, "ServerPort", "1040"); }
 
                 //Sound
-                if (!SettingCheck(vConfiguration, "SoundScreenshot")) { SettingSave(vConfiguration, "SoundScreenshot", "True"); }
+                if (!SettingCheck(vConfiguration, "SoundEffect")) { SettingSave(vConfiguration, "SoundEffect", "True"); }
 
                 //Location
                 if (!SettingCheck(vConfiguration, "ScreenshotLocation")) { SettingSave(vConfiguration, "ScreenshotLocation", "Screenshots"); }

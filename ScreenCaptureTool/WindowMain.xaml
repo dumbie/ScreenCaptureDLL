@@ -65,7 +65,7 @@
                 <Slider Name="slider_CaptureMonitorId" Width="400" Minimum="1" Maximum="12" HorizontalAlignment="Left" Style="{StaticResource SliderBlockBlack}"/>
 
                 <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Sound"/>
-                <CheckBox Name="checkbox_CaptureSound" Content="Play sound when capturing screen" Style="{StaticResource CheckBoxBlack}"/>
+                <CheckBox Name="checkbox_CaptureSoundEffect" Content="Play sound effect when capturing screen" Style="{StaticResource CheckBoxBlack}"/>
                 <TextBlock Text="Enabling this will play a sound when you capture your screen." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
 
                 <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Location"/>

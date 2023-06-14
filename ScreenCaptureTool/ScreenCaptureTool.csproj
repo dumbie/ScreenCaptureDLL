@@ -126,7 +126,6 @@
     <Compile Include="AppVariables.cs" />
     <Compile Include="AppHotKey.cs" />
     <Compile Include="AppTrayMenu.cs" />
-    <Compile Include="PlaySound.cs" />
     <Compile Include="CaptureImage.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -177,16 +176,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\CaptureScreenshot.mp3">
+    <Content Include="Assets\Capture\CaptureScreenshot.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\CaptureFailed.mp3">
+    <Content Include="Assets\Capture\CaptureFailed.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\CaptureVideoStart.mp3">
+    <Content Include="Assets\Capture\CaptureVideoStart.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\CaptureVideoStop.mp3">
+    <Content Include="Assets\Capture\CaptureVideoStop.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Assets\Screenshot.png" />

@@ -13,9 +13,9 @@ namespace ScreenCapture
             try
             {
                 //Sound
-                checkbox_SoundScreenshot.Click += (sender, e) =>
+                checkbox_CaptureSoundEffect.Click += (sender, e) =>
                 {
-                    SettingSave(vConfiguration, "SoundScreenshot", checkbox_SoundScreenshot.IsChecked);
+                    SettingSave(vConfiguration, "SoundEffect", checkbox_CaptureSoundEffect.IsChecked);
                 };
 
                 //Capture

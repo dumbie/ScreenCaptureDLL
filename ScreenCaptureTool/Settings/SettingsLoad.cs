@@ -13,7 +13,7 @@ namespace ScreenCapture
             try
             {
                 //Sound
-                checkbox_SoundScreenshot.IsChecked = SettingLoad(vConfiguration, "SoundScreenshot", typeof(bool));
+                checkbox_CaptureSoundEffect.IsChecked = SettingLoad(vConfiguration, "SoundEffect", typeof(bool));
 
                 //Location
                 textblock_ScreenshotLocation.Text = textblock_ScreenshotLocation.Tag + SettingLoad(vConfiguration, "ScreenshotLocation", typeof(string));

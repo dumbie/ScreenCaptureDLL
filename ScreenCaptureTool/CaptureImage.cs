@@ -32,9 +32,6 @@ namespace ScreenCapture
                 if (!CaptureImport.CaptureInitialize(captureSettings, out CaptureDetails vCaptureDetails))
                 {
                     Debug.WriteLine("Failed to initialize screen capture.");
-
-                    //Play capture sound
-                    PlayCaptureSound("CaptureFailed");
                     return;
                 }
                 else
@@ -111,23 +108,10 @@ namespace ScreenCapture
                     screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".jxr", imageSaveQuality, imageSaveFormat);
                     Debug.WriteLine("Screenshot JXR export succeeded: " + screenshotSaved);
                 }
-
-                //Play capture sound
-                if (screenshotSaved)
-                {
-                    PlayCaptureSound("CaptureScreenshot");
-                }
-                else
-                {
-                    PlayCaptureSound("CaptureFailed");
-                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Screen image capture failed: " + ex.Message);
-
-                //Play capture sound
-                PlayCaptureSound("CaptureFailed");
             }
             finally
             {
