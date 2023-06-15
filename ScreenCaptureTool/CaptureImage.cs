@@ -44,7 +44,7 @@ namespace ScreenCapture
                 string fileSaveName = "(" + DateTime.Now.ToShortDateString() + ") " + DateTime.Now.ToString("HH.mm.ss.ffff");
                 if (vCaptureDetails.HDREnabled)
                 {
-                    if (captureSettings.HDRtoSDR)
+                    if (vCaptureDetails.HDRtoSDR)
                     {
                         fileSaveName += " (HDRtoSDR)";
                     }
@@ -60,17 +60,17 @@ namespace ScreenCapture
                 fileSaveName = "\\Screenshot " + AVFiles.FileNameReplaceInvalidChars(fileSaveName, "-");
 
                 //Check screenshot location
-                string fileSaveFolder = SettingLoad(vConfiguration, "ScreenshotLocation", typeof(string));
+                string fileSaveFolder = SettingLoad(vConfiguration, "CaptureLocation", typeof(string));
                 if (string.IsNullOrWhiteSpace(fileSaveFolder) || !Directory.Exists(fileSaveFolder))
                 {
-                    //Check screenshots folder in app directory
-                    if (!Directory.Exists("Screenshots"))
+                    //Check captures folder in app directory
+                    if (!Directory.Exists("Captures"))
                     {
-                        Directory.CreateDirectory("Screenshots");
+                        Directory.CreateDirectory("Captures");
                     }
 
-                    //Set save folder to screenshots in app directory
-                    fileSaveFolder = "Screenshots";
+                    //Set save folder to captures in app directory
+                    fileSaveFolder = "Captures";
                 }
 
                 //Combine save path
@@ -112,11 +112,6 @@ namespace ScreenCapture
             catch (Exception ex)
             {
                 Debug.WriteLine("Screen image capture failed: " + ex.Message);
-            }
-            finally
-            {
-                //Reset screen capture resources
-                CaptureImport.CaptureReset();
             }
         }
     }

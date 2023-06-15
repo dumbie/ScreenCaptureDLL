@@ -68,6 +68,7 @@ namespace
 		UINT OutputHeight;
 		UINT RefreshRate;
 		BOOL HDREnabled;
+		BOOL HDRtoSDR;
 		FLOAT SDRWhiteLevel;
 		UINT PixelByteSize;
 		UINT WidthByteSize;

@@ -54,7 +54,7 @@ namespace ScreenCapture
                 captureDetails += "\nWidthByteSize: " + vCaptureDetails.WidthByteSize;
                 captureDetails += "\nTotalByteSize: " + vCaptureDetails.TotalByteSize;
                 captureDetails += "\nHDREnabled: " + vCaptureDetails.HDREnabled;
-                captureDetails += "\nHDRtoSDR: " + vCaptureSettings.HDRtoSDR;
+                captureDetails += "\nHDRtoSDR: " + vCaptureDetails.HDRtoSDR;
                 captureDetails += "\nSDR White Level: " + vCaptureDetails.SDRWhiteLevel;
 
                 //Update interface details

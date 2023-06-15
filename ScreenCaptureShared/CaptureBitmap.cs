@@ -31,7 +31,7 @@ namespace ScreenCapture
             try
             {
                 PixelFormat bitmapPixelFormat = PixelFormats.Bgra32;
-                if (captureDetails.HDREnabled && !captureSettings.HDRtoSDR)
+                if (captureDetails.HDREnabled && !captureDetails.HDRtoSDR)
                 {
                     bitmapPixelFormat = PixelFormats.Rgba64; //Fix Rgba64Half support missing 
                 }

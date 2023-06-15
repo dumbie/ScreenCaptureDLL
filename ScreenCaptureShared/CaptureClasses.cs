@@ -67,6 +67,7 @@
         public int OutputHeight { get; set; }
         public int RefreshRate { get; set; }
         public bool HDREnabled { get; set; }
+        public bool HDRtoSDR { get; set; }
         public float SDRWhiteLevel { get; set; }
         public int PixelByteSize { get; set; }
         public int WidthByteSize { get; set; }

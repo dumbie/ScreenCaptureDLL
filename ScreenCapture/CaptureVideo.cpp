@@ -28,7 +28,7 @@ namespace
 			}
 
 			//Check if HDR is enabled
-			BOOL hdrEnabled = vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR;
+			BOOL hdrEnabled = vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR;
 			if (hdrEnabled)
 			{
 				videoFormat = MFVideoFormat_HEVC;

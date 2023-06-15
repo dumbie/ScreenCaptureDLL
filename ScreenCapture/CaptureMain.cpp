@@ -71,7 +71,7 @@ namespace
 				vScreenBytesCache.clear();
 
 				//Update screen bytes cache
-				vScreenBytesCache = GetScreenBytes(true, false);
+				vScreenBytesCache = GetScreenBytes(true, false, !vMediaCapturing);
 
 				//Return result
 				return vScreenBytesCache.data();
@@ -87,12 +87,13 @@ namespace
 			try
 			{
 				//Get screen bytes
-				std::vector<BYTE> screenBytes = GetScreenBytes(true, false);
+				std::vector<BYTE> screenBytes = GetScreenBytes(true, false, !vMediaCapturing);
 
 				//Check screen bytes
 				if (screenBytes.empty())
 				{
 					PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+					std::cout << "Screen capture image bytes are empty." << std::endl;
 					return false;
 				}
 
@@ -104,27 +105,27 @@ namespace
 				}
 				else if (imageFormat == JPG)
 				{
-					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+					if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatJpeg;
 				}
 				else if (imageFormat == PNG)
 				{
-					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+					if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatPng;
 				}
 				else if (imageFormat == BMP)
 				{
-					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+					if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatBmp;
 				}
 				else if (imageFormat == TIF)
 				{
-					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+					if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatTiff;
 				}
 				else if (imageFormat == HEIF)
 				{
-					if (vCaptureDetails.HDREnabled && !vCaptureSettings.HDRtoSDR) { return false; }
+					if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatHeif;
 				}
 
