@@ -78,24 +78,33 @@ namespace
 		try
 		{
 			//Update screen texture
-			if (!UpdateScreenTexture(waitNextFrame))
+			if (!vMediaCapturing)
 			{
-				CaptureResetVariablesTexture();
-				return {};
+				if (!UpdateScreenTexture(waitNextFrame))
+				{
+					CaptureResetVariablesTexture();
+					return {};
+				}
 			}
 
 			//Convert to cpu read texture
 			if (!Texture2DConvertToCpuRead(iD3D11Texture2D0RenderTargetView))
 			{
-				CaptureResetVariablesTexture();
-				return {};
+				if (!vMediaCapturing)
+				{
+					CaptureResetVariablesTexture();
+					return {};
+				}
 			}
 
 			//Convert texture to screen bytes
 			std::vector<BYTE> screenBytes = Texture2DConvertToScreenBytes(iD3D11Texture2D0CpuRead, flipScreen);
 
 			//Release resources
-			CaptureResetVariablesTexture();
+			if (!vMediaCapturing)
+			{
+				CaptureResetVariablesTexture();
+			}
 
 			//Return result
 			return screenBytes;

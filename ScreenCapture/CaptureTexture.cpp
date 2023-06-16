@@ -42,7 +42,7 @@ namespace
 			}
 
 			//Unmap texture from subresource
-			iD3D11DeviceContext4->Unmap(textureTarget, 0);
+			//iD3D11DeviceContext4->Unmap(textureTarget, 0); //Breaks sinkwriter finalize
 
 			//Return result
 			return BitmapBytes;

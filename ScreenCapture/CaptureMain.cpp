@@ -71,7 +71,7 @@ namespace
 				vScreenBytesCache.clear();
 
 				//Update screen bytes cache
-				vScreenBytesCache = GetScreenBytes(true, false, !vMediaCapturing);
+				vScreenBytesCache = GetScreenBytes(true, false);
 
 				//Return result
 				return vScreenBytesCache.data();
@@ -87,7 +87,7 @@ namespace
 			try
 			{
 				//Get screen bytes
-				std::vector<BYTE> screenBytes = GetScreenBytes(true, false, !vMediaCapturing);
+				std::vector<BYTE> screenBytes = GetScreenBytes(true, false);
 
 				//Check screen bytes
 				if (screenBytes.empty())
@@ -225,10 +225,18 @@ namespace
 				vMediaWriteLoopAllowed = false;
 
 				//Wait for loop to finish
-				while (!vMediaWriteLoopFinishedScreen && !vMediaWriteLoopFinishedAudio) { Sleep(500); }
+				while (!vMediaWriteLoopFinishedScreen && !vMediaWriteLoopFinishedAudio)
+				{
+					std::cout << "Waiting for video capture loop to stop..." << std::endl;
+					Sleep(1000);
+				}
 
 				//Finalize media write
 				hResult = imfSinkWriter->Finalize();
+				if (FAILED(hResult))
+				{
+					std::cout << "Failed to finalize media capture..." << std::endl;
+				}
 
 				//Shutdown media foundation
 				MFShutdown();

@@ -9,6 +9,7 @@ namespace
 	//Capture
 	CaptureSettings vCaptureSettings{};
 	CaptureDetails vCaptureDetails{};
+	BOOL vCaptureDeviceInitialized;
 	BOOL vCaptureTextureResizing;
 	UINT vCaptureTextureMipLevels;
 	DXGI_FORMAT vCaptureDxgiFormat;

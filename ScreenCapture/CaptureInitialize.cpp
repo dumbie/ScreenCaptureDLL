@@ -104,11 +104,12 @@ namespace
 			DXGI_OUTDUPL_DESC iDxgiOutputDuplicationDescription;
 			iDxgiOutputDuplication0->GetDesc(&iDxgiOutputDuplicationDescription);
 
-			//Get monitor HDR details
+			//Get and set HDR details
 			vCaptureDetails.HDREnabled = iDxgiOutputDescription.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 || iDxgiOutputDescription.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
 			if (vCaptureDetails.HDREnabled)
 			{
-				if (vCaptureSettings.HDRtoSDR)
+				vCaptureDetails.HDRtoSDR = vCaptureSettings.HDRtoSDR;
+				if (vCaptureDetails.HDRtoSDR)
 				{
 					iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
 					vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM; //DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
@@ -124,6 +125,7 @@ namespace
 			}
 			else
 			{
+				vCaptureDetails.HDRtoSDR = false;
 				iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
 				vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
 				vCaptureDetails.PixelByteSize = 4;
@@ -349,7 +351,7 @@ namespace
 
 			//Create shader variables
 			ShaderVariables shaderVariables{};
-			shaderVariables.HDRtoSDR = vCaptureDetails.HDREnabled & vCaptureSettings.HDRtoSDR;
+			shaderVariables.HDRtoSDR = vCaptureDetails.HDRtoSDR;
 			shaderVariables.HDRPaperWhite = vCaptureSettings.HDRPaperWhite;
 			shaderVariables.HDRMaximumNits = vCaptureSettings.HDRMaximumNits;
 			shaderVariables.SDRWhiteLevel = vCaptureDetails.SDRWhiteLevel;
@@ -401,6 +403,17 @@ namespace
 	{
 		try
 		{
+			//Check if initialized
+			if (vCaptureDeviceInitialized)
+			{
+				//Return capture details
+				captureDetails = vCaptureDetails;
+
+				//Return result
+				std::cout << "Capture is already initialized." << std::endl;
+				return true;
+			}
+
 			//Disable assert reporting
 			_CrtSetReportMode(_CRT_ASSERT, 0);
 
@@ -431,8 +444,14 @@ namespace
 			//Set shader variables
 			if (!SetShaderVariables()) { return false; }
 
+			//Update variables
+			vCaptureDeviceInitialized = true;
+
 			//Return capture details
 			captureDetails = vCaptureDetails;
+
+			//Return result
+			std::cout << "Capture initialized successfully." << std::endl;
 			return true;
 		}
 		catch (...)

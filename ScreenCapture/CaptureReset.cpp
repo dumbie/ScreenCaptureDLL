@@ -86,6 +86,9 @@ namespace
 	{
 		try
 		{
+			//Capture
+			vCaptureDeviceInitialized = false;
+
 			//Devices
 			iDxgiDevice4.Release();
 			iDxgiAdapter4.Release();
