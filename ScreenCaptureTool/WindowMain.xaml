@@ -94,6 +94,10 @@
                 <TextBlock Text="Change the screenshot format save quality. *²" TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
                 <Slider Name="slider_ImageSaveQuality" Width="400" Minimum="20" Maximum="100" HorizontalAlignment="Left" Style="{StaticResource SliderBlockWhite}"/>
 
+                <TextBlock Name="textblock_ImageMaxPixelDimension" Text="Image maximum dimension" Tag="Image maximum dimension: " Margin="0,10,0,0" Style="{StaticResource TextBlockBlack}"/>
+                <TextBlock Text="Change the image maximum capture pixel dimension." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+                <Slider Name="slider_ImageMaxPixelDimension" Width="400" Minimum="480" Maximum="4320" TickFrequency="40" HorizontalAlignment="Left" Style="{StaticResource SliderBlockWhite}"/>
+
                 <TextBlock Margin="0,10,0,0" Text="*¹ JPG, PNG, BMP, TIF and HEIF image formats do not support HDR and will require HDR to SDR color conversion leading to reduced quality." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
                 <TextBlock Margin="0,10,0,0" Text="*² PNG, BMP and TIF image formats do not support image save quality." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
             </StackPanel>
