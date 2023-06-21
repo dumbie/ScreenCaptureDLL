@@ -70,9 +70,9 @@
 
                 <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Location"/>
                 <TextBlock Text="Capture save location" Style="{StaticResource TextBlockBlack}"/>
-                <TextBlock Name="textblock_ScreenshotLocation" Text="Current save location: Unknown" Tag="Current save location: " TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
-                <Button Name="button_ScreenshotLocationChange" Content="Change capture save location" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}" Click="button_ScreenshotLocationChange_Click"/>
-                <Button Margin="0,10,0,0" Name="button_ScreenshotLocationOpen" Content="Open capture save location" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}" Click="button_ScreenshotLocationOpen_Click"/>
+                <TextBlock Name="textblock_CaptureLocation" Text="Current save location: Unknown" Tag="Current save location: " TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+                <Button Name="button_CaptureLocationChange" Content="Change capture save location" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}" Click="button_CaptureLocationChange_Click"/>
+                <Button Margin="0,10,0,0" Name="button_CaptureLocationOpen" Content="Open capture save location" HorizontalAlignment="Left" Style="{StaticResource ButtonAccentBlack}" Click="button_CaptureLocationOpen_Click"/>
             </StackPanel>
         </ScrollViewer>
 

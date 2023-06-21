@@ -22,7 +22,7 @@ namespace ScreenCapture
                 if (!SettingCheck(vConfiguration, "SoundEffect")) { SettingSave(vConfiguration, "SoundEffect", "True"); }
 
                 //Location
-                if (!SettingCheck(vConfiguration, "ScreenshotLocation")) { SettingSave(vConfiguration, "ScreenshotLocation", "Screenshots"); }
+                if (!SettingCheck(vConfiguration, "CaptureLocation")) { SettingSave(vConfiguration, "CaptureLocation", "Captures"); }
 
                 //Capture
                 if (!SettingCheck(vConfiguration, "ImageSaveFormat")) { SettingSave(vConfiguration, "ImageSaveFormat", "0"); }

@@ -10,7 +10,7 @@ namespace ScreenCapture
     partial class WindowMain
     {
         //Change screenshot location
-        private void button_ScreenshotLocationChange_Click(object sender, RoutedEventArgs e)
+        private void button_CaptureLocationChange_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -20,8 +20,8 @@ namespace ScreenCapture
                     if (!string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
                     {
                         Debug.WriteLine("Screenshot location selected: " + folderBrowserDialog.SelectedPath);
-                        SettingSave(vConfiguration, "ScreenshotLocation", folderBrowserDialog.SelectedPath);
-                        textblock_ScreenshotLocation.Text = textblock_ScreenshotLocation.Tag + folderBrowserDialog.SelectedPath;
+                        SettingSave(vConfiguration, "CaptureLocation", folderBrowserDialog.SelectedPath);
+                        textblock_CaptureLocation.Text = textblock_CaptureLocation.Tag + folderBrowserDialog.SelectedPath;
                     }
                 }
             }
@@ -29,7 +29,7 @@ namespace ScreenCapture
         }
 
         //Open capture location
-        private void button_ScreenshotLocationOpen_Click(object sender, RoutedEventArgs e)
+        private void button_CaptureLocationOpen_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -44,15 +44,15 @@ namespace ScreenCapture
             try
             {
                 //Check screenshot location
-                string screenshotSaveFolder = SettingLoad(vConfiguration, "ScreenshotLocation", typeof(string));
+                string screenshotSaveFolder = SettingLoad(vConfiguration, "CaptureLocation", typeof(string));
                 if (!Directory.Exists(screenshotSaveFolder))
                 {
-                    //Check screenshots folder in app directory
-                    if (!Directory.Exists("Screenshots"))
+                    //Check captures folder in app directory
+                    if (!Directory.Exists("Captures"))
                     {
-                        Directory.CreateDirectory("Screenshots");
+                        Directory.CreateDirectory("Captures");
                     }
-                    Process.Start("Screenshots");
+                    Process.Start("Captures");
                 }
                 else
                 {

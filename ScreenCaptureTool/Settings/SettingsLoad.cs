@@ -16,7 +16,7 @@ namespace ScreenCapture
                 checkbox_CaptureSoundEffect.IsChecked = SettingLoad(vConfiguration, "SoundEffect", typeof(bool));
 
                 //Location
-                textblock_ScreenshotLocation.Text = textblock_ScreenshotLocation.Tag + SettingLoad(vConfiguration, "ScreenshotLocation", typeof(string));
+                textblock_CaptureLocation.Text = textblock_CaptureLocation.Tag + SettingLoad(vConfiguration, "CaptureLocation", typeof(string));
 
                 //Capture
                 combobox_ImageSaveFormat.SelectedIndex = SettingLoad(vConfiguration, "ImageSaveFormat", typeof(int));
