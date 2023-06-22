@@ -7,7 +7,7 @@
 
 namespace
 {
-	BOOL UpdateScreenTexture(BOOL waitNextFrame)
+	BOOL UpdateScreenTexture(UINT captureInstanceId, BOOL waitNextFrame)
 	{
 		try
 		{
@@ -15,52 +15,52 @@ namespace
 			UINT timeoutInMilliseconds = 0;
 			if (waitNextFrame) { timeoutInMilliseconds = INFINITE; }
 			DXGI_OUTDUPL_FRAME_INFO iDxgiOutputDuplicationFrameInfo;
-			hResult = iDxgiOutputDuplication0->AcquireNextFrame(timeoutInMilliseconds, &iDxgiOutputDuplicationFrameInfo, &iDxgiResource0);
+			hResult = vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0->AcquireNextFrame(timeoutInMilliseconds, &iDxgiOutputDuplicationFrameInfo, &vCaptureInstances[captureInstanceId].iDxgiResource0);
 
 			//Check if screen capture failed
 			if (FAILED(hResult))
 			{
 				//std::cout << "Acquire next frame, failed: " << hResult << std::endl;
-				CaptureResetVariablesTexture();
+				CaptureResetVariablesTexture(captureInstanceId);
 				return false;
 			}
 
 			//Check mouse movement updates
-			if (vCaptureSettings.MouseIgnoreMovement && iDxgiOutputDuplicationFrameInfo.LastPresentTime.QuadPart == 0)
+			if (vCaptureInstances[captureInstanceId].vCaptureSettings.MouseIgnoreMovement && iDxgiOutputDuplicationFrameInfo.LastPresentTime.QuadPart == 0)
 			{
 				//std::cout << "Acquire next frame, skipping mouse movement." << std::endl;
-				CaptureResetVariablesTexture();
+				CaptureResetVariablesTexture(captureInstanceId);
 				return false;
 			}
 
 			//Draw screen capture to texture
-			hResult = iDxgiResource0->QueryInterface(&iD3D11Texture2D0Screen);
+			hResult = vCaptureInstances[captureInstanceId].iDxgiResource0->QueryInterface(&vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesTexture();
+				CaptureResetVariablesTexture(captureInstanceId);
 				return false;
 			}
-			ResourceViewUpdateVertex(VertexVerticesArrayScreen);
-			if (!ResourceViewDrawTexture2D(iD3D11Texture2D0Screen))
+			ResourceViewUpdateVertex(captureInstanceId, VertexVerticesArrayScreen);
+			if (!ResourceViewDrawTexture2D(captureInstanceId, vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen))
 			{
-				CaptureResetVariablesTexture();
+				CaptureResetVariablesTexture(captureInstanceId);
 				return false;
 			}
 
 			//Draw mouse cursor to texture
-			if (vCaptureSettings.MouseDrawCursor)
+			if (vCaptureInstances[captureInstanceId].vCaptureSettings.MouseDrawCursor)
 			{
-				UpdateMouseCursorVertex(iDxgiOutputDuplicationFrameInfo);
-				UpdateMouseCursorTexture(iDxgiOutputDuplicationFrameInfo);
-				if (iD3D11Texture2D0Cursor != NULL)
+				UpdateMouseCursorVertex(captureInstanceId, iDxgiOutputDuplicationFrameInfo);
+				UpdateMouseCursorTexture(captureInstanceId, iDxgiOutputDuplicationFrameInfo);
+				if (vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor != NULL)
 				{
-					ResourceViewUpdateVertex(VertexVerticesArrayCursor);
-					ResourceViewDrawTexture2D(iD3D11Texture2D0Cursor);
+					ResourceViewUpdateVertex(captureInstanceId, VertexVerticesArrayCursor);
+					ResourceViewDrawTexture2D(captureInstanceId, vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor);
 				}
 			}
 
 			//Release resources
-			CaptureResetVariablesTexture();
+			CaptureResetVariablesTexture(captureInstanceId);
 
 			//Return result
 			return true;
@@ -68,43 +68,34 @@ namespace
 		catch (...)
 		{
 			std::cout << "UpdateScreenTexture failed." << std::endl;
-			CaptureResetVariablesTexture();
+			CaptureResetVariablesTexture(captureInstanceId);
 			return false;
 		}
 	}
 
-	std::vector<BYTE> GetScreenBytes(BOOL waitNextFrame, BOOL flipScreen)
+	std::vector<BYTE> GetScreenBytes(UINT captureInstanceId, BOOL waitNextFrame, BOOL flipScreen)
 	{
 		try
 		{
 			//Update screen texture
-			if (!vMediaCapturing)
+			if (!UpdateScreenTexture(captureInstanceId, waitNextFrame))
 			{
-				if (!UpdateScreenTexture(waitNextFrame))
-				{
-					CaptureResetVariablesTexture();
-					return {};
-				}
+				CaptureResetVariablesTexture(captureInstanceId);
+				return {};
 			}
 
 			//Convert to cpu read texture
-			if (!Texture2DConvertToCpuRead(iD3D11Texture2D0RenderTargetView))
+			if (!Texture2DConvertToCpuRead(captureInstanceId, vCaptureInstances[captureInstanceId].iD3D11Texture2D0RenderTargetView))
 			{
-				if (!vMediaCapturing)
-				{
-					CaptureResetVariablesTexture();
-					return {};
-				}
+				CaptureResetVariablesTexture(captureInstanceId);
+				return {};
 			}
 
 			//Convert texture to screen bytes
-			std::vector<BYTE> screenBytes = Texture2DConvertToScreenBytes(iD3D11Texture2D0CpuRead, flipScreen);
+			std::vector<BYTE> screenBytes = Texture2DConvertToScreenBytes(captureInstanceId, vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead, flipScreen);
 
 			//Release resources
-			if (!vMediaCapturing)
-			{
-				CaptureResetVariablesTexture();
-			}
+			CaptureResetVariablesTexture(captureInstanceId);
 
 			//Return result
 			return screenBytes;
@@ -112,7 +103,7 @@ namespace
 		catch (...)
 		{
 			std::cout << "GetScreenBytes failed." << std::endl;
-			CaptureResetVariablesTexture();
+			CaptureResetVariablesTexture(captureInstanceId);
 			return {};
 		}
 	}

@@ -3,23 +3,23 @@
 
 namespace
 {
-	BOOL CaptureResetVariablesTexture()
+	BOOL CaptureResetVariablesTexture(UINT captureInstanceId)
 	{
 		try
 		{
 			//Views
-			iD3D11ShaderResourceView0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11ShaderResourceView0.Release();
 
 			//Textures
-			iDxgiSurface2.Release();
-			iDxgiResource0.Release();
-			iD3D11Texture2D0CpuRead.Release();
-			iD3D11Texture2D0Screen.Release();
+			vCaptureInstances[captureInstanceId].iDxgiSurface2.Release();
+			vCaptureInstances[captureInstanceId].iDxgiResource0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead.Release();
+			vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen.Release();
 
 			//Release output duplication frame
-			if (iDxgiOutputDuplication0 != NULL)
+			if (vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0 != NULL)
 			{
-				iDxgiOutputDuplication0->ReleaseFrame();
+				vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0->ReleaseFrame();
 			}
 
 			return true;
@@ -30,19 +30,19 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesBitmapImage()
+	BOOL CaptureResetVariablesBitmapImage(UINT captureInstanceId)
 	{
 		try
 		{
 			//Bitmap
-			iPropertyBag2.Release();
-			iWICImagingFactory.Release();
-			iWICStream.Release();
-			iWICBitmapEncoder.Release();
-			iWICBitmapFrameEncode.Release();
-			iWICMetadataQueryWriter.Release();
-			iWICFormatConverter.Release();
-			iWICBitmap.Release();
+			vCaptureInstances[captureInstanceId].iPropertyBag2.Release();
+			vCaptureInstances[captureInstanceId].iWICImagingFactory.Release();
+			vCaptureInstances[captureInstanceId].iWICStream.Release();
+			vCaptureInstances[captureInstanceId].iWICBitmapEncoder.Release();
+			vCaptureInstances[captureInstanceId].iWICBitmapFrameEncode.Release();
+			vCaptureInstances[captureInstanceId].iWICMetadataQueryWriter.Release();
+			vCaptureInstances[captureInstanceId].iWICFormatConverter.Release();
+			vCaptureInstances[captureInstanceId].iWICBitmap.Release();
 
 			return true;
 		}
@@ -52,27 +52,27 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesMedia()
+	BOOL CaptureResetVariablesMedia(UINT captureInstanceId)
 	{
 		try
 		{
 			//Media foundation
-			vMediaCapturing = false;
-			vMediaWriteLoopAllowed = false;
-			imfSinkWriter.Release();
-			imfDXGIDeviceManager.Release();
+			vCaptureInstances[captureInstanceId].vMediaCapturing = false;
+			vCaptureInstances[captureInstanceId].vMediaWriteLoopAllowed = false;
+			vCaptureInstances[captureInstanceId].imfSinkWriter.Release();
+			vCaptureInstances[captureInstanceId].imfDXGIDeviceManager.Release();
 
 			//Audio
-			iDevice.Release();
-			iAudioDeviceCapture.Release();
-			iAudioDeviceRender.Release();
-			iAudioClientCapture.Release();
-			iAudioClientRender.Release();
-			iAudioWaveFormatExCapture.Free();
-			iAudioWaveFormatExRender.Free();
+			vCaptureInstances[captureInstanceId].iDevice.Release();
+			vCaptureInstances[captureInstanceId].iAudioDeviceCapture.Release();
+			vCaptureInstances[captureInstanceId].iAudioDeviceRender.Release();
+			vCaptureInstances[captureInstanceId].iAudioClientCapture.Release();
+			vCaptureInstances[captureInstanceId].iAudioClientRender.Release();
+			vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture.Free();
+			vCaptureInstances[captureInstanceId].iAudioWaveFormatExRender.Free();
 
 			//Bytes
-			vScreenBytesCache.clear();
+			vCaptureInstances[captureInstanceId].vScreenBytesCache.clear();
 
 			return true;
 		}
@@ -82,55 +82,55 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesAll()
+	BOOL CaptureResetVariablesAll(UINT captureInstanceId)
 	{
 		try
 		{
 			//Capture
-			vCaptureDeviceInitialized = false;
+			vCaptureInstances[captureInstanceId].vCaptureDeviceInitialized = false;
 
 			//Devices
-			iDxgiDevice4.Release();
-			iDxgiAdapter4.Release();
-			iDxgiOutput0.Release();
-			iDxgiOutput6.Release();
-			iDxgiOutputDuplication0.Release();
-			iD3D11Device0.Release();
-			iD3D11Device5.Release();
-			iD3D11Multithread.Release();
-			iD3D11DeviceContext0.Release();
-			iD3D11DeviceContext4.Release();
+			vCaptureInstances[captureInstanceId].iDxgiDevice4.Release();
+			vCaptureInstances[captureInstanceId].iDxgiAdapter4.Release();
+			vCaptureInstances[captureInstanceId].iDxgiOutput0.Release();
+			vCaptureInstances[captureInstanceId].iDxgiOutput6.Release();
+			vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11Device0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11Device5.Release();
+			vCaptureInstances[captureInstanceId].iD3D11Multithread.Release();
+			vCaptureInstances[captureInstanceId].iD3D11DeviceContext0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11DeviceContext4.Release();
 
 			//States
-			iD3D11SamplerState0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11SamplerState0.Release();
 
 			//Views
-			iD3D11InputLayout0.Release();
-			iD3D11RenderTargetView0.Release();
-			iD3D11ShaderResourceView0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11InputLayout0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11RenderTargetView0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11ShaderResourceView0.Release();
 
 			//Shaders
-			iD3D11Buffer0.Release();
-			iD3DBlob0VertexShader.Release();
-			iD3DBlob0PixelShader.Release();
-			iD3D11VertexShader0.Release();
-			iD3D11PixelShader0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11Buffer0.Release();
+			vCaptureInstances[captureInstanceId].iD3DBlob0VertexShader.Release();
+			vCaptureInstances[captureInstanceId].iD3DBlob0PixelShader.Release();
+			vCaptureInstances[captureInstanceId].iD3D11VertexShader0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11PixelShader0.Release();
 
 			//Textures
-			iDxgiSurface2.Release();
-			iDxgiResource0.Release();
-			iD3D11Texture2D0CpuRead.Release();
-			iD3D11Texture2D0Screen.Release();
-			iD3D11Texture2D0Cursor.Release();
-			iD3D11Texture2D0RenderTargetView.Release();
+			vCaptureInstances[captureInstanceId].iDxgiSurface2.Release();
+			vCaptureInstances[captureInstanceId].iDxgiResource0.Release();
+			vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead.Release();
+			vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen.Release();
+			vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor.Release();
+			vCaptureInstances[captureInstanceId].iD3D11Texture2D0RenderTargetView.Release();
 
 			//Bitmap
-			CaptureResetVariablesBitmapImage();
+			CaptureResetVariablesBitmapImage(captureInstanceId);
 
 			//Media
-			CaptureResetVariablesMedia();
+			CaptureResetVariablesMedia(captureInstanceId);
 
-			std::cout << "Reset all capture variables." << std::endl;
+			std::cout << "Reset all capture variables for instance: " << captureInstanceId << std::endl;
 
 			return true;
 		}

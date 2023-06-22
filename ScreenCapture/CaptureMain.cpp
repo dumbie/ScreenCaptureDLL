@@ -1,4 +1,5 @@
 #pragma once
+#include "CaptureClasses.h"
 #include "CaptureVariables.h"
 #include "CaptureDetails.cpp"
 #include "CaptureImage.cpp"
@@ -13,17 +14,17 @@ namespace
 {
 	extern "C"
 	{
-		__declspec(dllexport) BOOL CaptureInitialize(CaptureSettings captureSettings, CaptureDetails& captureDetails)
+		__declspec(dllexport) BOOL CaptureInitialize(UINT captureInstanceId, CaptureSettings captureSettings, CaptureDetails& captureDetails)
 		{
 			try
 			{
 				//Initialize capture
-				BOOL captureInitialized = InitializeCapture(captureSettings, captureDetails);
+				BOOL captureInitialized = InitializeCapture(captureInstanceId, captureSettings, captureDetails);
 
 				//Play sound effect
 				if (!captureInitialized)
 				{
-					PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+					PlayAudio(captureInstanceId, L"Assets\\Capture\\CaptureFailed.mp3");
 				}
 
 				//Return result
@@ -35,15 +36,15 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureUpdateSettings(CaptureSettings captureSettings)
+		__declspec(dllexport) BOOL CaptureUpdateSettings(UINT captureInstanceId, CaptureSettings captureSettings)
 		{
 			try
 			{
 				//Update capture settings
-				vCaptureSettings = captureSettings;
+				vCaptureInstances[captureInstanceId].vCaptureSettings = captureSettings;
 
 				//Set shader variables
-				return SetShaderVariables();
+				return SetShaderVariables(captureInstanceId);
 			}
 			catch (...)
 			{
@@ -51,11 +52,11 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureReset()
+		__declspec(dllexport) BOOL CaptureReset(UINT captureInstanceId)
 		{
 			try
 			{
-				return CaptureResetVariablesAll();
+				return CaptureResetVariablesAll(captureInstanceId);
 			}
 			catch (...)
 			{
@@ -63,18 +64,18 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BYTE* CaptureScreenBytes()
+		__declspec(dllexport) BYTE* CaptureScreenBytes(UINT captureInstanceId)
 		{
 			try
 			{
 				//Clear screen bytes cache
-				vScreenBytesCache.clear();
+				vCaptureInstances[captureInstanceId].vScreenBytesCache.clear();
 
 				//Update screen bytes cache
-				vScreenBytesCache = GetScreenBytes(true, false);
+				vCaptureInstances[captureInstanceId].vScreenBytesCache = GetScreenBytes(captureInstanceId, true, false);
 
 				//Return result
-				return vScreenBytesCache.data();
+				return vCaptureInstances[captureInstanceId].vScreenBytesCache.data();
 			}
 			catch (...)
 			{
@@ -82,17 +83,17 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureImage(WCHAR* filePath, UINT imageQuality, ImageFormats imageFormat)
+		__declspec(dllexport) BOOL CaptureImage(UINT captureInstanceId, WCHAR* filePath, UINT imageQuality, ImageFormats imageFormat)
 		{
 			try
 			{
 				//Get screen bytes
-				std::vector<BYTE> screenBytes = GetScreenBytes(true, false);
+				std::vector<BYTE> screenBytes = GetScreenBytes(captureInstanceId, true, false);
 
 				//Check screen bytes
 				if (screenBytes.empty())
 				{
-					PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+					PlayAudio(captureInstanceId, L"Assets\\Capture\\CaptureFailed.mp3");
 					std::cout << "Screen capture image bytes are empty." << std::endl;
 					return false;
 				}
@@ -105,41 +106,41 @@ namespace
 				}
 				else if (imageFormat == JPG)
 				{
-					if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
+					if (vCaptureInstances[captureInstanceId].vCaptureDetails.HDREnabled && !vCaptureInstances[captureInstanceId].vCaptureDetails.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatJpeg;
 				}
 				else if (imageFormat == PNG)
 				{
-					if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
+					if (vCaptureInstances[captureInstanceId].vCaptureDetails.HDREnabled && !vCaptureInstances[captureInstanceId].vCaptureDetails.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatPng;
 				}
 				else if (imageFormat == BMP)
 				{
-					if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
+					if (vCaptureInstances[captureInstanceId].vCaptureDetails.HDREnabled && !vCaptureInstances[captureInstanceId].vCaptureDetails.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatBmp;
 				}
 				else if (imageFormat == TIF)
 				{
-					if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
+					if (vCaptureInstances[captureInstanceId].vCaptureDetails.HDREnabled && !vCaptureInstances[captureInstanceId].vCaptureDetails.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatTiff;
 				}
 				else if (imageFormat == HEIF)
 				{
-					if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
+					if (vCaptureInstances[captureInstanceId].vCaptureDetails.HDREnabled && !vCaptureInstances[captureInstanceId].vCaptureDetails.HDRtoSDR) { return false; }
 					imageSaveFormat = GUID_ContainerFormatHeif;
 				}
 
 				//Save bitmap data to file
-				BOOL savedBitmap = BitmapDataSaveFile(screenBytes.data(), filePath, imageSaveFormat, imageQuality);
+				BOOL savedBitmap = BitmapDataSaveFile(captureInstanceId, screenBytes.data(), filePath, imageSaveFormat, imageQuality);
 
 				//Play sound effect
 				if (savedBitmap)
 				{
-					PlayAudio(L"Assets\\Capture\\CaptureScreenshot.mp3");
+					PlayAudio(captureInstanceId, L"Assets\\Capture\\CaptureScreenshot.mp3");
 				}
 				else
 				{
-					PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+					PlayAudio(captureInstanceId, L"Assets\\Capture\\CaptureFailed.mp3");
 				}
 
 				//Return result
@@ -151,88 +152,88 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureVideoStart(WCHAR* filePath, MediaSettings mediaSettings)
+		__declspec(dllexport) BOOL CaptureVideoStart(UINT captureInstanceId, WCHAR* filePath, MediaSettings mediaSettings)
 		{
 			try
 			{
-				if (vMediaCapturing) { return false; }
+				if (vCaptureInstances[captureInstanceId].vMediaCapturing) { return false; }
 
 				//Update media settings
-				vMediaSettings = mediaSettings;
+				vCaptureInstances[captureInstanceId].vMediaSettings = mediaSettings;
 
 				//Start video capture loop
-				vMediaCapturing = true;
-				vMediaWriteLoopAllowed = true;
-				vMediaWriteLoopFinishedScreen = false;
-				vMediaWriteLoopFinishedAudio = false;
+				vCaptureInstances[captureInstanceId].vMediaCapturing = true;
+				vCaptureInstances[captureInstanceId].vMediaWriteLoopAllowed = true;
+				vCaptureInstances[captureInstanceId].vMediaWriteLoopFinishedScreen = false;
+				vCaptureInstances[captureInstanceId].vMediaWriteLoopFinishedAudio = false;
 
 				//Initialize DXGI device manager
-				bool initializeDXGI = InitializeDxgiDeviceManager();
+				bool initializeDXGI = InitializeDxgiDeviceManager(captureInstanceId);
 				if (!initializeDXGI)
 				{
-					CaptureResetVariablesMedia();
+					CaptureResetVariablesMedia(captureInstanceId);
 					return false;
 				}
 
 				//Initialize media foundation
-				bool initializeMedia = InitializeMediaFoundation(filePath);
+				bool initializeMedia = InitializeMediaFoundation(captureInstanceId, filePath);
 				if (!initializeMedia)
 				{
-					CaptureResetVariablesMedia();
+					CaptureResetVariablesMedia(captureInstanceId);
 					return false;
 				}
 
 				//Begin media write
-				hResult = imfSinkWriter->BeginWriting();
+				hResult = vCaptureInstances[captureInstanceId].imfSinkWriter->BeginWriting();
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesMedia();
+					CaptureResetVariablesMedia(captureInstanceId);
 					return false;
 				}
 
 				//Set media loop start time
 				LARGE_INTEGER qpcTimeCurrent;
 				QueryPerformanceCounter(&qpcTimeCurrent);
-				vMediaTimeStartLoop = qpcTimeCurrent.QuadPart;
+				vCaptureInstances[captureInstanceId].vMediaTimeStartLoop = qpcTimeCurrent.QuadPart;
 
 				//Loop media write screen
-				std::thread threadLoopWriteScreen(LoopWriteScreen);
+				std::thread threadLoopWriteScreen(LoopWriteScreen, captureInstanceId);
 				threadLoopWriteScreen.detach();
 
 				//Loop media write audio
-				std::thread threadLoopWriteAudio(LoopWriteAudio);
+				std::thread threadLoopWriteAudio(LoopWriteAudio, captureInstanceId);
 				threadLoopWriteAudio.detach();
 
 				//Play audio effect
-				PlayAudio(L"Assets\\Capture\\CaptureVideoStart.mp3");
+				PlayAudio(captureInstanceId, L"Assets\\Capture\\CaptureVideoStart.mp3");
 
 				return true;
 			}
 			catch (...)
 			{
-				CaptureResetVariablesTexture();
-				CaptureResetVariablesMedia();
+				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesMedia(captureInstanceId);
 				return false;
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureVideoStop()
+		__declspec(dllexport) BOOL CaptureVideoStop(UINT captureInstanceId)
 		{
 			try
 			{
 				//Stop video capture loop
-				vMediaCapturing = false;
-				vMediaWriteLoopAllowed = false;
+				vCaptureInstances[captureInstanceId].vMediaCapturing = false;
+				vCaptureInstances[captureInstanceId].vMediaWriteLoopAllowed = false;
 
 				//Wait for loop to finish
-				while (!vMediaWriteLoopFinishedScreen && !vMediaWriteLoopFinishedAudio)
+				while (!vCaptureInstances[captureInstanceId].vMediaWriteLoopFinishedScreen && !vCaptureInstances[captureInstanceId].vMediaWriteLoopFinishedAudio)
 				{
 					std::cout << "Waiting for video capture loop to stop..." << std::endl;
 					Sleep(1000);
 				}
 
 				//Finalize media write
-				hResult = imfSinkWriter->Finalize();
+				hResult = vCaptureInstances[captureInstanceId].imfSinkWriter->Finalize();
 				if (FAILED(hResult))
 				{
 					std::cout << "Failed to finalize media capture..." << std::endl;
@@ -242,25 +243,25 @@ namespace
 				MFShutdown();
 
 				//Release resources
-				CaptureResetVariablesTexture();
-				CaptureResetVariablesMedia();
+				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesMedia(captureInstanceId);
 
 				//Play audio effect
-				PlayAudio(L"Assets\\Capture\\CaptureVideoStop.mp3");
+				PlayAudio(captureInstanceId, L"Assets\\Capture\\CaptureVideoStop.mp3");
 
 				return true;
 			}
 			catch (...)
 			{
-				CaptureResetVariablesTexture();
-				CaptureResetVariablesMedia();
+				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesMedia(captureInstanceId);
 				return false;
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureVideoIsRecording()
+		__declspec(dllexport) BOOL CaptureVideoIsRecording(UINT captureInstanceId)
 		{
-			return vMediaCapturing;
+			return vCaptureInstances[captureInstanceId].vMediaCapturing;
 		}
 	}
 };
