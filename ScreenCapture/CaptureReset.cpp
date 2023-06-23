@@ -8,18 +8,17 @@ namespace
 		try
 		{
 			//Views
-			vCaptureInstances[captureInstanceId].iD3D11ShaderResourceView0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11ShaderResourceView0.Release();
 
 			//Textures
-			vCaptureInstances[captureInstanceId].iDxgiSurface2.Release();
 			vCaptureInstances[captureInstanceId].iDxgiResource0.Release();
 			vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead.Release();
 			vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen.Release();
 
 			//Release output duplication frame
-			if (vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0 != NULL)
+			if (vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutputDuplication0 != NULL)
 			{
-				vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0->ReleaseFrame();
+				vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutputDuplication0->ReleaseFrame();
 			}
 
 			return true;
@@ -87,37 +86,36 @@ namespace
 		try
 		{
 			//Capture
-			vCaptureInstances[captureInstanceId].vCaptureDeviceInitialized = false;
+			vCaptureInstances[captureInstanceId].vCaptureInstanceInitialized = false;
 
 			//Devices
-			vCaptureInstances[captureInstanceId].iDxgiDevice4.Release();
-			vCaptureInstances[captureInstanceId].iDxgiAdapter4.Release();
-			vCaptureInstances[captureInstanceId].iDxgiOutput0.Release();
-			vCaptureInstances[captureInstanceId].iDxgiOutput6.Release();
-			vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11Device0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11Device5.Release();
-			vCaptureInstances[captureInstanceId].iD3D11Multithread.Release();
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext4.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiDevice4.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiAdapter4.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutput0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutput6.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutputDuplication0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Multithread.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4.Release();
 
 			//States
-			vCaptureInstances[captureInstanceId].iD3D11SamplerState0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11SamplerState0.Release();
 
 			//Views
-			vCaptureInstances[captureInstanceId].iD3D11InputLayout0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11RenderTargetView0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11ShaderResourceView0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11InputLayout0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11RenderTargetView0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11ShaderResourceView0.Release();
 
 			//Shaders
-			vCaptureInstances[captureInstanceId].iD3D11Buffer0.Release();
-			vCaptureInstances[captureInstanceId].iD3DBlob0VertexShader.Release();
-			vCaptureInstances[captureInstanceId].iD3DBlob0PixelShader.Release();
-			vCaptureInstances[captureInstanceId].iD3D11VertexShader0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11PixelShader0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Buffer0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0VertexShader.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0PixelShader.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11VertexShader0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11PixelShader0.Release();
 
 			//Textures
-			vCaptureInstances[captureInstanceId].iDxgiSurface2.Release();
 			vCaptureInstances[captureInstanceId].iDxgiResource0.Release();
 			vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead.Release();
 			vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen.Release();

@@ -12,7 +12,7 @@ namespace
 			//Create D3D11 Device
 			D3D_FEATURE_LEVEL iD3DFeatureLevel;
 			UINT iD3DCreateFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
-			hResult = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, iD3DCreateFlags, D3DFeatureLevelsArray, D3DFeatureLevelsCount, D3D11_SDK_VERSION, &vCaptureInstances[captureInstanceId].iD3D11Device0, &iD3DFeatureLevel, &vCaptureInstances[captureInstanceId].iD3D11DeviceContext0);
+			hResult = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, iD3DCreateFlags, D3DFeatureLevelsArray, D3DFeatureLevelsCount, D3D11_SDK_VERSION, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device0, &iD3DFeatureLevel, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext0);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll(captureInstanceId);
@@ -20,7 +20,7 @@ namespace
 			}
 
 			//Convert variables
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Device0->QueryInterface(&vCaptureInstances[captureInstanceId].iD3D11Device5);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device0->QueryInterface(&vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll(captureInstanceId);
@@ -28,7 +28,7 @@ namespace
 			}
 
 			//Convert variables
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Device5->QueryInterface(&vCaptureInstances[captureInstanceId].iDxgiDevice4);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->QueryInterface(&vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiDevice4);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll(captureInstanceId);
@@ -36,7 +36,7 @@ namespace
 			}
 
 			//Convert variables
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Device5->QueryInterface(&vCaptureInstances[captureInstanceId].iD3D11Multithread);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->QueryInterface(&vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Multithread);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll(captureInstanceId);
@@ -44,7 +44,7 @@ namespace
 			}
 
 			//Convert variables
-			hResult = vCaptureInstances[captureInstanceId].iD3D11DeviceContext0->QueryInterface(&vCaptureInstances[captureInstanceId].iD3D11DeviceContext4);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext0->QueryInterface(&vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll(captureInstanceId);
@@ -52,7 +52,7 @@ namespace
 			}
 
 			//Set multithread protected
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Multithread->SetMultithreadProtected(true);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Multithread->SetMultithreadProtected(true);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll(captureInstanceId);
@@ -60,7 +60,7 @@ namespace
 			}
 
 			//Get DXGI Adapter
-			hResult = vCaptureInstances[captureInstanceId].iDxgiDevice4->GetParent(IID_PPV_ARGS(&vCaptureInstances[captureInstanceId].iDxgiAdapter4));
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiDevice4->GetParent(IID_PPV_ARGS(&vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiAdapter4));
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll(captureInstanceId);
@@ -68,7 +68,7 @@ namespace
 			}
 
 			//Get DXGI Output
-			hResult = vCaptureInstances[captureInstanceId].iDxgiAdapter4->EnumOutputs(vCaptureInstances[captureInstanceId].vCaptureSettings.MonitorId, &vCaptureInstances[captureInstanceId].iDxgiOutput0);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiAdapter4->EnumOutputs(vCaptureInstances[captureInstanceId].vCaptureSettings.MonitorId, &vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutput0);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll(captureInstanceId);
@@ -76,7 +76,7 @@ namespace
 			}
 
 			//Convert variables
-			hResult = vCaptureInstances[captureInstanceId].iDxgiOutput0->QueryInterface(&vCaptureInstances[captureInstanceId].iDxgiOutput6);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutput0->QueryInterface(&vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutput6);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll(captureInstanceId);
@@ -84,7 +84,7 @@ namespace
 			}
 
 			//Get output duplicate (requires process dpi awareness) (only one per process allowed)
-			hResult = vCaptureInstances[captureInstanceId].iDxgiOutput6->DuplicateOutput1(vCaptureInstances[captureInstanceId].iD3D11Device5, 0, iDxgiFormatsCount, iDxgiFormatsArray, &vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutput6->DuplicateOutput1(vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5, 0, iDxgiFormatsCount, iDxgiFormatsArray, &vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutputDuplication0);
 			if (FAILED(hResult))
 			{
 				std::cout << "DuplicateOutput failed: " << hResult << std::endl;
@@ -94,7 +94,7 @@ namespace
 
 			//Get output description
 			DXGI_OUTPUT_DESC1 iDxgiOutputDescription;
-			hResult = vCaptureInstances[captureInstanceId].iDxgiOutput6->GetDesc1(&iDxgiOutputDescription);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutput6->GetDesc1(&iDxgiOutputDescription);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesAll(captureInstanceId);
@@ -103,7 +103,7 @@ namespace
 
 			//Get duplicate description
 			DXGI_OUTDUPL_DESC iDxgiOutputDuplicationDescription;
-			vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0->GetDesc(&iDxgiOutputDuplicationDescription);
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutputDuplication0->GetDesc(&iDxgiOutputDuplicationDescription);
 
 			//Get and set HDR details
 			vCaptureInstances[captureInstanceId].vCaptureDetails.HDREnabled = iDxgiOutputDescription.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 || iDxgiOutputDescription.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
@@ -164,12 +164,12 @@ namespace
 			vCaptureInstances[captureInstanceId].vCaptureTextureMipLevels = 1 + log2(max(vCaptureInstances[captureInstanceId].vCaptureDetails.OutputWidth, vCaptureInstances[captureInstanceId].vCaptureDetails.OutputHeight));
 
 			//Release resources
-			vCaptureInstances[captureInstanceId].iD3D11Device0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext0.Release();
-			vCaptureInstances[captureInstanceId].iDxgiDevice4.Release();
-			vCaptureInstances[captureInstanceId].iDxgiAdapter4.Release();
-			vCaptureInstances[captureInstanceId].iDxgiOutput0.Release();
-			vCaptureInstances[captureInstanceId].iDxgiOutput6.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiDevice4.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiAdapter4.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutput0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutput6.Release();
 
 			return true;
 		}
@@ -202,17 +202,17 @@ namespace
 			iD3DSamplerDescription.MaxLOD = D3D11_FLOAT32_MAX;
 
 			//Create sampler state
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Device5->CreateSamplerState(&iD3DSamplerDescription, &vCaptureInstances[captureInstanceId].iD3D11SamplerState0);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateSamplerState(&iD3DSamplerDescription, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11SamplerState0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Set sampler state
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext4->PSSetSamplers(0, 1, &vCaptureInstances[captureInstanceId].iD3D11SamplerState0);
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->PSSetSamplers(0, 1, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11SamplerState0);
 
 			//Release resources
-			vCaptureInstances[captureInstanceId].iD3D11SamplerState0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11SamplerState0.Release();
 
 			return true;
 		}
@@ -240,23 +240,23 @@ namespace
 			iD3DTexture2D0DescRenderTargetView.BindFlags = D3D11_BIND_RENDER_TARGET;
 			iD3DTexture2D0DescRenderTargetView.CPUAccessFlags = 0;
 			iD3DTexture2D0DescRenderTargetView.MiscFlags = 0;
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescRenderTargetView, NULL, &vCaptureInstances[captureInstanceId].iD3D11Texture2D0RenderTargetView);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescRenderTargetView, NULL, &vCaptureInstances[captureInstanceId].iD3D11Texture2D0RenderTargetView);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Create and set render target view
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Device5->CreateRenderTargetView(vCaptureInstances[captureInstanceId].iD3D11Texture2D0RenderTargetView, NULL, &vCaptureInstances[captureInstanceId].iD3D11RenderTargetView0);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateRenderTargetView(vCaptureInstances[captureInstanceId].iD3D11Texture2D0RenderTargetView, NULL, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11RenderTargetView0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext4->OMSetRenderTargets(1, &vCaptureInstances[captureInstanceId].iD3D11RenderTargetView0, NULL);
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext4->ClearRenderTargetView(vCaptureInstances[captureInstanceId].iD3D11RenderTargetView0, ColorRgbaBlack);
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->OMSetRenderTargets(1, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11RenderTargetView0, NULL);
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->ClearRenderTargetView(vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11RenderTargetView0, ColorRgbaBlack);
 
 			//Release resources
-			vCaptureInstances[captureInstanceId].iD3D11RenderTargetView0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11RenderTargetView0.Release();
 
 			return true;
 		}
@@ -275,7 +275,7 @@ namespace
 			D3D11_VIEWPORT iD3D11ViewPort{};
 			iD3D11ViewPort.Width = vCaptureInstances[captureInstanceId].vCaptureDetails.OutputWidth;
 			iD3D11ViewPort.Height = vCaptureInstances[captureInstanceId].vCaptureDetails.OutputHeight;
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext4->RSSetViewports(1, &iD3D11ViewPort);
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->RSSetViewports(1, &iD3D11ViewPort);
 
 			return true;
 		}
@@ -291,48 +291,48 @@ namespace
 		try
 		{
 			//Load shaders from file
-			hResult = D3DCompileFromFile(L"Resources\\VertexShader.hlsl", 0, 0, "main", "vs_5_0", 0, 0, &vCaptureInstances[captureInstanceId].iD3DBlob0VertexShader, 0);
+			hResult = D3DCompileFromFile(L"Resources\\VertexShader.hlsl", 0, 0, "main", "vs_5_0", 0, 0, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0VertexShader, 0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
-			hResult = D3DCompileFromFile(L"Resources\\PixelShader.hlsl", 0, 0, "main", "ps_5_0", 0, 0, &vCaptureInstances[captureInstanceId].iD3DBlob0PixelShader, 0);
+			hResult = D3DCompileFromFile(L"Resources\\PixelShader.hlsl", 0, 0, "main", "ps_5_0", 0, 0, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0PixelShader, 0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Create shaders from blob
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Device5->CreateVertexShader(vCaptureInstances[captureInstanceId].iD3DBlob0VertexShader->GetBufferPointer(), vCaptureInstances[captureInstanceId].iD3DBlob0VertexShader->GetBufferSize(), NULL, &vCaptureInstances[captureInstanceId].iD3D11VertexShader0);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateVertexShader(vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0VertexShader->GetBufferPointer(), vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0VertexShader->GetBufferSize(), NULL, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11VertexShader0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Device5->CreatePixelShader(vCaptureInstances[captureInstanceId].iD3DBlob0PixelShader->GetBufferPointer(), vCaptureInstances[captureInstanceId].iD3DBlob0PixelShader->GetBufferSize(), NULL, &vCaptureInstances[captureInstanceId].iD3D11PixelShader0);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreatePixelShader(vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0PixelShader->GetBufferPointer(), vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0PixelShader->GetBufferSize(), NULL, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11PixelShader0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Create and set input layout
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Device5->CreateInputLayout(InputElementsArray, InputElementsCount, vCaptureInstances[captureInstanceId].iD3DBlob0VertexShader->GetBufferPointer(), vCaptureInstances[captureInstanceId].iD3DBlob0VertexShader->GetBufferSize(), &vCaptureInstances[captureInstanceId].iD3D11InputLayout0);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateInputLayout(InputElementsArray, InputElementsCount, vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0VertexShader->GetBufferPointer(), vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0VertexShader->GetBufferSize(), &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11InputLayout0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext4->IASetInputLayout(vCaptureInstances[captureInstanceId].iD3D11InputLayout0);
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->IASetInputLayout(vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11InputLayout0);
 
 			//Set shaders
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext4->VSSetShader(vCaptureInstances[captureInstanceId].iD3D11VertexShader0, NULL, 0);
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext4->PSSetShader(vCaptureInstances[captureInstanceId].iD3D11PixelShader0, NULL, 0);
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->VSSetShader(vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11VertexShader0, NULL, 0);
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->PSSetShader(vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11PixelShader0, NULL, 0);
 
 			//Release resources
-			vCaptureInstances[captureInstanceId].iD3D11Buffer0.Release();
-			vCaptureInstances[captureInstanceId].iD3DBlob0VertexShader.Release();
-			vCaptureInstances[captureInstanceId].iD3DBlob0PixelShader.Release();
-			vCaptureInstances[captureInstanceId].iD3D11VertexShader0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11PixelShader0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11InputLayout0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Buffer0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0VertexShader.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3DBlob0PixelShader.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11VertexShader0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11PixelShader0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11InputLayout0.Release();
 
 			return true;
 		}
@@ -347,12 +347,6 @@ namespace
 	{
 		try
 		{
-			//Check if DirectX is initialized
-			if (vCaptureInstances[captureInstanceId].iD3D11Device5 == NULL || vCaptureInstances[captureInstanceId].iD3D11DeviceContext4 == NULL)
-			{
-				return false;
-			}
-
 			//Create shader variables
 			ShaderVariables shaderVariables{};
 			shaderVariables.HDRtoSDR = vCaptureInstances[captureInstanceId].vCaptureDetails.HDRtoSDR;
@@ -382,17 +376,17 @@ namespace
 			subResourceData.pSysMem = &shaderVariables;
 
 			//Create shader variables buffer
-			hResult = vCaptureInstances[captureInstanceId].iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &vCaptureInstances[captureInstanceId].iD3D11Buffer0);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Buffer0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Set shader variables
-			vCaptureInstances[captureInstanceId].iD3D11DeviceContext4->PSSetConstantBuffers(0, 1, &vCaptureInstances[captureInstanceId].iD3D11Buffer0);
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->PSSetConstantBuffers(0, 1, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Buffer0);
 
 			//Release resources
-			vCaptureInstances[captureInstanceId].iD3D11Buffer0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Buffer0.Release();
 
 			return true;
 		}
@@ -408,7 +402,7 @@ namespace
 		try
 		{
 			//Check capture initialized
-			if (vCaptureInstances[captureInstanceId].vCaptureDeviceInitialized)
+			if (vCaptureInstances[captureInstanceId].vCaptureInstanceInitialized)
 			{
 				//Return capture details
 				captureDetails = vCaptureInstances[captureInstanceId].vCaptureDetails;
@@ -449,7 +443,7 @@ namespace
 			if (!SetShaderVariables(captureInstanceId)) { return false; }
 
 			//Update variables
-			vCaptureInstances[captureInstanceId].vCaptureDeviceInitialized = true;
+			vCaptureInstances[captureInstanceId].vCaptureInstanceInitialized = true;
 
 			//Return capture details
 			captureDetails = vCaptureInstances[captureInstanceId].vCaptureDetails;

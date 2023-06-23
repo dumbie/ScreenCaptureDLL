@@ -19,7 +19,7 @@ namespace
 			}
 
 			//Reset DXGI device manager
-			hResult = vCaptureInstances[captureInstanceId].imfDXGIDeviceManager->ResetDevice(vCaptureInstances[captureInstanceId].iD3D11Device5, resetToken);
+			hResult = vCaptureInstances[captureInstanceId].imfDXGIDeviceManager->ResetDevice(vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5, resetToken);
 			if (FAILED(hResult))
 			{
 				return false;

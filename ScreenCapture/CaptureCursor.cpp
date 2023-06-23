@@ -51,7 +51,7 @@ namespace
 				//Get cursor information
 				UINT pointerShapeBufferSizeRequired;
 				DXGI_OUTDUPL_POINTER_SHAPE_INFO pointerShapeInfo;
-				hResult = vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0->GetFramePointerShape(cursorFrameInfo.PointerShapeBufferSize, pointerShapeBuffer.data(), &pointerShapeBufferSizeRequired, &pointerShapeInfo);
+				hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutputDuplication0->GetFramePointerShape(cursorFrameInfo.PointerShapeBufferSize, pointerShapeBuffer.data(), &pointerShapeBufferSizeRequired, &pointerShapeInfo);
 				if (FAILED(hResult))
 				{
 					return false;
@@ -85,7 +85,7 @@ namespace
 				vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor.Release();
 
 				//Create cursor texture
-				hResult = vCaptureInstances[captureInstanceId].iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCursor, &subResourceDataCursor, &vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor);
+				hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCursor, &subResourceDataCursor, &vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor);
 				if (FAILED(hResult))
 				{
 					return false;

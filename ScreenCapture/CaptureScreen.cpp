@@ -15,7 +15,7 @@ namespace
 			UINT timeoutInMilliseconds = 0;
 			if (waitNextFrame) { timeoutInMilliseconds = INFINITE; }
 			DXGI_OUTDUPL_FRAME_INFO iDxgiOutputDuplicationFrameInfo;
-			hResult = vCaptureInstances[captureInstanceId].iDxgiOutputDuplication0->AcquireNextFrame(timeoutInMilliseconds, &iDxgiOutputDuplicationFrameInfo, &vCaptureInstances[captureInstanceId].iDxgiResource0);
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutputDuplication0->AcquireNextFrame(timeoutInMilliseconds, &iDxgiOutputDuplicationFrameInfo, &vCaptureInstances[captureInstanceId].iDxgiResource0);
 
 			//Check if screen capture failed
 			if (FAILED(hResult))
