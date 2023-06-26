@@ -44,7 +44,7 @@ namespace ScreenCapture
                 };
 
                 //Initialize screen capture
-                bool captureInitialized = CaptureImport.CaptureInitialize(vCaptureSettings, out vCaptureDetails);
+                bool captureInitialized = CaptureImport.CaptureInitialize(0, vCaptureSettings, out vCaptureDetails);
 
                 //Set capture details string
                 string captureDetails = "Width: " + vCaptureDetails.OutputWidth + " (" + vCaptureDetails.OriginalWidth + ")";
@@ -97,7 +97,7 @@ namespace ScreenCapture
                         IntPtr bitmapIntPtr = IntPtr.Zero;
                         try
                         {
-                            bitmapIntPtr = CaptureImport.CaptureScreenBytes();
+                            bitmapIntPtr = CaptureImport.CaptureScreenBytes(0);
                         }
                         catch { }
 
@@ -161,7 +161,7 @@ namespace ScreenCapture
                     Blur = (float)slider_Blur.Value,
                 };
 
-                bool settingsUpdated = CaptureImport.CaptureUpdateSettings(vCaptureSettings);
+                bool settingsUpdated = CaptureImport.CaptureUpdateSettings(0, vCaptureSettings);
                 Debug.WriteLine("Capture settings updated: " + settingsUpdated);
             }
             catch { }

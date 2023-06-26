@@ -16,16 +16,16 @@ namespace ScreenCapture
             try
             {
                 //Stop video capture
-                if (CaptureImport.CaptureVideoIsRecording())
+                if (CaptureImport.CaptureVideoIsRecording(1))
                 {
                     Debug.WriteLine("Stopping video capturing...");
 
                     //Request to stop video capture
-                    bool captureResultStop = CaptureImport.CaptureVideoStop();
+                    bool captureResultStop = CaptureImport.CaptureVideoStop(1);
                     Debug.WriteLine("Stopped video capturing: " + captureResultStop);
 
                     //Reset screen capture resources
-                    CaptureImport.CaptureReset();
+                    CaptureImport.CaptureReset(1);
                     return;
                 }
 
@@ -34,7 +34,7 @@ namespace ScreenCapture
                 captureSettings.HDRtoSDR = true;
 
                 //Initialize screen capture
-                if (!CaptureImport.CaptureInitialize(captureSettings, out CaptureDetails vCaptureDetails))
+                if (!CaptureImport.CaptureInitialize(1, captureSettings, out CaptureDetails vCaptureDetails))
                 {
                     Debug.WriteLine("Failed to initialize screen capture.");
                     return;
@@ -85,7 +85,7 @@ namespace ScreenCapture
                 MediaSettings mediaSettings = new MediaSettings();
 
                 //Start video capture
-                bool captureStarted = CaptureImport.CaptureVideoStart(fileSavePath, mediaSettings);
+                bool captureStarted = CaptureImport.CaptureVideoStart(1, fileSavePath, mediaSettings);
 
                 //Play capture sound
                 if (captureStarted)
