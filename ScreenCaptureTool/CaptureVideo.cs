@@ -29,9 +29,17 @@ namespace ScreenCapture
                     return;
                 }
 
+                //Capture tool settings
+                int CaptureMonitorId = SettingLoad(vConfiguration, "CaptureMonitorId", typeof(int)) - 1;
+                bool CaptureSoundEffect = SettingLoad(vConfiguration, "CaptureSoundEffect", typeof(bool));
+                bool CaptureMouseDrawCursor = SettingLoad(vConfiguration, "CaptureMouseDrawCursor", typeof(bool));
+
                 //Screen capture settings
                 CaptureSettings captureSettings = new CaptureSettings();
                 captureSettings.HDRtoSDR = true;
+                captureSettings.MonitorId = CaptureMonitorId;
+                captureSettings.SoundEffect = CaptureSoundEffect;
+                captureSettings.MouseDrawCursor = CaptureMouseDrawCursor;
 
                 //Initialize screen capture
                 if (!CaptureImport.CaptureInitialize(1, captureSettings, out CaptureDetails vCaptureDetails))

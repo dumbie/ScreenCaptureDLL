@@ -18,15 +18,18 @@ namespace ScreenCapture
                 //Socket
                 if (!SettingCheck(vConfiguration, "ServerPort")) { SettingSave(vConfiguration, "ServerPort", "1040"); }
 
-                //Sound
-                if (!SettingCheck(vConfiguration, "SoundEffect")) { SettingSave(vConfiguration, "SoundEffect", "True"); }
-
-                //Location
+                //General
+                if (!SettingCheck(vConfiguration, "CaptureSoundEffect")) { SettingSave(vConfiguration, "CaptureSoundEffect", "True"); }
+                if (!SettingCheck(vConfiguration, "CaptureMonitorId")) { SettingSave(vConfiguration, "CaptureMonitorId", "0"); }
+                if (!SettingCheck(vConfiguration, "CaptureMouseDrawCursor")) { SettingSave(vConfiguration, "CaptureMouseDrawCursor", "False"); }
                 if (!SettingCheck(vConfiguration, "CaptureLocation")) { SettingSave(vConfiguration, "CaptureLocation", "Captures"); }
 
-                //Capture
-                if (!SettingCheck(vConfiguration, "ImageSaveFormat")) { SettingSave(vConfiguration, "ImageSaveFormat", "0"); }
-                if (!SettingCheck(vConfiguration, "ImageSaveQuality")) { SettingSave(vConfiguration, "ImageSaveQuality", "100"); }
+                //Screenshot
+                if (!SettingCheck(vConfiguration, "ScreenshotSaveFormat")) { SettingSave(vConfiguration, "ScreenshotSaveFormat", "0"); }
+                if (!SettingCheck(vConfiguration, "ScreenshotSaveQuality")) { SettingSave(vConfiguration, "ScreenshotSaveQuality", "80"); }
+                if (!SettingCheck(vConfiguration, "ScreenshotMaxPixelDimension")) { SettingSave(vConfiguration, "ScreenshotMaxPixelDimension", "4320"); }                
+
+                //Recording
 
                 //Shortcuts
                 Check_SetShortcut_Keys();

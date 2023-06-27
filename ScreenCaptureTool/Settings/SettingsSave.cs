@@ -12,22 +12,39 @@ namespace ScreenCapture
         {
             try
             {
-                //Sound
+                //General
                 checkbox_CaptureSoundEffect.Click += (sender, e) =>
                 {
-                    SettingSave(vConfiguration, "SoundEffect", checkbox_CaptureSoundEffect.IsChecked);
+                    SettingSave(vConfiguration, "CaptureSoundEffect", checkbox_CaptureSoundEffect.IsChecked);
                 };
 
-                //Capture
-                combobox_ImageSaveFormat.SelectionChanged += (sender, e) =>
+                checkbox_CaptureMouseDrawCursor.Click += (sender, e) =>
                 {
-                    SettingSave(vConfiguration, "ImageSaveFormat", combobox_ImageSaveFormat.SelectedIndex);
+                    SettingSave(vConfiguration, "CaptureMouseDrawCursor", checkbox_CaptureMouseDrawCursor.IsChecked);
                 };
 
-                slider_ImageSaveQuality.ValueChanged += (sender, e) =>
+                slider_CaptureMonitorId.ValueChanged += (sender, e) =>
                 {
-                    textblock_ImageSaveQuality.Text = textblock_ImageSaveQuality.Tag + slider_ImageSaveQuality.Value.ToString() + "%";
-                    SettingSave(vConfiguration, "ImageSaveQuality", slider_ImageSaveQuality.Value);
+                    textblock_CaptureMonitorId.Text = textblock_CaptureMonitorId.Tag + slider_CaptureMonitorId.Value.ToString();
+                    SettingSave(vConfiguration, "CaptureMonitorId", slider_CaptureMonitorId.Value);
+                };
+
+                //Screenshot
+                combobox_ScreenshotSaveFormat.SelectionChanged += (sender, e) =>
+                {
+                    SettingSave(vConfiguration, "ScreenshotSaveFormat", combobox_ScreenshotSaveFormat.SelectedIndex);
+                };
+
+                slider_ScreenshotSaveQuality.ValueChanged += (sender, e) =>
+                {
+                    textblock_ScreenshotSaveQuality.Text = textblock_ScreenshotSaveQuality.Tag + slider_ScreenshotSaveQuality.Value.ToString() + "%";
+                    SettingSave(vConfiguration, "ScreenshotSaveQuality", slider_ScreenshotSaveQuality.Value);
+                };
+
+                slider_ScreenshotMaxPixelDimension.ValueChanged += (sender, e) =>
+                {
+                    textblock_ScreenshotMaxPixelDimension.Text = textblock_ScreenshotMaxPixelDimension.Tag + slider_ScreenshotMaxPixelDimension.Value.ToString() + "px";
+                    SettingSave(vConfiguration, "ScreenshotMaxPixelDimension", slider_ScreenshotMaxPixelDimension.Value);
                 };
 
                 //Shortcuts
