@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows.Controls;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
@@ -45,6 +46,59 @@ namespace ScreenCapture
                 {
                     textblock_ScreenshotMaxPixelDimension.Text = textblock_ScreenshotMaxPixelDimension.Tag + slider_ScreenshotMaxPixelDimension.Value.ToString() + "px";
                     SettingSave(vConfiguration, "ScreenshotMaxPixelDimension", slider_ScreenshotMaxPixelDimension.Value);
+                };
+
+                //Recording
+                combobox_VideoSaveFormat.SelectionChanged += (sender, e) =>
+                {
+                    SettingSave(vConfiguration, "VideoSaveFormat", combobox_VideoSaveFormat.SelectedIndex);
+                };
+
+                combobox_VideoFrameRate.SelectionChanged += (sender, e) =>
+                {
+                    ComboBoxItem saveValue = (ComboBoxItem)combobox_VideoFrameRate.SelectedItem;
+                    SettingSave(vConfiguration, "VideoFrameRate", saveValue.Content);
+                };
+
+                slider_VideoSaveQuality.ValueChanged += (sender, e) =>
+                {
+                    textblock_VideoSaveQuality.Text = textblock_VideoSaveQuality.Tag + slider_VideoSaveQuality.Value.ToString() + "%";
+                    SettingSave(vConfiguration, "VideoSaveQuality", slider_VideoSaveQuality.Value);
+                };
+
+                slider_VideoMaxPixelDimension.ValueChanged += (sender, e) =>
+                {
+                    textblock_VideoMaxPixelDimension.Text = textblock_VideoMaxPixelDimension.Tag + slider_VideoMaxPixelDimension.Value.ToString() + "px";
+                    SettingSave(vConfiguration, "VideoMaxPixelDimension", slider_VideoMaxPixelDimension.Value);
+                };
+
+                combobox_AudioSaveFormat.SelectionChanged += (sender, e) =>
+                {
+                    SettingSave(vConfiguration, "AudioSaveFormat", combobox_AudioSaveFormat.SelectedIndex);
+                };
+
+                combobox_AudioChannels.SelectionChanged += (sender, e) =>
+                {
+                    ComboBoxItem saveValue = (ComboBoxItem)combobox_AudioChannels.SelectedItem;
+                    SettingSave(vConfiguration, "AudioChannels", saveValue.Content);
+                };
+
+                slider_AudioBitRate.ValueChanged += (sender, e) =>
+                {
+                    textblock_AudioBitRate.Text = textblock_AudioBitRate.Tag + slider_AudioBitRate.Value.ToString();
+                    SettingSave(vConfiguration, "AudioBitRate", slider_AudioBitRate.Value);
+                };
+
+                combobox_AudioBitDepth.SelectionChanged += (sender, e) =>
+                {
+                    ComboBoxItem saveValue = (ComboBoxItem)combobox_AudioBitDepth.SelectedItem;
+                    SettingSave(vConfiguration, "AudioBitDepth", saveValue.Content);
+                };
+
+                combobox_AudioSampleRate.SelectionChanged += (sender, e) =>
+                {
+                    ComboBoxItem saveValue = (ComboBoxItem)combobox_AudioSampleRate.SelectedItem;
+                    SettingSave(vConfiguration, "AudioSampleRate", saveValue.Content);
                 };
 
                 //Shortcuts

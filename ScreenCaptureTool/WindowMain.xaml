@@ -122,9 +122,9 @@
                     <ComboBoxItem>90</ComboBoxItem>
                 </ComboBox>
 
-                <TextBlock Name="textblock_VideoQuality" Text="Video save quality" Tag="Video save quality: " Margin="0,10,0,0" Style="{StaticResource TextBlockBlack}"/>
+                <TextBlock Name="textblock_VideoSaveQuality" Text="Video save quality" Tag="Video save quality: " Margin="0,10,0,0" Style="{StaticResource TextBlockBlack}"/>
                 <TextBlock Text="Change the video save quality." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
-                <Slider Name="slider_VideoQuality" Width="400" Minimum="20" Maximum="100" HorizontalAlignment="Left" Style="{StaticResource SliderBlockWhite}"/>
+                <Slider Name="slider_VideoSaveQuality" Width="400" Minimum="20" Maximum="100" HorizontalAlignment="Left" Style="{StaticResource SliderBlockWhite}"/>
 
                 <TextBlock Name="textblock_VideoMaxPixelDimension" Text="Video maximum dimension" Tag="Video maximum dimension: " Margin="0,10,0,0" Style="{StaticResource TextBlockBlack}"/>
                 <TextBlock Text="Change the video maximum capture pixel dimension." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
@@ -134,8 +134,8 @@
                 <TextBlock Text="Audio save format" TextWrapping="Wrap" Style="{StaticResource TextBlockBlack}"/>
                 <TextBlock Text="Change the used audio format." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
                 <ComboBox Name="combobox_AudioSaveFormat" HorizontalAlignment="Left" Width="400" Style="{StaticResource ComboBoxBlack}">
-                    <ComboBoxItem>AAC</ComboBoxItem>
                     <ComboBoxItem>MP3</ComboBoxItem>
+                    <ComboBoxItem>AAC</ComboBoxItem>
                     <ComboBoxItem>FLAC</ComboBoxItem>
                 </ComboBox>
 
@@ -152,7 +152,7 @@
                 <Slider Name="slider_AudioBitRate" Width="400" Minimum="128" Maximum="1024" TickFrequency="64" HorizontalAlignment="Left" Style="{StaticResource SliderBlockWhite}"/>
 
                 <TextBlock Text="Audio bit depth" TextWrapping="Wrap" Margin="0,10,0,0" Style="{StaticResource TextBlockBlack}"/>
-                <TextBlock Text="Change the used audio bit depth." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+                <TextBlock Text="Change the used audio bit depth. *³" TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
                 <ComboBox Name="combobox_AudioBitDepth" HorizontalAlignment="Left" Width="400" Style="{StaticResource ComboBoxBlack}">
                     <ComboBoxItem>16</ComboBoxItem>
                     <ComboBoxItem>24</ComboBoxItem>
@@ -160,7 +160,7 @@
                 </ComboBox>
 
                 <TextBlock Text="Audio sample rate" TextWrapping="Wrap" Margin="0,10,0,0" Style="{StaticResource TextBlockBlack}"/>
-                <TextBlock Text="Change the used audio sample rate." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+                <TextBlock Text="Change the used audio sample rate. *⁴" TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
                 <ComboBox Name="combobox_AudioSampleRate" HorizontalAlignment="Left" Width="400" Style="{StaticResource ComboBoxBlack}">
                     <ComboBoxItem>44100</ComboBoxItem>
                     <ComboBoxItem>48000</ComboBoxItem>
@@ -170,6 +170,8 @@
 
                 <TextBlock Margin="0,10,0,0" Text="*¹ H264 video format does not support HDR and will require HDR to SDR color conversion leading to reduced quality." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
                 <TextBlock Margin="0,10,0,0" Text="*² MP3 and AAC maximum supported bit rate is 320." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+                <TextBlock Margin="0,10,0,0" Text="*³ MP3 and AAC maximum supported bit depth is 16." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+                <TextBlock Margin="0,10,0,0" Text="*⁴ MP3 and AAC maximum supported sample rate is 48000." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

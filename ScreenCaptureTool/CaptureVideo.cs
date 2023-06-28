@@ -30,6 +30,17 @@ namespace ScreenCapture
                 }
 
                 //Capture tool settings
+                VideoFormats VideoSaveFormat = (VideoFormats)SettingLoad(vConfiguration, "VideoSaveFormat", typeof(int));
+                int VideoSaveQuality = SettingLoad(vConfiguration, "VideoSaveQuality", typeof(int));
+                int VideoFrameRate = SettingLoad(vConfiguration, "VideoFrameRate", typeof(int));
+                int VideoMaxPixelDimension = SettingLoad(vConfiguration, "VideoMaxPixelDimension", typeof(int));
+
+                AudioFormats AudioSaveFormat = (AudioFormats)SettingLoad(vConfiguration, "AudioSaveFormat", typeof(int));
+                int AudioChannels = SettingLoad(vConfiguration, "AudioChannels", typeof(int));
+                int AudioBitRate = SettingLoad(vConfiguration, "AudioBitRate", typeof(int));
+                int AudioBitDepth = SettingLoad(vConfiguration, "AudioBitDepth", typeof(int));
+                int AudioSampleRate = SettingLoad(vConfiguration, "AudioSampleRate", typeof(int));
+
                 int CaptureMonitorId = SettingLoad(vConfiguration, "CaptureMonitorId", typeof(int)) - 1;
                 bool CaptureSoundEffect = SettingLoad(vConfiguration, "CaptureSoundEffect", typeof(bool));
                 bool CaptureMouseDrawCursor = SettingLoad(vConfiguration, "CaptureMouseDrawCursor", typeof(bool));
@@ -37,9 +48,21 @@ namespace ScreenCapture
                 //Screen capture settings
                 CaptureSettings captureSettings = new CaptureSettings();
                 captureSettings.HDRtoSDR = true;
+                captureSettings.MaxPixelDimension = VideoMaxPixelDimension;
                 captureSettings.MonitorId = CaptureMonitorId;
                 captureSettings.SoundEffect = CaptureSoundEffect;
                 captureSettings.MouseDrawCursor = CaptureMouseDrawCursor;
+
+                //Media recording settings
+                MediaSettings mediaSettings = new MediaSettings();
+                mediaSettings.VideoFormat = VideoSaveFormat;
+                mediaSettings.VideoFrameRate = VideoFrameRate;
+                mediaSettings.VideoQuality = VideoSaveQuality;
+                mediaSettings.AudioFormat = AudioSaveFormat;
+                mediaSettings.AudioChannels = AudioChannels;
+                mediaSettings.AudioBitRate = AudioBitRate;
+                mediaSettings.AudioBitDepth = AudioBitDepth;
+                mediaSettings.AudioSampleRate = AudioSampleRate;
 
                 //Initialize screen capture
                 if (!CaptureImport.CaptureInitialize(1, captureSettings, out CaptureDetails vCaptureDetails))
@@ -88,9 +111,6 @@ namespace ScreenCapture
 
                 //Combine save path
                 string fileSavePath = fileSaveFolder + fileSaveName + ".mp4";
-
-                //Set media settings
-                MediaSettings mediaSettings = new MediaSettings();
 
                 //Start video capture
                 bool captureStarted = CaptureImport.CaptureVideoStart(1, fileSavePath, mediaSettings);
