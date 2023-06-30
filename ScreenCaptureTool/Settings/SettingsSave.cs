@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArnoldVinkCode;
+using System;
 using System.Diagnostics;
 using System.Windows.Controls;
 using static ArnoldVinkCode.AVSettings;
@@ -99,6 +100,15 @@ namespace ScreenCapture
                 {
                     ComboBoxItem saveValue = (ComboBoxItem)combobox_AudioSampleRate.SelectedItem;
                     SettingSave(vConfiguration, "AudioSampleRate", saveValue.Content);
+                };
+
+                checkbox_WindowsStartup.Click += (sender, e) =>
+                {
+                    try
+                    {
+                        AVSettings.StartupShortcutManage(string.Empty, true);
+                    }
+                    catch { }
                 };
 
                 //Shortcuts

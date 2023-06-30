@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArnoldVinkCode;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
@@ -60,6 +61,9 @@ namespace ScreenCapture
                 int AudioSampleRate = SettingLoad(vConfiguration, "AudioSampleRate", typeof(int));
                 ComboBoxItem AudioSampleRateItem = combobox_AudioSampleRate.Items.Cast<ComboBoxItem>().Where(x => x.Content.ToString() == AudioSampleRate.ToString()).FirstOrDefault();
                 combobox_AudioSampleRate.SelectedItem = AudioSampleRateItem;
+
+                //Check launch on Windows startup
+                checkbox_WindowsStartup.IsChecked = AVSettings.StartupShortcutCheck();
 
                 //Shortcuts
                 Load_SetShortcut_Items();
