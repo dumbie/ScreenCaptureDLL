@@ -26,6 +26,10 @@ namespace ScreenCapture
 
                     //Reset screen capture resources
                     CaptureImport.CaptureReset(1);
+
+                    //Change tray icon
+                    WindowMain.Application_ChangeTrayIcon("AppIcon");
+
                     return;
                 }
 
@@ -118,10 +122,16 @@ namespace ScreenCapture
                 //Play capture sound
                 if (captureStarted)
                 {
+                    //Change tray icon
+                    WindowMain.Application_ChangeTrayIcon("AppIconRecording");
+
                     Debug.WriteLine("Started screen capturing video.");
                 }
                 else
                 {
+                    //Change tray icon
+                    WindowMain.Application_ChangeTrayIcon("AppIcon");
+
                     Debug.WriteLine("Failed screen capturing video.");
                 }
             }

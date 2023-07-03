@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\AppIcon.ico" />
+    <EmbeddedResource Include="Assets\AppIconRecording.ico" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="WindowMain.xaml">

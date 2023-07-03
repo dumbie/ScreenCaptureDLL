@@ -77,6 +77,21 @@ namespace ScreenCapture
             catch { }
         }
 
+        //Change tray icon
+        public static void Application_ChangeTrayIcon(string iconName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(iconName))
+                {
+                    iconName = "AppIcon";
+                }
+
+                TrayNotifyIcon.Icon = new Icon(Assembly.GetEntryAssembly().GetManifestResourceStream("ScreenCaptureTool.Assets." + iconName + ".ico"));
+            }
+            catch { }
+        }
+
         void NotifyIcon_DoubleClick(object sender, EventArgs args)
         {
             try
