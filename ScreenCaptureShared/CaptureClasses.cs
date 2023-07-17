@@ -30,7 +30,7 @@
         public MediaSettings() { }
         public AudioFormats AudioFormat { get; set; } = AudioFormats.AAC;
         public int AudioChannels { get; set; } = 2;
-        public int AudioBitRate { get; set; } = 320;
+        public int AudioBitRate { get; set; } = 256;
         public int AudioBitDepth { get; set; } = 16;
         public int AudioSampleRate { get; set; } = 48000;
         public VideoFormats VideoFormat { get; set; } = VideoFormats.HEVC;

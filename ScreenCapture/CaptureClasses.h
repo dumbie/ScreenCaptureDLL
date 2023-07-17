@@ -32,7 +32,7 @@ namespace
 	{
 		AudioFormats AudioFormat = AAC;
 		UINT AudioChannels = 2;
-		UINT AudioBitRate = 320;
+		UINT AudioBitRate = 256;
 		UINT AudioBitDepth = 16;
 		UINT AudioSampleRate = 48000;
 		VideoFormats VideoFormat = HEVC;
