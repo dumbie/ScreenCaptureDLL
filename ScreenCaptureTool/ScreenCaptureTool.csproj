@@ -119,6 +119,7 @@
     <Compile Include="AppClose.cs" />
     <Compile Include="CaptureVideo.cs" />
     <Compile Include="Settings\SettingsMenu.cs" />
+    <Compile Include="Settings\SettingsComboBox.cs" />
     <Compile Include="Settings\SettingsShortcut.cs" />
     <Compile Include="SocketHandler.cs" />
     <Compile Include="SocketServer.cs" />

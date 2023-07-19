@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
+using static ArnoldVinkCode.AVClasses;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
@@ -15,6 +16,13 @@ namespace ScreenCapture
         {
             try
             {
+                //ComboBox
+                Load_ComboBox_Items();
+
+                //Shortcuts
+                Load_SetShortcut_Items();
+                Load_SetShortcut_Keys();
+
                 //General
                 checkbox_CaptureSoundEffect.IsChecked = SettingLoad(vConfiguration, "CaptureSoundEffect", typeof(bool));
                 checkbox_CaptureMouseDrawCursor.IsChecked = SettingLoad(vConfiguration, "CaptureMouseDrawCursor", typeof(bool));
@@ -36,7 +44,7 @@ namespace ScreenCapture
                 combobox_VideoSaveFormat.SelectedIndex = SettingLoad(vConfiguration, "VideoSaveFormat", typeof(int));
 
                 int VideoFrameRate = SettingLoad(vConfiguration, "VideoFrameRate", typeof(int));
-                ComboBoxItem VideoFrameRateItem = combobox_VideoFrameRate.Items.Cast<ComboBoxItem>().Where(x => x.Content.ToString() == VideoFrameRate.ToString()).FirstOrDefault();
+                ComboBoxItemValue VideoFrameRateItem = combobox_VideoFrameRate.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == VideoFrameRate.ToString()).FirstOrDefault();
                 combobox_VideoFrameRate.SelectedItem = VideoFrameRateItem;
 
                 textblock_VideoSaveQuality.Text = textblock_VideoSaveQuality.Tag + SettingLoad(vConfiguration, "VideoSaveQuality", typeof(string)) + "%";
@@ -48,26 +56,22 @@ namespace ScreenCapture
                 combobox_AudioSaveFormat.SelectedIndex = SettingLoad(vConfiguration, "AudioSaveFormat", typeof(int));
 
                 int AudioChannels = SettingLoad(vConfiguration, "AudioChannels", typeof(int));
-                ComboBoxItem AudioChannelsItem = combobox_AudioChannels.Items.Cast<ComboBoxItem>().Where(x => x.Content.ToString() == AudioChannels.ToString()).FirstOrDefault();
+                ComboBoxItemValue AudioChannelsItem = combobox_AudioChannels.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == AudioChannels.ToString()).FirstOrDefault();
                 combobox_AudioChannels.SelectedItem = AudioChannelsItem;
 
-                textblock_AudioBitRate.Text = textblock_AudioBitRate.Tag + SettingLoad(vConfiguration, "AudioBitRate", typeof(string));
+                textblock_AudioBitRate.Text = textblock_AudioBitRate.Tag + SettingLoad(vConfiguration, "AudioBitRate", typeof(string)) + " kbps";
                 slider_AudioBitRate.Value = SettingLoad(vConfiguration, "AudioBitRate", typeof(double));
 
                 int AudioBitDepth = SettingLoad(vConfiguration, "AudioBitDepth", typeof(int));
-                ComboBoxItem AudioBitDepthItem = combobox_AudioBitDepth.Items.Cast<ComboBoxItem>().Where(x => x.Content.ToString() == AudioBitDepth.ToString()).FirstOrDefault();
+                ComboBoxItemValue AudioBitDepthItem = combobox_AudioBitDepth.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == AudioBitDepth.ToString()).FirstOrDefault();
                 combobox_AudioBitDepth.SelectedItem = AudioBitDepthItem;
 
                 int AudioSampleRate = SettingLoad(vConfiguration, "AudioSampleRate", typeof(int));
-                ComboBoxItem AudioSampleRateItem = combobox_AudioSampleRate.Items.Cast<ComboBoxItem>().Where(x => x.Content.ToString() == AudioSampleRate.ToString()).FirstOrDefault();
+                ComboBoxItemValue AudioSampleRateItem = combobox_AudioSampleRate.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == AudioSampleRate.ToString()).FirstOrDefault();
                 combobox_AudioSampleRate.SelectedItem = AudioSampleRateItem;
 
                 //Check launch on Windows startup
                 checkbox_WindowsStartup.IsChecked = AVSettings.StartupShortcutCheck();
-
-                //Shortcuts
-                Load_SetShortcut_Items();
-                Load_SetShortcut_Keys();
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Controls;
+using static ArnoldVinkCode.AVClasses;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
@@ -57,8 +58,8 @@ namespace ScreenCapture
 
                 combobox_VideoFrameRate.SelectionChanged += (sender, e) =>
                 {
-                    ComboBoxItem saveValue = (ComboBoxItem)combobox_VideoFrameRate.SelectedItem;
-                    SettingSave(vConfiguration, "VideoFrameRate", saveValue.Content);
+                    ComboBoxItemValue saveValue = (ComboBoxItemValue)combobox_VideoFrameRate.SelectedItem;
+                    SettingSave(vConfiguration, "VideoFrameRate", saveValue.Value);
                 };
 
                 slider_VideoSaveQuality.ValueChanged += (sender, e) =>
@@ -80,26 +81,26 @@ namespace ScreenCapture
 
                 combobox_AudioChannels.SelectionChanged += (sender, e) =>
                 {
-                    ComboBoxItem saveValue = (ComboBoxItem)combobox_AudioChannels.SelectedItem;
-                    SettingSave(vConfiguration, "AudioChannels", saveValue.Content);
+                    ComboBoxItemValue saveValue = (ComboBoxItemValue)combobox_AudioChannels.SelectedItem;
+                    SettingSave(vConfiguration, "AudioChannels", saveValue.Value);
                 };
 
                 slider_AudioBitRate.ValueChanged += (sender, e) =>
                 {
-                    textblock_AudioBitRate.Text = textblock_AudioBitRate.Tag + slider_AudioBitRate.Value.ToString();
+                    textblock_AudioBitRate.Text = textblock_AudioBitRate.Tag + slider_AudioBitRate.Value.ToString() + " kbps";
                     SettingSave(vConfiguration, "AudioBitRate", slider_AudioBitRate.Value);
                 };
 
                 combobox_AudioBitDepth.SelectionChanged += (sender, e) =>
                 {
-                    ComboBoxItem saveValue = (ComboBoxItem)combobox_AudioBitDepth.SelectedItem;
-                    SettingSave(vConfiguration, "AudioBitDepth", saveValue.Content);
+                    ComboBoxItemValue saveValue = (ComboBoxItemValue)combobox_AudioBitDepth.SelectedItem;
+                    SettingSave(vConfiguration, "AudioBitDepth", saveValue.Value);
                 };
 
                 combobox_AudioSampleRate.SelectionChanged += (sender, e) =>
                 {
-                    ComboBoxItem saveValue = (ComboBoxItem)combobox_AudioSampleRate.SelectedItem;
-                    SettingSave(vConfiguration, "AudioSampleRate", saveValue.Content);
+                    ComboBoxItemValue saveValue = (ComboBoxItemValue)combobox_AudioSampleRate.SelectedItem;
+                    SettingSave(vConfiguration, "AudioSampleRate", saveValue.Value);
                 };
 
                 checkbox_WindowsStartup.Click += (sender, e) =>

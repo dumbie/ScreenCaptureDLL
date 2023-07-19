@@ -14,18 +14,20 @@ namespace ScreenCapture
         {
             try
             {
-                combobox_SetShortcutCaptureImage_Key0.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
+                Array keysVirtualArray = Enum.GetValues(typeof(KeysVirtual));
+
+                combobox_SetShortcutCaptureImage_Key0.ItemsSource = keysVirtualArray;
                 combobox_SetShortcutCaptureImage_Key0.SelectedItem = KeysVirtual.None;
-                combobox_SetShortcutCaptureImage_Key1.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
+                combobox_SetShortcutCaptureImage_Key1.ItemsSource = keysVirtualArray;
                 combobox_SetShortcutCaptureImage_Key1.SelectedItem = KeysVirtual.None;
-                combobox_SetShortcutCaptureImage_Key2.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
+                combobox_SetShortcutCaptureImage_Key2.ItemsSource = keysVirtualArray;
                 combobox_SetShortcutCaptureImage_Key2.SelectedItem = KeysVirtual.None;
 
-                combobox_SetShortcutCaptureVideo_Key0.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
+                combobox_SetShortcutCaptureVideo_Key0.ItemsSource = keysVirtualArray;
                 combobox_SetShortcutCaptureVideo_Key0.SelectedItem = KeysVirtual.None;
-                combobox_SetShortcutCaptureVideo_Key1.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
+                combobox_SetShortcutCaptureVideo_Key1.ItemsSource = keysVirtualArray;
                 combobox_SetShortcutCaptureVideo_Key1.SelectedItem = KeysVirtual.None;
-                combobox_SetShortcutCaptureVideo_Key2.ItemsSource = Enum.GetValues(typeof(KeysVirtual));
+                combobox_SetShortcutCaptureVideo_Key2.ItemsSource = keysVirtualArray;
                 combobox_SetShortcutCaptureVideo_Key2.SelectedItem = KeysVirtual.None;
             }
             catch { }
