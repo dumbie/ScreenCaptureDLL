@@ -63,12 +63,17 @@ float4 AdjustHDRMaximumNits(float4 color)
 	return color *= nits2084 / colorMax;
 }
 
+float4 AdjustHDRWhites(float4 color)
+{
+	return color /= SDRWhiteLevel / HDRPaperWhite;
+}
+
 float4 AdjustHDRtoSDR(float4 color)
 {
 	if (!HDRtoSDR) { return color; }
 
 	//Adjust SDR white level and HDR paper white
-	color /= SDRWhiteLevel / HDRPaperWhite;
+	color = AdjustHDRWhites(color);
 
 	//Adjust HDR maximum nits
 	color = AdjustHDRMaximumNits(color);
@@ -172,6 +177,9 @@ float4 main(PS_INPUT input) : SV_TARGET
 	//Adjust blur
 	color = AdjustBlur(input);
 
+	//Get original alpha
+	float colorAlpha = color.a;
+
 	//Adjust HDR to SDR
 	color = AdjustHDRtoSDR(color);
 
@@ -190,8 +198,8 @@ float4 main(PS_INPUT input) : SV_TARGET
 	//Adjust gamma
 	color = AdjustGamma(color);
 
-	//Set alpha channel to maximum
-	color.a = 1.0F;
+	//Set original alpha
+	color.a = colorAlpha;
 
 	//Return updated colors
 	return color;
