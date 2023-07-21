@@ -15,6 +15,7 @@ namespace
 
 	//Arrays
 	FLOAT ColorRgbaBlack[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	FLOAT BlendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	D3D_FEATURE_LEVEL D3DFeatureLevelsArray[] =
 	{

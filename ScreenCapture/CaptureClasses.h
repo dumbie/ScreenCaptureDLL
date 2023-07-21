@@ -114,6 +114,7 @@ namespace
 
 		//States
 		CComPtr<ID3D11SamplerState> iD3D11SamplerState0;
+		CComPtr<ID3D11BlendState> iD3D11BlendState0;
 
 		//Views
 		CComPtr<ID3D11InputLayout> iD3D11InputLayout0;

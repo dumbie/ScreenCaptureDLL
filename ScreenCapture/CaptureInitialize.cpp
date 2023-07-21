@@ -223,6 +223,40 @@ namespace
 		}
 	}
 
+	BOOL InitializeBlendState(UINT captureInstanceId)
+	{
+		try
+		{
+			//Create blend state
+			D3D11_BLEND_DESC blendStateDesc;
+			blendStateDesc.AlphaToCoverageEnable = FALSE;
+			blendStateDesc.IndependentBlendEnable = FALSE;
+			blendStateDesc.RenderTarget[0].BlendEnable = TRUE;
+			blendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+			blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+			blendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+			blendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+			blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+			blendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+			blendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateBlendState(&blendStateDesc, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11BlendState0);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Set blend state
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->OMSetBlendState(vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11BlendState0, BlendFactor, 0xFFFFFFFF);
+
+			return true;
+		}
+		catch (...)
+		{
+			std::cout << "InitializeBlendState failed: " << hResult << std::endl;
+			return false;
+		}
+	}
+
 	BOOL InitializeRenderTargetView(UINT captureInstanceId)
 	{
 		try
@@ -253,6 +287,8 @@ namespace
 				return false;
 			}
 			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->OMSetRenderTargets(1, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11RenderTargetView0, NULL);
+
+			//Clear render target view
 			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->ClearRenderTargetView(vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11RenderTargetView0, ColorRgbaBlack);
 
 			//Release resources
@@ -429,6 +465,9 @@ namespace
 
 			//Initialize sampler state
 			if (!InitializeSamplerState(captureInstanceId)) { return false; }
+
+			//Initialize blend state
+			if (!InitializeBlendState(captureInstanceId)) { return false; }
 
 			//Initialize render target view
 			if (!InitializeRenderTargetView(captureInstanceId)) { return false; }

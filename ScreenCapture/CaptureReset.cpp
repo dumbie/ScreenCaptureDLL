@@ -102,6 +102,7 @@ namespace
 
 			//States
 			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11SamplerState0.Release();
+			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11BlendState0.Release();
 
 			//Views
 			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11InputLayout0.Release();
