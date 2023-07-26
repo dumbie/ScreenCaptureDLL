@@ -75,10 +75,30 @@ namespace
 				iD3DTexture2D0DescCursor.CPUAccessFlags = 0;
 				iD3DTexture2D0DescCursor.MiscFlags = 0;
 
+				//Check cursor color type
+				if (pointerShapeInfo.Type & DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MASKED_COLOR)
+				{
+					for (int y = 0; y < vCaptureInstances[captureInstanceId].vCursorHeight; y++)
+					{
+						for (int x = 0; x < vCaptureInstances[captureInstanceId].vCursorWidth; x++)
+						{
+							int colorPosition = (y * pointerShapeInfo.Pitch) + (4 * x);
+							int colorRed = pointerShapeBuffer[colorPosition];
+							int colorGreen = pointerShapeBuffer[colorPosition + 1];
+							int colorBlue = pointerShapeBuffer[colorPosition + 2];
+							int colorAlpha = pointerShapeBuffer[colorPosition + 3];
+							if (colorRed == 0 && colorGreen == 0 && colorBlue == 0 && colorAlpha == 255)
+							{
+								pointerShapeBuffer[colorPosition + 3] = 0;
+							}
+						}
+					}
+				}
+
 				//Create subresource data
 				D3D11_SUBRESOURCE_DATA subResourceDataCursor{};
 				subResourceDataCursor.pSysMem = pointerShapeBuffer.data();
-				subResourceDataCursor.SysMemPitch = iD3DTexture2D0DescCursor.Width * 4;
+				subResourceDataCursor.SysMemPitch = pointerShapeInfo.Pitch;
 				subResourceDataCursor.SysMemSlicePitch = 0;
 
 				//Release cursor texture
