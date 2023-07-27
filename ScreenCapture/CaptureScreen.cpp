@@ -56,6 +56,7 @@ namespace
 				{
 					ResourceViewUpdateVertex(captureInstanceId, VertexVerticesArrayCursor);
 					ResourceViewDrawTexture2D(captureInstanceId, vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor);
+					//Fix do not use shaders when drawing mouse cursor
 				}
 			}
 

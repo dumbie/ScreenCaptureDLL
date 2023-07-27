@@ -177,6 +177,17 @@ float4 main(PS_INPUT input) : SV_TARGET
 	//Adjust blur
 	color = AdjustBlur(input);
 
+	//Get texture size
+	float TexWidth;
+	float TexHeight;
+	_texture2D.GetDimensions(TexWidth, TexHeight);
+
+	//Skip when mouse cursor
+	if (TexWidth <= 64 && TexHeight <= 64)
+	{
+		return _texture2D.Sample(_samplerState, input.TexCoord);
+	}
+
 	//Get original alpha
 	float colorAlpha = color.a;
 
