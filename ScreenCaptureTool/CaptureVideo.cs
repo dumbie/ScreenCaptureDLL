@@ -69,7 +69,7 @@ namespace ScreenCapture
                 mediaSettings.AudioSampleRate = AudioSampleRate;
 
                 //Initialize screen capture
-                if (!CaptureImport.CaptureInitialize(1, captureSettings, out CaptureDetails vCaptureDetails))
+                if (!CaptureImport.CaptureInitialize(1, captureSettings, out CaptureDetails vCaptureDetails, false))
                 {
                     Debug.WriteLine("Failed to initialize screen capture.");
                     return;

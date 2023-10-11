@@ -44,7 +44,7 @@ namespace ScreenCapture
                 };
 
                 //Initialize screen capture
-                bool captureInitialized = CaptureImport.CaptureInitialize(0, vCaptureSettings, out vCaptureDetails);
+                bool captureInitialized = CaptureImport.CaptureInitialize(0, vCaptureSettings, out vCaptureDetails, true);
 
                 //Set capture details string
                 string captureDetails = "Width: " + vCaptureDetails.OutputWidth + " (" + vCaptureDetails.OriginalWidth + ")";

@@ -433,20 +433,22 @@ namespace
 		}
 	}
 
-	BOOL InitializeCapture(UINT captureInstanceId, CaptureSettings captureSettings, CaptureDetails& captureDetails)
+	BOOL InitializeCapture(UINT captureInstanceId, CaptureSettings captureSettings, CaptureDetails& captureDetails, BOOL forceInitialize)
 	{
 		try
 		{
 			//Check capture initialized
-			if (vCaptureInstances[captureInstanceId].vCaptureInstanceInitialized)
+			if (!forceInitialize && vCaptureInstances[captureInstanceId].vCaptureInstanceInitialized)
 			{
 				//Return capture details
 				captureDetails = vCaptureInstances[captureInstanceId].vCaptureDetails;
 
 				//Return result
-				std::cout << "Capture is already initialized." << std::endl;
+				std::cout << "Capture is already initialized for instance: " << captureInstanceId << std::endl;
 				return true;
 			}
+
+			std::cout << "Initializing capture for instance: " << captureInstanceId << std::endl;
 
 			//Disable assert reporting
 			_CrtSetReportMode(_CRT_ASSERT, 0);

@@ -37,7 +37,7 @@ namespace ScreenCapture
                 }
 
                 //Initialize screen capture
-                if (!CaptureImport.CaptureInitialize(0, captureSettings, out CaptureDetails vCaptureDetails))
+                if (!CaptureImport.CaptureInitialize(0, captureSettings, out CaptureDetails vCaptureDetails, false))
                 {
                     Debug.WriteLine("Failed to initialize screen capture.");
                     return;

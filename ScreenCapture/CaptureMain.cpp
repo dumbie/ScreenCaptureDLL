@@ -14,12 +14,12 @@ namespace
 {
 	extern "C"
 	{
-		__declspec(dllexport) BOOL CaptureInitialize(UINT captureInstanceId, CaptureSettings captureSettings, CaptureDetails& captureDetails)
+		__declspec(dllexport) BOOL CaptureInitialize(UINT captureInstanceId, CaptureSettings captureSettings, CaptureDetails& captureDetails, BOOL forceInitialize)
 		{
 			try
 			{
 				//Initialize capture
-				BOOL captureInitialized = InitializeCapture(captureInstanceId, captureSettings, captureDetails);
+				BOOL captureInitialized = InitializeCapture(captureInstanceId, captureSettings, captureDetails, forceInitialize);
 
 				//Play sound effect
 				if (!captureInitialized)
