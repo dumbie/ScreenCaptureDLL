@@ -15,13 +15,13 @@ namespace
 			UINT timeoutInMilliseconds = 0;
 			if (waitNextFrame) { timeoutInMilliseconds = INFINITE; }
 			DXGI_OUTDUPL_FRAME_INFO iDxgiOutputDuplicationFrameInfo;
-			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iDxgiOutputDuplication0->AcquireNextFrame(timeoutInMilliseconds, &iDxgiOutputDuplicationFrameInfo, &vCaptureInstances[captureInstanceId].iDxgiResource0);
+			hResult = vDirectXInstance.iDxgiOutputDuplication0->AcquireNextFrame(timeoutInMilliseconds, &iDxgiOutputDuplicationFrameInfo, &vCaptureInstances[captureInstanceId].iDxgiResource0);
 
 			//Check if screen capture failed
 			if (FAILED(hResult))
 			{
 				//std::cout << "Acquire next frame, failed: " << hResult << std::endl;
-				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesTexturesLoop(captureInstanceId);
 				return false;
 			}
 
@@ -29,7 +29,7 @@ namespace
 			if (vCaptureInstances[captureInstanceId].vCaptureSettings.MouseIgnoreMovement && iDxgiOutputDuplicationFrameInfo.LastPresentTime.QuadPart == 0)
 			{
 				//std::cout << "Acquire next frame, skipping mouse movement." << std::endl;
-				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesTexturesLoop(captureInstanceId);
 				return false;
 			}
 
@@ -37,13 +37,13 @@ namespace
 			hResult = vCaptureInstances[captureInstanceId].iDxgiResource0->QueryInterface(&vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesTexturesLoop(captureInstanceId);
 				return false;
 			}
-			ResourceViewUpdateVertex(captureInstanceId, VertexVerticesArrayScreen);
-			if (!ResourceViewDrawTexture2D(captureInstanceId, vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen))
+			ResourceViewUpdateVertex(VertexVerticesArrayScreen);
+			if (!ResourceViewDrawTexture2D(vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen))
 			{
-				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesTexturesLoop(captureInstanceId);
 				return false;
 			}
 
@@ -54,14 +54,14 @@ namespace
 				UpdateMouseCursorTexture(captureInstanceId, iDxgiOutputDuplicationFrameInfo);
 				if (vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor != NULL)
 				{
-					ResourceViewUpdateVertex(captureInstanceId, VertexVerticesArrayCursor);
-					ResourceViewDrawTexture2D(captureInstanceId, vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor);
+					ResourceViewUpdateVertex(VertexVerticesArrayCursor);
+					ResourceViewDrawTexture2D(vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor);
 					//Fix do not use shaders when drawing mouse cursor
 				}
 			}
 
 			//Release resources
-			CaptureResetVariablesTexture(captureInstanceId);
+			CaptureResetVariablesTexturesLoop(captureInstanceId);
 
 			//Return result
 			return true;
@@ -69,7 +69,7 @@ namespace
 		catch (...)
 		{
 			std::cout << "UpdateScreenTexture failed." << std::endl;
-			CaptureResetVariablesTexture(captureInstanceId);
+			CaptureResetVariablesTexturesLoop(captureInstanceId);
 			return false;
 		}
 	}
@@ -81,14 +81,14 @@ namespace
 			//Update screen texture
 			if (!UpdateScreenTexture(captureInstanceId, waitNextFrame))
 			{
-				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesTexturesLoop(captureInstanceId);
 				return {};
 			}
 
 			//Convert to cpu read texture
 			if (!Texture2DConvertToCpuRead(captureInstanceId, vCaptureInstances[captureInstanceId].iD3D11Texture2D0RenderTargetView))
 			{
-				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesTexturesLoop(captureInstanceId);
 				return {};
 			}
 
@@ -96,7 +96,7 @@ namespace
 			std::vector<BYTE> screenBytes = Texture2DConvertToScreenBytes(captureInstanceId, vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead, flipScreen);
 
 			//Release resources
-			CaptureResetVariablesTexture(captureInstanceId);
+			CaptureResetVariablesTexturesLoop(captureInstanceId);
 
 			//Return result
 			return screenBytes;
@@ -104,7 +104,7 @@ namespace
 		catch (...)
 		{
 			std::cout << "GetScreenBytes failed." << std::endl;
-			CaptureResetVariablesTexture(captureInstanceId);
+			CaptureResetVariablesTexturesLoop(captureInstanceId);
 			return {};
 		}
 	}

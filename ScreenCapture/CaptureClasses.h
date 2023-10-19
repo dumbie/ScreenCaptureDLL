@@ -94,7 +94,7 @@ namespace
 	struct DirectXInstance
 	{
 		//Status
-		BOOL vDirectXInstanceInitialized;
+		BOOL vInstanceInitialized;
 
 		//Information
 		DXGI_OUTPUT_DESC1 iDxgiOutputDescription;
@@ -132,7 +132,7 @@ namespace
 	struct CaptureInstance
 	{
 		//Status
-		BOOL vCaptureInstanceInitialized;
+		BOOL vInstanceInitialized;
 		BOOL vCaptureTextureResizing;
 		UINT vCaptureTextureMipLevels;
 
@@ -147,9 +147,6 @@ namespace
 
 		//Bytes
 		std::vector<BYTE> vScreenBytesCache;
-
-		//DirectX
-		DirectXInstance vDirectXInstance;
 
 		//Image
 		WICPixelFormatGUID iWicPixelFormatGuidSource;

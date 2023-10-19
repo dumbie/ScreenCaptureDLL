@@ -211,7 +211,7 @@ namespace
 			}
 			catch (...)
 			{
-				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesTexturesLoop(captureInstanceId);
 				CaptureResetVariablesMedia(captureInstanceId);
 				return false;
 			}
@@ -243,7 +243,7 @@ namespace
 				MFShutdown();
 
 				//Release resources
-				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesTexturesLoop(captureInstanceId);
 				CaptureResetVariablesMedia(captureInstanceId);
 
 				//Play audio effect
@@ -253,7 +253,7 @@ namespace
 			}
 			catch (...)
 			{
-				CaptureResetVariablesTexture(captureInstanceId);
+				CaptureResetVariablesTexturesLoop(captureInstanceId);
 				CaptureResetVariablesMedia(captureInstanceId);
 				return false;
 			}

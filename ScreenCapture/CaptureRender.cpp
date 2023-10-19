@@ -3,7 +3,7 @@
 
 namespace
 {
-	BOOL ResourceViewUpdateVertex(UINT captureInstanceId, VertexVertice* vertexVerticesArray)
+	BOOL ResourceViewUpdateVertex(VertexVertice* vertexVerticesArray)
 	{
 		try
 		{
@@ -21,7 +21,7 @@ namespace
 			subResourceData.pSysMem = vertexVerticesArray;
 
 			//Create vertex buffer
-			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Buffer0);
+			hResult = vDirectXInstance.iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &vDirectXInstance.iD3D11Buffer0);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -30,8 +30,8 @@ namespace
 			//Set vertex buffer
 			UINT bufferOffsets = 0;
 			UINT bufferStrides = sizeof(VertexVertice);
-			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->IASetVertexBuffers(0, 1, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Buffer0, &bufferStrides, &bufferOffsets);
-			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+			vDirectXInstance.iD3D11DeviceContext4->IASetVertexBuffers(0, 1, &vDirectXInstance.iD3D11Buffer0, &bufferStrides, &bufferOffsets);
+			vDirectXInstance.iD3D11DeviceContext4->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 			//Return result
 			return true;
@@ -43,22 +43,22 @@ namespace
 		}
 	}
 
-	BOOL ResourceViewDrawTexture2D(UINT captureInstanceId, CComPtr<ID3D11Texture2D>& textureTarget)
+	BOOL ResourceViewDrawTexture2D(CComPtr<ID3D11Texture2D>& textureTarget)
 	{
 		try
 		{
 			//Create shader resource view
-			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateShaderResourceView(textureTarget, NULL, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11ShaderResourceView0);
+			hResult = vDirectXInstance.iD3D11Device5->CreateShaderResourceView(textureTarget, NULL, &vDirectXInstance.iD3D11ShaderResourceView0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Set shader resource view
-			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->PSSetShaderResources(0, 1, &vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11ShaderResourceView0);
+			vDirectXInstance.iD3D11DeviceContext4->PSSetShaderResources(0, 1, &vDirectXInstance.iD3D11ShaderResourceView0);
 
 			//Draw texture with shaders
-			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->Draw(VertexVerticesCount, 0);
+			vDirectXInstance.iD3D11DeviceContext4->Draw(VertexVerticesCount, 0);
 
 			return true;
 		}

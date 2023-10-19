@@ -9,7 +9,7 @@ namespace
 		{
 			//Map texture to subresource
 			D3D11_MAPPED_SUBRESOURCE iD3DMappedSubResource;
-			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->Map(textureTarget, 0, D3D11_MAP_READ, 0, &iD3DMappedSubResource);
+			hResult = vDirectXInstance.iD3D11DeviceContext4->Map(textureTarget, 0, D3D11_MAP_READ, 0, &iD3DMappedSubResource);
 			if (FAILED(hResult))
 			{
 				return {};
@@ -42,7 +42,7 @@ namespace
 			}
 
 			//Unmap texture from subresource
-			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->Unmap(textureTarget, 0);
+			vDirectXInstance.iD3D11DeviceContext4->Unmap(textureTarget, 0);
 
 			//Return result
 			return BitmapBytes;
@@ -68,14 +68,14 @@ namespace
 			iD3DTexture2D0DescCpuRead.MiscFlags = 0;
 
 			//Create cpu texture
-			hResult = vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCpuRead, NULL, &vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead);
+			hResult = vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCpuRead, NULL, &vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Copy target to cpu texture
-			vCaptureInstances[captureInstanceId].vDirectXInstance.iD3D11DeviceContext4->CopySubresourceRegion(vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead, 0, 0, 0, 0, textureTarget, 0, NULL);
+			vDirectXInstance.iD3D11DeviceContext4->CopySubresourceRegion(vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead, 0, 0, 0, 0, textureTarget, 0, NULL);
 
 			return true;
 		}

@@ -3,7 +3,7 @@
 
 namespace
 {
-	FLOAT GetMonitorSDRWhiteLevel(UINT captureInstanceId)
+	FLOAT GetMonitorSDRWhiteLevel(UINT monitorId)
 	{
 		try
 		{
@@ -23,7 +23,7 @@ namespace
 				return 240.0F;
 			}
 
-			DISPLAYCONFIG_PATH_INFO pathInfo = pathInfos[vCaptureInstances[captureInstanceId].vCaptureSettings.MonitorId];
+			DISPLAYCONFIG_PATH_INFO pathInfo = pathInfos[monitorId];
 
 			DISPLAYCONFIG_SDR_WHITE_LEVEL sdrWhiteLevel{};
 			sdrWhiteLevel.header.size = sizeof(sdrWhiteLevel);

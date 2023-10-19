@@ -7,6 +7,7 @@ namespace
 	HRESULT hResult;
 
 	//Capture
+	DirectXInstance vDirectXInstance;
 	CaptureInstance vCaptureInstances[2];
 	UINT vReferenceTimeFrameDuration = 100000;
 	UINT vReferenceTimeToSeconds = 10000000;
