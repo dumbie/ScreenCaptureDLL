@@ -3,14 +3,14 @@
 
 namespace
 {
-	BOOL CaptureResetVariablesTexturesLoop(UINT captureInstanceId)
+	BOOL CaptureResetVariablesTexturesLoop()
 	{
 		try
 		{
 			//Textures
-			vCaptureInstances[captureInstanceId].iDxgiResource0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead.Release();
-			vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen.Release();
+			vCaptureInstance.iDxgiResource0.Release();
+			vCaptureInstance.iD3D11Texture2D0CpuRead.Release();
+			vCaptureInstance.iD3D11Texture2D0Screen.Release();
 
 			//Views
 			vDirectXInstance.iD3D11ShaderResourceView0.Release();
@@ -29,16 +29,16 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesTexturesAll(UINT captureInstanceId)
+	BOOL CaptureResetVariablesTexturesAll()
 	{
 		try
 		{
 			//Textures
-			vCaptureInstances[captureInstanceId].iDxgiResource0.Release();
-			vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead.Release();
-			vCaptureInstances[captureInstanceId].iD3D11Texture2D0Screen.Release();
-			vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor.Release();
-			vCaptureInstances[captureInstanceId].iD3D11Texture2D0RenderTargetView.Release();
+			vCaptureInstance.iDxgiResource0.Release();
+			vCaptureInstance.iD3D11Texture2D0CpuRead.Release();
+			vCaptureInstance.iD3D11Texture2D0Screen.Release();
+			vCaptureInstance.iD3D11Texture2D0Cursor.Release();
+			vCaptureInstance.iD3D11Texture2D0RenderTargetView.Release();
 
 			return true;
 		}
@@ -48,19 +48,19 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesBitmapImage(UINT captureInstanceId)
+	BOOL CaptureResetVariablesBitmapImage()
 	{
 		try
 		{
 			//Bitmap
-			vCaptureInstances[captureInstanceId].iPropertyBag2.Release();
-			vCaptureInstances[captureInstanceId].iWICImagingFactory.Release();
-			vCaptureInstances[captureInstanceId].iWICStream.Release();
-			vCaptureInstances[captureInstanceId].iWICBitmapEncoder.Release();
-			vCaptureInstances[captureInstanceId].iWICBitmapFrameEncode.Release();
-			vCaptureInstances[captureInstanceId].iWICMetadataQueryWriter.Release();
-			vCaptureInstances[captureInstanceId].iWICFormatConverter.Release();
-			vCaptureInstances[captureInstanceId].iWICBitmap.Release();
+			vCaptureInstance.iPropertyBag2.Release();
+			vCaptureInstance.iWICImagingFactory.Release();
+			vCaptureInstance.iWICStream.Release();
+			vCaptureInstance.iWICBitmapEncoder.Release();
+			vCaptureInstance.iWICBitmapFrameEncode.Release();
+			vCaptureInstance.iWICMetadataQueryWriter.Release();
+			vCaptureInstance.iWICFormatConverter.Release();
+			vCaptureInstance.iWICBitmap.Release();
 
 			return true;
 		}
@@ -70,27 +70,27 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesMedia(UINT captureInstanceId)
+	BOOL CaptureResetVariablesMedia()
 	{
 		try
 		{
 			//Media foundation
-			vCaptureInstances[captureInstanceId].vMediaCapturing = false;
-			vCaptureInstances[captureInstanceId].vMediaWriteLoopAllowed = false;
-			vCaptureInstances[captureInstanceId].imfSinkWriter.Release();
-			vCaptureInstances[captureInstanceId].imfDXGIDeviceManager.Release();
+			vCaptureInstance.vMediaCapturing = false;
+			vCaptureInstance.vMediaWriteLoopAllowed = false;
+			vCaptureInstance.imfSinkWriter.Release();
+			vCaptureInstance.imfDXGIDeviceManager.Release();
 
 			//Audio
-			vCaptureInstances[captureInstanceId].iDevice.Release();
-			vCaptureInstances[captureInstanceId].iAudioDeviceCapture.Release();
-			vCaptureInstances[captureInstanceId].iAudioDeviceRender.Release();
-			vCaptureInstances[captureInstanceId].iAudioClientCapture.Release();
-			vCaptureInstances[captureInstanceId].iAudioClientRender.Release();
-			vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture.Free();
-			vCaptureInstances[captureInstanceId].iAudioWaveFormatExRender.Free();
+			vCaptureInstance.iDevice.Release();
+			vCaptureInstance.iAudioDeviceCapture.Release();
+			vCaptureInstance.iAudioDeviceRender.Release();
+			vCaptureInstance.iAudioClientCapture.Release();
+			vCaptureInstance.iAudioClientRender.Release();
+			vCaptureInstance.iAudioWaveFormatExCapture.Free();
+			vCaptureInstance.iAudioWaveFormatExRender.Free();
 
 			//Bytes
-			vCaptureInstances[captureInstanceId].vScreenBytesCache.clear();
+			vCaptureInstance.vScreenBytesCache.clear();
 
 			return true;
 		}
@@ -144,26 +144,23 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesAll(UINT captureInstanceId)
+	BOOL CaptureResetVariablesAll()
 	{
 		try
 		{
-			//DirectX
-			DirectXResetVariablesAll();
-
 			//Status
-			vCaptureInstances[captureInstanceId].vInstanceInitialized = false;
+			vCaptureInstance.vInstanceInitialized = false;
 
 			//Textures
-			CaptureResetVariablesTexturesAll(captureInstanceId);
+			CaptureResetVariablesTexturesAll();
 
 			//Bitmap
-			CaptureResetVariablesBitmapImage(captureInstanceId);
+			CaptureResetVariablesBitmapImage();
 
 			//Media
-			CaptureResetVariablesMedia(captureInstanceId);
+			CaptureResetVariablesMedia();
 
-			std::cout << "Reset all Capture variables for instance: " << captureInstanceId << std::endl;
+			std::cout << "Reset all Capture variables." << std::endl;
 			return true;
 		}
 		catch (...)

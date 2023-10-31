@@ -3,7 +3,7 @@
 
 namespace
 {
-	BOOL UpdateMouseCursorVertex(UINT captureInstanceId, DXGI_OUTDUPL_FRAME_INFO cursorFrameInfo)
+	BOOL UpdateMouseCursorVertex(DXGI_OUTDUPL_FRAME_INFO cursorFrameInfo)
 	{
 		try
 		{
@@ -12,10 +12,10 @@ namespace
 				//Update cursor vertex vertices
 				INT cursorPositionLeft = cursorFrameInfo.PointerPosition.Position.x;
 				INT cursorPositionTop = cursorFrameInfo.PointerPosition.Position.y;
-				INT cursorWidth = vCaptureInstances[captureInstanceId].vCursorWidth;
-				INT cursorHeight = vCaptureInstances[captureInstanceId].vCursorHeight;
-				INT screenCenterX = vCaptureInstances[captureInstanceId].vCaptureDetails.OriginalWidth / 2;
-				INT screenCenterY = vCaptureInstances[captureInstanceId].vCaptureDetails.OriginalHeight / 2;
+				INT cursorWidth = vCaptureInstance.vCursorWidth;
+				INT cursorHeight = vCaptureInstance.vCursorHeight;
+				INT screenCenterX = vCaptureInstance.vCaptureDetails.OriginalWidth / 2;
+				INT screenCenterY = vCaptureInstance.vCaptureDetails.OriginalHeight / 2;
 				VertexVerticesArrayCursor[0].Position.x = (cursorPositionLeft - screenCenterX) / (FLOAT)screenCenterX;
 				VertexVerticesArrayCursor[0].Position.y = -1 * ((cursorPositionTop + cursorHeight) - screenCenterY) / (FLOAT)screenCenterY;
 				VertexVerticesArrayCursor[1].Position.x = (cursorPositionLeft - screenCenterX) / (FLOAT)screenCenterX;
@@ -38,7 +38,7 @@ namespace
 		}
 	}
 
-	BOOL UpdateMouseCursorTexture(UINT captureInstanceId, DXGI_OUTDUPL_FRAME_INFO cursorFrameInfo)
+	BOOL UpdateMouseCursorTexture(DXGI_OUTDUPL_FRAME_INFO cursorFrameInfo)
 	{
 		try
 		{
@@ -58,13 +58,13 @@ namespace
 				}
 
 				//Update cursor variables
-				vCaptureInstances[captureInstanceId].vCursorWidth = pointerShapeInfo.Width;
-				vCaptureInstances[captureInstanceId].vCursorHeight = pointerShapeInfo.Height;
+				vCaptureInstance.vCursorWidth = pointerShapeInfo.Width;
+				vCaptureInstance.vCursorHeight = pointerShapeInfo.Height;
 
 				//Create cursor texture description
 				D3D11_TEXTURE2D_DESC iD3DTexture2D0DescCursor{};
-				iD3DTexture2D0DescCursor.Width = vCaptureInstances[captureInstanceId].vCursorWidth;
-				iD3DTexture2D0DescCursor.Height = vCaptureInstances[captureInstanceId].vCursorHeight;
+				iD3DTexture2D0DescCursor.Width = vCaptureInstance.vCursorWidth;
+				iD3DTexture2D0DescCursor.Height = vCaptureInstance.vCursorHeight;
 				iD3DTexture2D0DescCursor.MipLevels = 1;
 				iD3DTexture2D0DescCursor.ArraySize = 1;
 				iD3DTexture2D0DescCursor.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -78,9 +78,9 @@ namespace
 				//Check cursor color type
 				if (pointerShapeInfo.Type & DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MASKED_COLOR)
 				{
-					for (int y = 0; y < vCaptureInstances[captureInstanceId].vCursorHeight; y++)
+					for (int y = 0; y < vCaptureInstance.vCursorHeight; y++)
 					{
-						for (int x = 0; x < vCaptureInstances[captureInstanceId].vCursorWidth; x++)
+						for (int x = 0; x < vCaptureInstance.vCursorWidth; x++)
 						{
 							int colorPosition = (y * pointerShapeInfo.Pitch) + (4 * x);
 							int colorRed = pointerShapeBuffer[colorPosition];
@@ -102,10 +102,10 @@ namespace
 				subResourceDataCursor.SysMemSlicePitch = 0;
 
 				//Release cursor texture
-				vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor.Release();
+				vCaptureInstance.iD3D11Texture2D0Cursor.Release();
 
 				//Create cursor texture
-				hResult = vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCursor, &subResourceDataCursor, &vCaptureInstances[captureInstanceId].iD3D11Texture2D0Cursor);
+				hResult = vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCursor, &subResourceDataCursor, &vCaptureInstance.iD3D11Texture2D0Cursor);
 				if (FAILED(hResult))
 				{
 					return false;

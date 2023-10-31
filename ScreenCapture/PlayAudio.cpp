@@ -4,10 +4,10 @@
 
 namespace
 {
-	VOID PlayAudio(UINT captureInstanceId, WCHAR* audioFile)
+	VOID PlayAudio(WCHAR* audioFile)
 	{
 		//Check settings
-		if (!vCaptureInstances[captureInstanceId].vCaptureSettings.SoundEffect)
+		if (!vCaptureInstance.vCaptureSettings.SoundEffect)
 		{
 			return;
 		}

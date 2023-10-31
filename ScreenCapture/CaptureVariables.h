@@ -8,7 +8,7 @@ namespace
 
 	//Capture
 	DirectXInstance vDirectXInstance;
-	CaptureInstance vCaptureInstances[2];
+	CaptureInstance vCaptureInstance;
 	UINT vReferenceTimeFrameDuration = 100000;
 	UINT vReferenceTimeToSeconds = 10000000;
 	UINT vReferenceTimeToMilliseconds = 10000;

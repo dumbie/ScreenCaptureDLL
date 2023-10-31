@@ -3,7 +3,7 @@
 
 namespace
 {
-	BOOL SetVideoMediaType(UINT captureInstanceId)
+	BOOL SetVideoMediaType()
 	{
 		try
 		{
@@ -18,17 +18,17 @@ namespace
 
 			//Set video format
 			GUID videoFormat{};
-			if (vCaptureInstances[captureInstanceId].vMediaSettings.VideoFormat == H264)
+			if (vCaptureInstance.vMediaSettings.VideoFormat == H264)
 			{
 				videoFormat = MFVideoFormat_H264;
 			}
-			else if (vCaptureInstances[captureInstanceId].vMediaSettings.VideoFormat == HEVC)
+			else if (vCaptureInstance.vMediaSettings.VideoFormat == HEVC)
 			{
 				videoFormat = MFVideoFormat_HEVC;
 			}
 
 			//Check if HDR is enabled
-			BOOL hdrEnabled = vCaptureInstances[captureInstanceId].vCaptureDetails.HDREnabled && !vCaptureInstances[captureInstanceId].vCaptureDetails.HDRtoSDR;
+			BOOL hdrEnabled = vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR;
 			if (hdrEnabled)
 			{
 				videoFormat = MFVideoFormat_HEVC;
@@ -62,10 +62,10 @@ namespace
 			imfMediaTypeVideoOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
-			MFSetAttributeSize(imfMediaTypeVideoOut, MF_MT_FRAME_SIZE, vCaptureInstances[captureInstanceId].vCaptureDetails.OutputWidth, vCaptureInstances[captureInstanceId].vCaptureDetails.OutputHeight);
-			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_FRAME_RATE, vCaptureInstances[captureInstanceId].vMediaSettings.VideoFrameRate, 1);
+			MFSetAttributeSize(imfMediaTypeVideoOut, MF_MT_FRAME_SIZE, vCaptureInstance.vCaptureDetails.OutputWidth, vCaptureInstance.vCaptureDetails.OutputHeight);
+			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_FRAME_RATE, vCaptureInstance.vMediaSettings.VideoFrameRate, 1);
 			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
-			hResult = vCaptureInstances[captureInstanceId].imfSinkWriter->AddStream(imfMediaTypeVideoOut, &vCaptureInstances[captureInstanceId].vOutVideoStreamIndex);
+			hResult = vCaptureInstance.imfSinkWriter->AddStream(imfMediaTypeVideoOut, &vCaptureInstance.vOutVideoStreamIndex);
 			if (FAILED(hResult))
 			{
 				std::cout << "AddStream video failed." << std::endl;
@@ -76,7 +76,7 @@ namespace
 			CComPtr<IMFAttributes> imfAttributesEncoding;
 			MFCreateAttributes(&imfAttributesEncoding, 0);
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_Quality);
-			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQuality, vCaptureInstances[captureInstanceId].vMediaSettings.VideoQuality);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQuality, vCaptureInstance.vMediaSettings.VideoQuality);
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQualityVsSpeed, 80);
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRealTime, 1);
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVLowLatencyMode, 1);
@@ -92,8 +92,8 @@ namespace
 
 			imfMediaTypeVideoIn->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
 			imfMediaTypeVideoIn->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
-			MFSetAttributeSize(imfMediaTypeVideoIn, MF_MT_FRAME_SIZE, vCaptureInstances[captureInstanceId].vCaptureDetails.OutputWidth, vCaptureInstances[captureInstanceId].vCaptureDetails.OutputHeight);
-			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_FRAME_RATE, vCaptureInstances[captureInstanceId].vCaptureDetails.RefreshRate, 1);
+			MFSetAttributeSize(imfMediaTypeVideoIn, MF_MT_FRAME_SIZE, vCaptureInstance.vCaptureDetails.OutputWidth, vCaptureInstance.vCaptureDetails.OutputHeight);
+			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_FRAME_RATE, vCaptureInstance.vCaptureDetails.RefreshRate, 1);
 			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
 			//HDR and SDR settings
 			if (hdrEnabled)
@@ -106,7 +106,7 @@ namespace
 				std::cout << "Set media type format to SDR." << std::endl;
 				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_ARGB32);
 			}
-			hResult = vCaptureInstances[captureInstanceId].imfSinkWriter->SetInputMediaType(vCaptureInstances[captureInstanceId].vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
+			hResult = vCaptureInstance.imfSinkWriter->SetInputMediaType(vCaptureInstance.vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
 			if (FAILED(hResult))
 			{
 				std::cout << "SetInputMediaType video failed: " << hResult << std::endl;

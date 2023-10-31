@@ -6,20 +6,20 @@
 
 namespace
 {
-	BOOL InitializeDxgiDeviceManager(UINT captureInstanceId)
+	BOOL InitializeDxgiDeviceManager()
 	{
 		try
 		{
 			//Create DXGI device manager
 			UINT resetToken;
-			hResult = MFCreateDXGIDeviceManager(&resetToken, &vCaptureInstances[captureInstanceId].imfDXGIDeviceManager);
+			hResult = MFCreateDXGIDeviceManager(&resetToken, &vCaptureInstance.imfDXGIDeviceManager);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Reset DXGI device manager
-			hResult = vCaptureInstances[captureInstanceId].imfDXGIDeviceManager->ResetDevice(vDirectXInstance.iD3D11Device5, resetToken);
+			hResult = vCaptureInstance.imfDXGIDeviceManager->ResetDevice(vDirectXInstance.iD3D11Device5, resetToken);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -36,7 +36,7 @@ namespace
 		}
 	}
 
-	BOOL InitializeMediaFoundation(UINT captureInstanceId, WCHAR* filePath)
+	BOOL InitializeMediaFoundation(WCHAR* filePath)
 	{
 		try
 		{
@@ -58,8 +58,8 @@ namespace
 			//Set IMF attributes
 			imfAttributes->SetUINT32(MF_READWRITE_ENABLE_HARDWARE_TRANSFORMS, 1);
 			imfAttributes->SetUINT32(MF_SINK_WRITER_DISABLE_THROTTLING, 1);
-			imfAttributes->SetUnknown(MF_SINK_WRITER_D3D_MANAGER, vCaptureInstances[captureInstanceId].imfDXGIDeviceManager);
-			imfAttributes->SetUnknown(MF_SOURCE_READER_D3D_MANAGER, vCaptureInstances[captureInstanceId].imfDXGIDeviceManager);
+			imfAttributes->SetUnknown(MF_SINK_WRITER_D3D_MANAGER, vCaptureInstance.imfDXGIDeviceManager);
+			imfAttributes->SetUnknown(MF_SOURCE_READER_D3D_MANAGER, vCaptureInstance.imfDXGIDeviceManager);
 			imfAttributes->SetGUID(MF_TRANSCODE_CONTAINERTYPE, MFTranscodeContainerType_MPEG4);
 
 			//Create IMF sink writer
@@ -71,23 +71,23 @@ namespace
 			}
 
 			//Convert variables
-			hResult = imfSinkWriterNormal->QueryInterface(&vCaptureInstances[captureInstanceId].imfSinkWriter);
+			hResult = imfSinkWriterNormal->QueryInterface(&vCaptureInstance.imfSinkWriter);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Set video media type
-			if (!SetVideoMediaType(captureInstanceId)) { return false; }
+			if (!SetVideoMediaType()) { return false; }
 
 			//Set audio device capture (reads buffer)
-			if (!SetAudioDeviceCapture(captureInstanceId)) { return false; }
+			if (!SetAudioDeviceCapture()) { return false; }
 
 			//Set audio device render (fills buffer)
-			if (!SetAudioDeviceRender(captureInstanceId)) { return false; }
+			if (!SetAudioDeviceRender()) { return false; }
 
 			//Set audio media type
-			if (!SetAudioMediaType(captureInstanceId)) { return false; }
+			if (!SetAudioMediaType()) { return false; }
 
 			//Return result
 			std::cout << "Media foundation initialized." << std::endl;

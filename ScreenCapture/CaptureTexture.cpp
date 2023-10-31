@@ -3,7 +3,7 @@
 
 namespace
 {
-	std::vector<BYTE> Texture2DConvertToScreenBytes(UINT captureInstanceId, CComPtr<ID3D11Texture2D>& textureTarget, BOOL textureFlip)
+	std::vector<BYTE> Texture2DConvertToScreenBytes(CComPtr<ID3D11Texture2D>& textureTarget, BOOL textureFlip)
 	{
 		try
 		{
@@ -16,28 +16,28 @@ namespace
 			}
 
 			//Create image byte array
-			std::vector<BYTE> BitmapBytes(vCaptureInstances[captureInstanceId].vCaptureDetails.TotalByteSize);
+			std::vector<BYTE> BitmapBytes(vCaptureInstance.vCaptureDetails.TotalByteSize);
 
 			//Write image byte array
 			BYTE* SourceBuffer = (BYTE*)iD3DMappedSubResource.pData;
 			if (textureFlip)
 			{
-				BYTE* BitmapBuffer = BitmapBytes.data() + vCaptureInstances[captureInstanceId].vCaptureDetails.TotalByteSize - vCaptureInstances[captureInstanceId].vCaptureDetails.WidthByteSize;
-				for (UINT i = 0; i < vCaptureInstances[captureInstanceId].vCaptureDetails.OutputHeight; i++)
+				BYTE* BitmapBuffer = BitmapBytes.data() + vCaptureInstance.vCaptureDetails.TotalByteSize - vCaptureInstance.vCaptureDetails.WidthByteSize;
+				for (UINT i = 0; i < vCaptureInstance.vCaptureDetails.OutputHeight; i++)
 				{
-					memcpy(BitmapBuffer, SourceBuffer, vCaptureInstances[captureInstanceId].vCaptureDetails.WidthByteSize);
+					memcpy(BitmapBuffer, SourceBuffer, vCaptureInstance.vCaptureDetails.WidthByteSize);
 					SourceBuffer += iD3DMappedSubResource.RowPitch;
-					BitmapBuffer -= vCaptureInstances[captureInstanceId].vCaptureDetails.WidthByteSize;
+					BitmapBuffer -= vCaptureInstance.vCaptureDetails.WidthByteSize;
 				}
 			}
 			else
 			{
 				BYTE* BitmapBuffer = BitmapBytes.data();
-				for (UINT i = 0; i < vCaptureInstances[captureInstanceId].vCaptureDetails.OutputHeight; i++)
+				for (UINT i = 0; i < vCaptureInstance.vCaptureDetails.OutputHeight; i++)
 				{
-					memcpy(BitmapBuffer, SourceBuffer, vCaptureInstances[captureInstanceId].vCaptureDetails.WidthByteSize);
+					memcpy(BitmapBuffer, SourceBuffer, vCaptureInstance.vCaptureDetails.WidthByteSize);
 					SourceBuffer += iD3DMappedSubResource.RowPitch;
-					BitmapBuffer += vCaptureInstances[captureInstanceId].vCaptureDetails.WidthByteSize;
+					BitmapBuffer += vCaptureInstance.vCaptureDetails.WidthByteSize;
 				}
 			}
 
@@ -53,7 +53,7 @@ namespace
 		}
 	}
 
-	BOOL Texture2DConvertToCpuRead(UINT captureInstanceId, CComPtr<ID3D11Texture2D>& textureTarget)
+	BOOL Texture2DConvertToCpuRead(CComPtr<ID3D11Texture2D>& textureTarget)
 	{
 		try
 		{
@@ -68,14 +68,14 @@ namespace
 			iD3DTexture2D0DescCpuRead.MiscFlags = 0;
 
 			//Create cpu texture
-			hResult = vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCpuRead, NULL, &vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead);
+			hResult = vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCpuRead, NULL, &vCaptureInstance.iD3D11Texture2D0CpuRead);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Copy target to cpu texture
-			vDirectXInstance.iD3D11DeviceContext4->CopySubresourceRegion(vCaptureInstances[captureInstanceId].iD3D11Texture2D0CpuRead, 0, 0, 0, 0, textureTarget, 0, NULL);
+			vDirectXInstance.iD3D11DeviceContext4->CopySubresourceRegion(vCaptureInstance.iD3D11Texture2D0CpuRead, 0, 0, 0, 0, textureTarget, 0, NULL);
 
 			return true;
 		}

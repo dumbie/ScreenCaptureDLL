@@ -3,7 +3,7 @@
 
 namespace
 {
-	std::vector<BYTE> GetAudioBytes(UINT captureInstanceId)
+	std::vector<BYTE> GetAudioBytes()
 	{
 		try
 		{
@@ -13,14 +13,14 @@ namespace
 			BYTE* mediaBuffer;
 			UINT64 devicePosition;
 			UINT64 qpcPosition;
-			hResult = vCaptureInstances[captureInstanceId].iAudioClientCapture->GetBuffer(&mediaBuffer, &mediaFramesRead, &mediaFlags, &devicePosition, &qpcPosition);
+			hResult = vCaptureInstance.iAudioClientCapture->GetBuffer(&mediaBuffer, &mediaFramesRead, &mediaFlags, &devicePosition, &qpcPosition);
 			if (FAILED(hResult))
 			{
 				return {};
 			}
 
 			//Release audio buffer
-			hResult = vCaptureInstances[captureInstanceId].iAudioClientCapture->ReleaseBuffer(mediaFramesRead);
+			hResult = vCaptureInstance.iAudioClientCapture->ReleaseBuffer(mediaFramesRead);
 			if (FAILED(hResult))
 			{
 				return {};
@@ -35,7 +35,7 @@ namespace
 			}
 
 			//Calculate target frames read
-			UINT32 mediaFramesTarget = vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nSamplesPerSec / 100;
+			UINT32 mediaFramesTarget = vCaptureInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec / 100;
 
 			//Check media frames read
 			if (mediaFramesRead == mediaFramesTarget)
@@ -43,7 +43,7 @@ namespace
 				//std::cout << "Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags << std::endl;
 
 				//Calculate media size
-				UINT audioBytesSize = mediaFramesRead * vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nBlockAlign;
+				UINT audioBytesSize = mediaFramesRead * vCaptureInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
 
 				//Create bytes array
 				std::vector<BYTE> audioBytes(audioBytesSize);
@@ -59,7 +59,7 @@ namespace
 				//std::cout << "Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags << std::endl;
 
 				//Calculate media size
-				UINT audioBytesSize = mediaFramesTarget * vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nBlockAlign;
+				UINT audioBytesSize = mediaFramesTarget * vCaptureInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
 
 				//Create bytes array
 				std::vector<BYTE> audioBytes(audioBytesSize);
@@ -83,7 +83,7 @@ namespace
 		}
 	}
 
-	BOOL SetAudioDeviceRender(UINT captureInstanceId)
+	BOOL SetAudioDeviceRender()
 	{
 		try
 		{
@@ -96,21 +96,21 @@ namespace
 			}
 
 			//Get default audio device
-			hResult = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &vCaptureInstances[captureInstanceId].iDevice);
+			hResult = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &vCaptureInstance.iDevice);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Activate default audio device
-			hResult = vCaptureInstances[captureInstanceId].iDevice->Activate(__uuidof(IAudioClient3), CLSCTX_ALL, NULL, (LPVOID*)&vCaptureInstances[captureInstanceId].iAudioDeviceRender);
+			hResult = vCaptureInstance.iDevice->Activate(__uuidof(IAudioClient3), CLSCTX_ALL, NULL, (LPVOID*)&vCaptureInstance.iAudioDeviceRender);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Get audio wave format information
-			hResult = vCaptureInstances[captureInstanceId].iAudioDeviceRender->GetMixFormat((WAVEFORMATEX**)&vCaptureInstances[captureInstanceId].iAudioWaveFormatExRender);
+			hResult = vCaptureInstance.iAudioDeviceRender->GetMixFormat((WAVEFORMATEX**)&vCaptureInstance.iAudioWaveFormatExRender);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -120,21 +120,21 @@ namespace
 			UINT initPeriodicity = 0;
 			UINT initBufferDuration = 0;
 			DWORD initFlags = 0;
-			hResult = vCaptureInstances[captureInstanceId].iAudioDeviceRender->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)vCaptureInstances[captureInstanceId].iAudioWaveFormatExRender.m_pData, 0);
+			hResult = vCaptureInstance.iAudioDeviceRender->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)vCaptureInstance.iAudioWaveFormatExRender.m_pData, 0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Get audio device service
-			hResult = vCaptureInstances[captureInstanceId].iAudioDeviceRender->GetService(IID_PPV_ARGS(&vCaptureInstances[captureInstanceId].iAudioClientRender));
+			hResult = vCaptureInstance.iAudioDeviceRender->GetService(IID_PPV_ARGS(&vCaptureInstance.iAudioClientRender));
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Start audio device
-			hResult = vCaptureInstances[captureInstanceId].iAudioDeviceRender->Start();
+			hResult = vCaptureInstance.iAudioDeviceRender->Start();
 			if (FAILED(hResult))
 			{
 				return false;
@@ -151,7 +151,7 @@ namespace
 		}
 	}
 
-	BOOL SetAudioDeviceCapture(UINT captureInstanceId)
+	BOOL SetAudioDeviceCapture()
 	{
 		try
 		{
@@ -164,54 +164,54 @@ namespace
 			}
 
 			//Get default audio device
-			hResult = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &vCaptureInstances[captureInstanceId].iDevice);
+			hResult = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &vCaptureInstance.iDevice);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Activate default audio device
-			hResult = vCaptureInstances[captureInstanceId].iDevice->Activate(__uuidof(IAudioClient3), CLSCTX_ALL, NULL, (LPVOID*)&vCaptureInstances[captureInstanceId].iAudioDeviceCapture);
+			hResult = vCaptureInstance.iDevice->Activate(__uuidof(IAudioClient3), CLSCTX_ALL, NULL, (LPVOID*)&vCaptureInstance.iAudioDeviceCapture);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Get audio wave format information
-			hResult = vCaptureInstances[captureInstanceId].iAudioDeviceCapture->GetMixFormat((WAVEFORMATEX**)&vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture);
+			hResult = vCaptureInstance.iAudioDeviceCapture->GetMixFormat((WAVEFORMATEX**)&vCaptureInstance.iAudioWaveFormatExCapture);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Set audio wave format information
-			vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-			vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.wBitsPerSample = vCaptureInstances[captureInstanceId].vMediaSettings.AudioBitDepth;
-			vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nSamplesPerSec = vCaptureInstances[captureInstanceId].vMediaSettings.AudioSampleRate;
-			vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nChannels = vCaptureInstances[captureInstanceId].vMediaSettings.AudioChannels;
-			vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nBlockAlign = vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nChannels * vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.wBitsPerSample / 8;
-			vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nAvgBytesPerSec = vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nSamplesPerSec * vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nBlockAlign;
-			vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Samples.wValidBitsPerSample = vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.wBitsPerSample;
+			vCaptureInstance.iAudioWaveFormatExCapture->SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
+			vCaptureInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample = vCaptureInstance.vMediaSettings.AudioBitDepth;
+			vCaptureInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec = vCaptureInstance.vMediaSettings.AudioSampleRate;
+			vCaptureInstance.iAudioWaveFormatExCapture->Format.nChannels = vCaptureInstance.vMediaSettings.AudioChannels;
+			vCaptureInstance.iAudioWaveFormatExCapture->Format.nBlockAlign = vCaptureInstance.iAudioWaveFormatExCapture->Format.nChannels * vCaptureInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample / 8;
+			vCaptureInstance.iAudioWaveFormatExCapture->Format.nAvgBytesPerSec = vCaptureInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec * vCaptureInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
+			vCaptureInstance.iAudioWaveFormatExCapture->Samples.wValidBitsPerSample = vCaptureInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample;
 
 			//Initialize default audio device
 			UINT initPeriodicity = 0;
 			UINT initBufferDuration = 0;
 			DWORD initFlags = AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
-			hResult = vCaptureInstances[captureInstanceId].iAudioDeviceCapture->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture.m_pData, 0);
+			hResult = vCaptureInstance.iAudioDeviceCapture->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)vCaptureInstance.iAudioWaveFormatExCapture.m_pData, 0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Get audio device service
-			hResult = vCaptureInstances[captureInstanceId].iAudioDeviceCapture->GetService(IID_PPV_ARGS(&vCaptureInstances[captureInstanceId].iAudioClientCapture));
+			hResult = vCaptureInstance.iAudioDeviceCapture->GetService(IID_PPV_ARGS(&vCaptureInstance.iAudioClientCapture));
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Start audio device
-			hResult = vCaptureInstances[captureInstanceId].iAudioDeviceCapture->Start();
+			hResult = vCaptureInstance.iAudioDeviceCapture->Start();
 			if (FAILED(hResult))
 			{
 				return false;
@@ -228,7 +228,7 @@ namespace
 		}
 	}
 
-	BOOL SetAudioMediaType(UINT captureInstanceId)
+	BOOL SetAudioMediaType()
 	{
 		try
 		{
@@ -242,30 +242,30 @@ namespace
 			}
 
 			//MP3
-			if (vCaptureInstances[captureInstanceId].vMediaSettings.AudioFormat == MP3)
+			if (vCaptureInstance.vMediaSettings.AudioFormat == MP3)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_MP3);
 			}
 
 			//AAC
-			if (vCaptureInstances[captureInstanceId].vMediaSettings.AudioFormat == AAC)
+			if (vCaptureInstance.vMediaSettings.AudioFormat == AAC)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_AAC);
-				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.wBitsPerSample);
+				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vCaptureInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample);
 			}
 
 			//FLAC
-			if (vCaptureInstances[captureInstanceId].vMediaSettings.AudioFormat == FLAC)
+			if (vCaptureInstance.vMediaSettings.AudioFormat == FLAC)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_FLAC);
-				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.wBitsPerSample);
+				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vCaptureInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample);
 			}
 
 			imfMediaTypeAudioOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nChannels);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nSamplesPerSec);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, vCaptureInstances[captureInstanceId].vMediaSettings.AudioBitRate * 1000 / 8);
-			hResult = vCaptureInstances[captureInstanceId].imfSinkWriter->AddStream(imfMediaTypeAudioOut, &vCaptureInstances[captureInstanceId].vOutAudioStreamIndex);
+			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, vCaptureInstance.iAudioWaveFormatExCapture->Format.nChannels);
+			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, vCaptureInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec);
+			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, vCaptureInstance.vMediaSettings.AudioBitRate * 1000 / 8);
+			hResult = vCaptureInstance.imfSinkWriter->AddStream(imfMediaTypeAudioOut, &vCaptureInstance.vOutAudioStreamIndex);
 			if (FAILED(hResult))
 			{
 				std::cout << "AddStream audio failed." << std::endl;
@@ -283,12 +283,12 @@ namespace
 
 			imfMediaTypeAudioIn->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
 			imfMediaTypeAudioIn->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.wBitsPerSample);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nChannels);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nSamplesPerSec);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nAvgBytesPerSec);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, vCaptureInstances[captureInstanceId].iAudioWaveFormatExCapture->Format.nBlockAlign);
-			hResult = vCaptureInstances[captureInstanceId].imfSinkWriter->SetInputMediaType(vCaptureInstances[captureInstanceId].vOutAudioStreamIndex, imfMediaTypeAudioIn, NULL);
+			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vCaptureInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample);
+			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, vCaptureInstance.iAudioWaveFormatExCapture->Format.nChannels);
+			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, vCaptureInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec);
+			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, vCaptureInstance.iAudioWaveFormatExCapture->Format.nAvgBytesPerSec);
+			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, vCaptureInstance.iAudioWaveFormatExCapture->Format.nBlockAlign);
+			hResult = vCaptureInstance.imfSinkWriter->SetInputMediaType(vCaptureInstance.vOutAudioStreamIndex, imfMediaTypeAudioIn, NULL);
 			if (FAILED(hResult))
 			{
 				std::cout << "SetInputMediaType audio failed." << std::endl;

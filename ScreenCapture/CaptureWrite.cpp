@@ -3,7 +3,7 @@
 
 namespace
 {
-	BOOL WriteMediaTexture2D(UINT captureInstanceId, CComPtr<ID3D11Texture2D> mediaTexture, UINT mediaSize, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
+	BOOL WriteMediaTexture2D(CComPtr<ID3D11Texture2D> mediaTexture, UINT mediaSize, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
 	{
 		try
 		{
@@ -75,7 +75,7 @@ namespace
 			}
 
 			//Write media to sample
-			hResult = vCaptureInstances[captureInstanceId].imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
+			hResult = vCaptureInstance.imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
 			if (FAILED(hResult))
 			{
 				std::cout << "Write texture sample failed: " << hResult << std::endl;
@@ -99,7 +99,7 @@ namespace
 		}
 	}
 
-	BOOL WriteMediaDataBytes(UINT captureInstanceId, std::vector<BYTE> mediaBytes, BOOL releaseBytes, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
+	BOOL WriteMediaDataBytes(std::vector<BYTE> mediaBytes, BOOL releaseBytes, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
 	{
 		try
 		{
@@ -178,7 +178,7 @@ namespace
 			}
 
 			//Write media to sample
-			hResult = vCaptureInstances[captureInstanceId].imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
+			hResult = vCaptureInstance.imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
 			if (FAILED(hResult))
 			{
 				std::cout << "Write bytes sample failed: " << hResult << std::endl;
