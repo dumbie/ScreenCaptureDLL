@@ -1,8 +1,7 @@
 #pragma once
 #include "CaptureVariables.h"
-#include "CaptureScreen.cpp"
-#include "CaptureVideo.cpp"
-#include "CaptureAudio.cpp"
+#include "CaptureInitAudio.cpp"
+#include "CaptureInitVideo.cpp"
 
 namespace
 {

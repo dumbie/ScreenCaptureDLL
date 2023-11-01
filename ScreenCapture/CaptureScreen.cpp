@@ -1,6 +1,6 @@
 #pragma once
 #include "CaptureVariables.h"
-#include "CaptureInitialize.cpp"
+#include "CaptureReset.cpp"
 #include "CaptureTexture.cpp"
 #include "CaptureRender.cpp"
 #include "CaptureCursor.cpp"

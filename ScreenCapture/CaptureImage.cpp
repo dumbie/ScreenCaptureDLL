@@ -1,6 +1,8 @@
 #pragma once
 #include "CaptureVariables.h"
 #include "CaptureReset.cpp"
+#include "CaptureScreen.cpp"
+#include "PlayAudio.cpp"
 
 namespace
 {
@@ -205,4 +207,75 @@ namespace
 			return false;
 		}
 	}
-};
+
+	BOOL CaptureImageCode(WCHAR* filePath, UINT imageQuality, ImageFormats imageFormat)
+	{
+		try
+		{
+			//Get screen bytes
+			std::vector<BYTE> screenBytes = GetScreenBytes(true, false);
+
+			//Check screen bytes
+			if (screenBytes.empty())
+			{
+				//Play audio effect
+				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+
+				std::cout << "Screen capture image bytes are empty." << std::endl;
+				return false;
+			}
+
+			//Check image save format
+			GUID imageSaveFormat{};
+			if (imageFormat == JXR)
+			{
+				imageSaveFormat = GUID_ContainerFormatWmp;
+			}
+			else if (imageFormat == JPG)
+			{
+				if (vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR) { return false; }
+				imageSaveFormat = GUID_ContainerFormatJpeg;
+			}
+			else if (imageFormat == PNG)
+			{
+				if (vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR) { return false; }
+				imageSaveFormat = GUID_ContainerFormatPng;
+			}
+			else if (imageFormat == BMP)
+			{
+				if (vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR) { return false; }
+				imageSaveFormat = GUID_ContainerFormatBmp;
+			}
+			else if (imageFormat == TIF)
+			{
+				if (vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR) { return false; }
+				imageSaveFormat = GUID_ContainerFormatTiff;
+			}
+			else if (imageFormat == HEIF)
+			{
+				if (vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR) { return false; }
+				imageSaveFormat = GUID_ContainerFormatHeif;
+			}
+
+			//Save bitmap data to file
+			BOOL savedBitmap = BitmapDataSaveFile(screenBytes.data(), filePath, imageSaveFormat, imageQuality);
+
+			//Play audio effect
+			if (savedBitmap)
+			{
+				PlayAudio(L"Assets\\Capture\\CaptureScreenshot.mp3");
+			}
+			else
+			{
+				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+			}
+
+			//Return result
+			return savedBitmap;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+}

@@ -25,18 +25,21 @@
   <ItemGroup>
     <ClCompile Include="CaptureAudio.cpp" />
     <ClCompile Include="CaptureCursor.cpp" />
+    <ClCompile Include="CaptureInitAudio.cpp" />
+    <ClCompile Include="CaptureInitVideo.cpp" />
     <ClCompile Include="CaptureRender.cpp" />
     <ClCompile Include="CaptureImage.cpp" />
     <ClCompile Include="CaptureClasses.h" />
     <ClCompile Include="CaptureInitialize.cpp" />
     <ClCompile Include="CaptureDetails.cpp" />
     <ClCompile Include="CaptureLoop.cpp" />
-    <ClCompile Include="CaptureMedia.cpp" />
+    <ClCompile Include="CaptureInitMedia.cpp" />
     <ClCompile Include="CaptureReset.cpp" />
     <ClCompile Include="CaptureMain.cpp" />
     <ClCompile Include="CaptureScreen.cpp" />
     <ClCompile Include="CaptureTexture.cpp" />
-    <ClCompile Include="CaptureVideo.cpp" />
+    <ClCompile Include="CaptureVideoStart.cpp" />
+    <ClCompile Include="CaptureVideoStop.cpp" />
     <ClCompile Include="CaptureWrite.cpp" />
     <ClCompile Include="PlayAudio.cpp" />
   </ItemGroup>

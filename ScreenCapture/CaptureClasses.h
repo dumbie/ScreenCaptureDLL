@@ -135,6 +135,7 @@ namespace
 		BOOL vInstanceInitialized;
 		BOOL vCaptureTextureResizing;
 		UINT vCaptureTextureMipLevels;
+		UINT vCaptureFailCount = 0;
 
 		//Information
 		CaptureSettings vCaptureSettings;

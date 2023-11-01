@@ -33,13 +33,13 @@
     <ClCompile Include="CaptureDetails.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="CaptureVideo.cpp">
+    <ClCompile Include="CaptureVideoStart.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="CaptureScreen.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="CaptureMedia.cpp">
+    <ClCompile Include="CaptureInitMedia.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="CaptureAudio.cpp">
@@ -61,6 +61,15 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="CaptureRender.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptureInitVideo.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptureInitAudio.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptureVideoStop.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

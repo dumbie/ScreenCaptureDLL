@@ -150,6 +150,7 @@ namespace
 		{
 			//Status
 			vCaptureInstance.vInstanceInitialized = false;
+			vCaptureInstance.vCaptureFailCount = 0;
 
 			//Textures
 			CaptureResetVariablesTexturesAll();

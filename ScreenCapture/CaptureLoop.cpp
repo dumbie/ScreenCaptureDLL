@@ -1,9 +1,8 @@
 #pragma once
-#include "CaptureIncludes.h"
 #include "CaptureVariables.h"
 #include "CaptureScreen.cpp"
-#include "CaptureVideo.cpp"
 #include "CaptureAudio.cpp"
+#include "CaptureVideoStop.cpp"
 #include "CaptureWrite.cpp"
 
 namespace
@@ -38,6 +37,21 @@ namespace
 					//Write media bytes to sink
 					std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureInstance.vCaptureDetails.TotalByteSize, true, vCaptureInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
 					threadWriteSample.detach();
+
+					//Reset capture fail count
+					vCaptureInstance.vCaptureFailCount = 0;
+				}
+				else
+				{
+					//Update capture fail count
+					vCaptureInstance.vCaptureFailCount++;
+				}
+
+				//Check capture fail count
+				if (vCaptureInstance.vCaptureFailCount > 50)
+				{
+					std::cout << "Screen capture failed multiple times, stopping video capture." << std::endl;
+					CaptureVideoStopCode();
 				}
 
 				//Delay screen capture

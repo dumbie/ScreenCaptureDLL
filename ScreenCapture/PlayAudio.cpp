@@ -1,5 +1,4 @@
 #pragma once
-#include "CaptureIncludes.h"
 #include "CaptureVariables.h"
 
 namespace
