@@ -26,7 +26,7 @@ namespace ScreenCapture
         }
 
         //Convert BitmapByteArray to BitmapSource
-        public static BitmapSource BitmapByteArrayToBitmapSource(byte[] bitmapByteArray, CaptureDetails captureDetails, CaptureSettings captureSettings)
+        public static BitmapSource BitmapByteArrayToBitmapSource(byte[] bitmapByteArray, CaptureDetails captureDetails)
         {
             try
             {
@@ -45,12 +45,12 @@ namespace ScreenCapture
         }
 
         //Convert BitmapIntPtr to BitmapSource
-        public static BitmapSource BitmapIntPtrToBitmapSource(IntPtr bitmapIntPtr, CaptureDetails captureDetails, CaptureSettings captureSettings)
+        public static BitmapSource BitmapIntPtrToBitmapSource(IntPtr bitmapIntPtr, CaptureDetails captureDetails)
         {
             try
             {
                 byte[] bitmapByteArray = BitmapIntPtrToBitmapByteArray(bitmapIntPtr, captureDetails);
-                return BitmapByteArrayToBitmapSource(bitmapByteArray, captureDetails, captureSettings);
+                return BitmapByteArrayToBitmapSource(bitmapByteArray, captureDetails);
             }
             catch (Exception ex)
             {
