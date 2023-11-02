@@ -35,7 +35,7 @@ namespace
 				if (UpdateScreenTexture(true))
 				{
 					//Write media bytes to sink
-					std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureInstance.vCaptureDetails.TotalByteSize, true, vCaptureInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+					std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureInstance.vCaptureDetails.TotalByteSize, false, vCaptureInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
 					threadWriteSample.detach();
 
 					//Reset capture fail count

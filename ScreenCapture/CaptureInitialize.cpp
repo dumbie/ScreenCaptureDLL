@@ -82,7 +82,7 @@ namespace
 				return false;
 			}
 
-			//Get output duplicate (requires process dpi awareness) (only one per process allowed)
+			//Get output duplicate (impacts render performance) (requires process dpi awareness) (only one per process allowed)
 			hResult = vDirectXInstance.iDxgiOutput6->DuplicateOutput1(vDirectXInstance.iD3D11Device5, 0, iDxgiFormatsCount, iDxgiFormatsArray, &vDirectXInstance.iDxgiOutputDuplication0);
 			if (FAILED(hResult))
 			{
