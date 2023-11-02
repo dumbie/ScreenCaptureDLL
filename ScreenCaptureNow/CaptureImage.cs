@@ -36,7 +36,7 @@ namespace ScreenCapture
                 }
 
                 //Initialize screen capture
-                if (!CaptureImport.CaptureInitialize(0, captureSettings, out CaptureDetails vCaptureDetails, false))
+                if (!CaptureImport.CaptureInitialize(captureSettings, out CaptureDetails vCaptureDetails, false))
                 {
                     Debug.WriteLine("Failed to initialize screen capture.");
                     return;
@@ -88,32 +88,32 @@ namespace ScreenCapture
                 bool screenshotSaved = false;
                 if (ScreenshotSaveFormat == ImageFormats.JPG)
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(0, fileSavePath + ".jpg", ScreenshotSaveQuality, ScreenshotSaveFormat);
+                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".jpg", ScreenshotSaveQuality, ScreenshotSaveFormat);
                     Debug.WriteLine("Screenshot JPG export succeeded: " + screenshotSaved);
                 }
                 else if (ScreenshotSaveFormat == ImageFormats.PNG)
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(0, fileSavePath + ".png", 100, ScreenshotSaveFormat);
+                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".png", 100, ScreenshotSaveFormat);
                     Debug.WriteLine("Screenshot PNG export succeeded: " + screenshotSaved);
                 }
                 else if (ScreenshotSaveFormat == ImageFormats.BMP)
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(0, fileSavePath + ".bmp", 100, ScreenshotSaveFormat);
+                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".bmp", 100, ScreenshotSaveFormat);
                     Debug.WriteLine("Screenshot BMP export succeeded: " + screenshotSaved);
                 }
                 else if (ScreenshotSaveFormat == ImageFormats.TIF)
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(0, fileSavePath + ".tif", 100, ScreenshotSaveFormat);
+                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".tif", 100, ScreenshotSaveFormat);
                     Debug.WriteLine("Screenshot TIF export succeeded: " + screenshotSaved);
                 }
                 else if (ScreenshotSaveFormat == ImageFormats.HEIF)
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(0, fileSavePath + ".heif", ScreenshotSaveQuality, ScreenshotSaveFormat);
+                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".heif", ScreenshotSaveQuality, ScreenshotSaveFormat);
                     Debug.WriteLine("Screenshot HEIF export succeeded: " + screenshotSaved);
                 }
                 else
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(0, fileSavePath + ".jxr", ScreenshotSaveQuality, ScreenshotSaveFormat);
+                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".jxr", ScreenshotSaveQuality, ScreenshotSaveFormat);
                     Debug.WriteLine("Screenshot JXR export succeeded: " + screenshotSaved);
                 }
             }
@@ -124,7 +124,7 @@ namespace ScreenCapture
             finally
             {
                 //Reset screen capture resources
-                CaptureImport.CaptureReset(0);
+                CaptureImport.CaptureReset();
 
                 //Close application
                 AppClose.Application_Exit();

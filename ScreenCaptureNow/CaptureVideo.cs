@@ -19,14 +19,14 @@ namespace ScreenCapture
                 Debug.WriteLine("Stopping video capturing...");
 
                 //Check video capture
-                if (CaptureImport.CaptureVideoIsRecording(1))
+                if (CaptureImport.CaptureVideoIsRecording())
                 {
                     //Update the tray notify icon
                     AppTrayMenu.TrayNotifyIcon.Text = AVFunctions.StringCut("Processing " + vCaptureFileName, 59, "...");
                     AppTrayMenu.TrayNotifyIcon.Icon = new Icon(Assembly.GetEntryAssembly().GetManifestResourceStream("ScreenCaptureNow.Assets.AppIconProcessing.ico"));
 
                     //Request to stop video capture
-                    bool captureResultStop = CaptureImport.CaptureVideoStop(1);
+                    bool captureResultStop = CaptureImport.CaptureVideoStop();
                     Debug.WriteLine("Stopped video capturing: " + captureResultStop);
                 }
             }
@@ -37,7 +37,7 @@ namespace ScreenCapture
             finally
             {
                 //Reset screen capture resources
-                CaptureImport.CaptureReset(1);
+                CaptureImport.CaptureReset();
 
                 //Exit application
                 if (exitApplication)
@@ -52,7 +52,7 @@ namespace ScreenCapture
             try
             {
                 //Check video capture
-                if (CaptureImport.CaptureVideoIsRecording(1))
+                if (CaptureImport.CaptureVideoIsRecording())
                 {
                     return;
                 }
@@ -93,7 +93,7 @@ namespace ScreenCapture
                 mediaSettings.AudioSampleRate = AudioSampleRate;
 
                 //Initialize screen capture
-                if (!CaptureImport.CaptureInitialize(1, captureSettings, out CaptureDetails vCaptureDetails, false))
+                if (!CaptureImport.CaptureInitialize(captureSettings, out CaptureDetails vCaptureDetails, false))
                 {
                     Debug.WriteLine("Failed to initialize screen capture.");
                     return;
@@ -142,7 +142,7 @@ namespace ScreenCapture
                 string fileSavePath = fileSaveFolder + "\\" + fileSaveName + ".mp4";
 
                 //Start video capture
-                bool captureStarted = CaptureImport.CaptureVideoStart(1, fileSavePath, mediaSettings);
+                bool captureStarted = CaptureImport.CaptureVideoStart(fileSavePath, mediaSettings);
 
                 //Play capture sound
                 if (captureStarted)
