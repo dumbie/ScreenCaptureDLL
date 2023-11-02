@@ -33,7 +33,7 @@ namespace ScreenCapture
                 if (usedImageKeys.Count > 0 && !usedImageKeys.Where(x => x != KeysVirtual.None).Except(keysPressed).Any())
                 {
                     Debug.WriteLine("Button Global - Capture image");
-                    await CaptureScreen.CaptureImageToFile();
+                    CaptureScreen.CaptureImageToFile();
                 }
 
                 //Capture video hotkey

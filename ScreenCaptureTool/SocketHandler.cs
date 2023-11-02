@@ -47,7 +47,7 @@ namespace ScreenCapture
                     Debug.WriteLine("Received socket string: " + deserializedBytes);
                     if (deserializedBytes == "CaptureImage")
                     {
-                        await CaptureScreen.CaptureImageToFile();
+                        CaptureScreen.CaptureImageToFile();
                     }
                     else if (deserializedBytes == "CaptureVideo")
                     {

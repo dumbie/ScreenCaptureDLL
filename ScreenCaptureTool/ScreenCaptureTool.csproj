@@ -103,15 +103,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="..\ScreenCaptureShared\CaptureBitmap.cs">
-      <Link>CaptureBitmap.cs</Link>
-    </Compile>
-    <Compile Include="..\ScreenCaptureShared\CaptureClasses.cs">
-      <Link>CaptureClasses.cs</Link>
-    </Compile>
-    <Compile Include="..\ScreenCaptureShared\CaptureImport.cs">
-      <Link>CaptureImport.cs</Link>
-    </Compile>
     <Compile Include="..\ScreenCaptureShared\Properties\AssemblyVersion.cs">
       <Link>Properties\AssemblyVersion.cs</Link>
     </Compile>

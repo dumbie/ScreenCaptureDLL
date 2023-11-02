@@ -2,7 +2,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Controls;
 using static ArnoldVinkCode.AVClasses;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;

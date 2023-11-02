@@ -1,12 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-using static ArnoldVinkCode.AVInputOutputClass;
-using static ArnoldVinkCode.AVSettings;
+﻿using System.Collections.Generic;
 using static ArnoldVinkCode.AVClasses;
-using static ScreenCapture.AppVariables;
-using System.Collections.Generic;
 
 namespace ScreenCapture
 {
