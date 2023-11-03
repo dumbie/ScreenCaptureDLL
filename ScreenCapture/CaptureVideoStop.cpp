@@ -37,6 +37,9 @@ namespace
 			//Play audio effect
 			PlayAudio(L"Assets\\Capture\\CaptureVideoStop.mp3");
 
+			//Trigger capture event
+			vCaptureEventVideoCaptureStopped();
+
 			std::cout << "Stopped media capture..." << std::endl;
 			return true;
 		}

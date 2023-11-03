@@ -6,6 +6,10 @@ namespace
 	//Results
 	HRESULT hResult;
 
+	//Events
+	typedef void(*CaptureEvent)();
+	CaptureEvent vCaptureEventVideoCaptureStopped;
+
 	//Capture
 	DirectXInstance vDirectXInstance;
 	CaptureInstance vCaptureInstance;

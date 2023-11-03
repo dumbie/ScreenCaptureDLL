@@ -12,8 +12,11 @@ namespace ScreenCapture
             {
                 Debug.WriteLine("Exiting application.");
 
-                //Stop video capture
-                ScreenCaptureCode.StopCaptureVideoToFile(false);
+                //Stop active video capture
+                ScreenCaptureCode.StopCaptureVideoToFile();
+
+                //Reset screen capture resources
+                CaptureImport.CaptureReset();
 
                 //Hide the visible tray icon
                 AppTrayMenu.TrayNotifyIcon.Visible = false;

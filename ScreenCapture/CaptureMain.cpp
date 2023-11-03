@@ -110,5 +110,10 @@ namespace
 		{
 			return vCaptureInstance.vMediaCapturing;
 		}
+
+		__declspec(dllexport) void CaptureEventVideoCaptureStopped(CaptureEvent captureEvent)
+		{
+			vCaptureEventVideoCaptureStopped = captureEvent;
+		}
 	}
 };

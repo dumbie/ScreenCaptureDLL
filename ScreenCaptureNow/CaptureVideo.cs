@@ -7,20 +7,21 @@ using System.Reflection;
 using System.Threading.Tasks;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
+using static ScreenCapture.CaptureImport;
 
 namespace ScreenCapture
 {
     public partial class ScreenCaptureCode
     {
-        public static void StopCaptureVideoToFile(bool exitApplication)
+        public static void StopCaptureVideoToFile()
         {
             try
             {
-                Debug.WriteLine("Stopping video capturing...");
-
                 //Check video capture
                 if (CaptureImport.CaptureVideoIsRecording())
                 {
+                    Debug.WriteLine("Stopping active video capture...");
+
                     //Update the tray notify icon
                     AppTrayMenu.TrayNotifyIcon.Text = AVFunctions.StringCut("Processing " + vCaptureFileName, 59, "...");
                     AppTrayMenu.TrayNotifyIcon.Icon = new Icon(Assembly.GetEntryAssembly().GetManifestResourceStream("ScreenCaptureNow.Assets.AppIconProcessing.ico"));
@@ -34,17 +35,16 @@ namespace ScreenCapture
             {
                 Debug.WriteLine("Failed stopping video capture: " + ex.Message);
             }
-            finally
-            {
-                //Reset screen capture resources
-                CaptureImport.CaptureReset();
+        }
 
-                //Exit application
-                if (exitApplication)
-                {
-                    AppClose.Application_Exit();
-                }
+        public static void StopCaptureVideoEvent()
+        {
+            try
+            {
+                Debug.WriteLine("Video capture stopped event triggered, closing application.");
+                AppClose.Application_Exit();
             }
+            catch { }
         }
 
         public static async Task StartCaptureVideoToFile()
@@ -56,6 +56,9 @@ namespace ScreenCapture
                 {
                     return;
                 }
+
+                //Register capture events
+                CaptureImport.CaptureEventVideoCaptureStopped(new CaptureEvent(StopCaptureVideoEvent));
 
                 //Capture tool settings
                 VideoFormats VideoSaveFormat = (VideoFormats)SettingLoad(vConfigurationTool, "VideoSaveFormat", typeof(int));

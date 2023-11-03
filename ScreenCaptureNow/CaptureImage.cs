@@ -121,14 +121,6 @@ namespace ScreenCapture
             {
                 Debug.WriteLine("Screen image capture failed: " + ex.Message);
             }
-            finally
-            {
-                //Reset screen capture resources
-                CaptureImport.CaptureReset();
-
-                //Close application
-                AppClose.Application_Exit();
-            }
         }
     }
 }

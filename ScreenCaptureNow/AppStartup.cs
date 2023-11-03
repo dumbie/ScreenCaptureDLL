@@ -58,6 +58,9 @@ namespace ScreenCapture
                 {
                     //Capture image to file
                     await ScreenCaptureCode.CaptureImageToFile();
+
+                    //Close application
+                    AppClose.Application_Exit();
                 }
                 else if (launchAction == 2)
                 {
@@ -70,6 +73,7 @@ namespace ScreenCapture
                     messageAnswers.Add("Ok");
                     await new AVMessageBox().Popup(null, "Screen Capture Now", "Please use the Screen Capture Tool to start screen captures.", messageAnswers);
 
+                    //Close application
                     AppClose.Application_Exit();
                 }
             }
