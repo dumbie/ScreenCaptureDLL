@@ -26,7 +26,7 @@ namespace
 			try
 			{
 				//Update capture settings
-				vCaptureInstance.vCaptureSettings = captureSettings;
+				vCaptureSettings = captureSettings;
 
 				//Set shader variables
 				return SetShaderVariables();
@@ -59,7 +59,7 @@ namespace
 				vCaptureInstance.vScreenBytesCache.clear();
 
 				//Update screen bytes cache
-				vCaptureInstance.vScreenBytesCache = GetScreenBytes(true, false);
+				vCaptureInstance.vScreenBytesCache = GetScreenBytes(false);
 
 				//Return result
 				return vCaptureInstance.vScreenBytesCache.data();

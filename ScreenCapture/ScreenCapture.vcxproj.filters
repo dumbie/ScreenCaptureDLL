@@ -57,9 +57,6 @@
     <ClCompile Include="CaptureWrite.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="CaptureCursor.cpp">
-      <Filter>Source files</Filter>
-    </ClCompile>
     <ClCompile Include="CaptureRender.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
@@ -70,6 +67,9 @@
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="CaptureVideoStop.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptureMessage.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

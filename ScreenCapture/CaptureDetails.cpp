@@ -3,6 +3,60 @@
 
 namespace
 {
+	void GetMonitorResolution(HMONITOR hMonitor, UINT& pixelsWidth, UINT& pixelsHeight)
+	{
+		try
+		{
+			MONITORINFOEXA monitorInfo;
+			monitorInfo.cbSize = sizeof(monitorInfo);
+			if (!GetMonitorInfoA(hMonitor, &monitorInfo))
+			{
+				return;
+			}
+
+			DEVMODEA devMode;
+			devMode.dmSize = sizeof(devMode);
+			if (!EnumDisplaySettingsA(monitorInfo.szDevice, ENUM_CURRENT_SETTINGS, &devMode))
+			{
+				return;
+			}
+
+			pixelsWidth = devMode.dmPelsWidth;
+			pixelsHeight = devMode.dmPelsHeight;
+		}
+		catch (...)
+		{
+			std::cout << "Failed to get monitor resolution." << std::endl;
+		}
+	}
+
+	UINT GetMonitorRefreshRate(HMONITOR hMonitor)
+	{
+		try
+		{
+			MONITORINFOEXA monitorInfo;
+			monitorInfo.cbSize = sizeof(monitorInfo);
+			if (!GetMonitorInfoA(hMonitor, &monitorInfo))
+			{
+				return 0;
+			}
+
+			DEVMODEA devMode;
+			devMode.dmSize = sizeof(devMode);
+			if (!EnumDisplaySettingsA(monitorInfo.szDevice, ENUM_CURRENT_SETTINGS, &devMode))
+			{
+				return 0;
+			}
+
+			return devMode.dmDisplayFrequency;
+		}
+		catch (...)
+		{
+			std::cout << "Failed to get monitor refresh rate." << std::endl;
+			return 0;
+		}
+	}
+
 	FLOAT GetMonitorSDRWhiteLevel(UINT monitorId)
 	{
 		try
@@ -41,6 +95,7 @@ namespace
 		}
 		catch (...)
 		{
+			std::cout << "Failed to get monitor sdr white level." << std::endl;
 			return 240.0F;
 		}
 	}

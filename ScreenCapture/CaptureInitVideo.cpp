@@ -28,7 +28,7 @@ namespace
 			}
 
 			//Check if HDR is enabled
-			BOOL hdrEnabled = vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR;
+			BOOL hdrEnabled = vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR;
 			if (hdrEnabled)
 			{
 				videoFormat = MFVideoFormat_HEVC;
@@ -37,7 +37,7 @@ namespace
 			//Set encoder settings
 			if (videoFormat == MFVideoFormat_HEVC)
 			{
-				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_HEVC);
+				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, videoFormat);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH265VLevel5);
 				//HDR and SDR settings
 				if (hdrEnabled)
@@ -62,7 +62,7 @@ namespace
 			imfMediaTypeVideoOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
-			MFSetAttributeSize(imfMediaTypeVideoOut, MF_MT_FRAME_SIZE, vCaptureInstance.vCaptureDetails.OutputWidth, vCaptureInstance.vCaptureDetails.OutputHeight);
+			MFSetAttributeSize(imfMediaTypeVideoOut, MF_MT_FRAME_SIZE, vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight);
 			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_FRAME_RATE, vCaptureInstance.vMediaSettings.VideoFrameRate, 1);
 			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
 			hResult = vCaptureInstance.imfSinkWriter->AddStream(imfMediaTypeVideoOut, &vCaptureInstance.vOutVideoStreamIndex);
@@ -75,11 +75,23 @@ namespace
 			//Create video encoding parameters
 			CComPtr<IMFAttributes> imfAttributesEncoding;
 			MFCreateAttributes(&imfAttributesEncoding, 0);
-			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_Quality);
-			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQuality, vCaptureInstance.vMediaSettings.VideoQuality);
-			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQualityVsSpeed, 80);
-			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRealTime, 1);
+
+			//CBR
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_CBR);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonMeanBitRate, 25000 * 1000);
+
+			//VBR
+			//imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_UnconstrainedVBR);
+			//imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonMeanBitRate, 25000 * 1000 * 2);
+
+			////Quality
+			//imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_Quality);
+			//imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQuality, vCaptureInstance.vMediaSettings.VideoQuality);
+			//imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQualityVsSpeed, 75);
+
+			//Settings
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVLowLatencyMode, 1);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRealTime, 1);
 
 			//Create video in media type
 			CComPtr<IMFMediaType> imfMediaTypeVideoIn;
@@ -92,8 +104,8 @@ namespace
 
 			imfMediaTypeVideoIn->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
 			imfMediaTypeVideoIn->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
-			MFSetAttributeSize(imfMediaTypeVideoIn, MF_MT_FRAME_SIZE, vCaptureInstance.vCaptureDetails.OutputWidth, vCaptureInstance.vCaptureDetails.OutputHeight);
-			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_FRAME_RATE, vCaptureInstance.vCaptureDetails.RefreshRate, 1);
+			MFSetAttributeSize(imfMediaTypeVideoIn, MF_MT_FRAME_SIZE, vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight);
+			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_FRAME_RATE, vCaptureDetails.RefreshRate, 1);
 			MFSetAttributeRatio(imfMediaTypeVideoIn, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
 			//HDR and SDR settings
 			if (hdrEnabled)

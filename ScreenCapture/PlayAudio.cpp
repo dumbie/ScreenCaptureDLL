@@ -6,7 +6,7 @@ namespace
 	VOID PlayAudio(WCHAR* audioFile)
 	{
 		//Check settings
-		if (!vCaptureInstance.vCaptureSettings.SoundEffect)
+		if (!vCaptureSettings.SoundEffect)
 		{
 			return;
 		}

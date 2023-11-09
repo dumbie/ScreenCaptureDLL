@@ -45,8 +45,8 @@ namespace
 		UINT MonitorId = 0;
 		UINT MaxPixelDimension = 0;
 		BOOL SoundEffect = true;
-		BOOL MouseIgnoreMovement = false;
-		BOOL MouseDrawCursor = true;
+		BOOL DrawCaptureBorder = false;
+		BOOL DrawMouseCursor = true;
 		BOOL HDRtoSDR = false;
 		FLOAT HDRPaperWhite = 80.0F;
 		FLOAT HDRMaximumNits = 1000.0F;
@@ -91,6 +91,24 @@ namespace
 		FLOAT Blur;
 	};
 
+	struct WgcInstance
+	{
+		//Status
+		BOOL vInstanceInitialized;
+		BOOL vCaptureStatusLoopAllowed;
+		BOOL vCaptureStatusLoopFinished;
+
+		//Direct3D
+		winrt::Windows::Graphics::DirectX::DirectXPixelFormat vFramePixelFormat = winrt::Windows::Graphics::DirectX::DirectXPixelFormat::Unknown;
+		winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice vDirect3D11Device = NULL;
+
+		//Capture
+		winrt::Windows::Graphics::SizeInt32 vFrameSizeCurrent{ 0 ,0 };
+		winrt::Windows::Graphics::Capture::GraphicsCaptureItem vGraphicsCaptureItem = NULL;
+		winrt::Windows::Graphics::Capture::GraphicsCaptureSession vGraphicsCaptureSession = NULL;
+		winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool vGraphicsCaptureFramePool = NULL;
+	};
+
 	struct DirectXInstance
 	{
 		//Status
@@ -98,23 +116,17 @@ namespace
 
 		//Information
 		DXGI_OUTPUT_DESC1 iDxgiOutputDescription;
-		DXGI_OUTDUPL_DESC iDxgiOutputDuplicationDescription;
 
 		//Direct3D
 		CComPtr<IDXGIDevice4> iDxgiDevice4;
 		CComPtr<IDXGIAdapter4> iDxgiAdapter4;
 		CComPtr<IDXGIOutput> iDxgiOutput0;
 		CComPtr<IDXGIOutput6> iDxgiOutput6;
-		CComPtr<IDXGIOutputDuplication> iDxgiOutputDuplication0;
 		CComPtr<ID3D11Device> iD3D11Device0;
 		CComPtr<ID3D11Device5> iD3D11Device5;
 		CComPtr<ID3D11Multithread> iD3D11Multithread;
 		CComPtr<ID3D11DeviceContext> iD3D11DeviceContext0;
 		CComPtr<ID3D11DeviceContext4> iD3D11DeviceContext4;
-
-		//States
-		CComPtr<ID3D11SamplerState> iD3D11SamplerState0;
-		CComPtr<ID3D11BlendState> iD3D11BlendState0;
 
 		//Views
 		CComPtr<ID3D11InputLayout> iD3D11InputLayout0;
@@ -138,13 +150,7 @@ namespace
 		UINT vCaptureFailCount = 0;
 
 		//Information
-		CaptureSettings vCaptureSettings;
-		CaptureDetails vCaptureDetails;
 		DXGI_FORMAT vCaptureDxgiFormat;
-
-		//Cursor
-		UINT vCursorWidth = 32;
-		UINT vCursorHeight = 32;
 
 		//Bytes
 		std::vector<BYTE> vScreenBytesCache;
@@ -186,7 +192,6 @@ namespace
 		CComPtr<IDXGIResource> iDxgiResource0;
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0CpuRead;
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0Screen;
-		CComPtr<ID3D11Texture2D> iD3D11Texture2D0Cursor;
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetView;
 	};
 

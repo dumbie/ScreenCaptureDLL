@@ -15,12 +15,6 @@ namespace
 			//Views
 			vDirectXInstance.iD3D11ShaderResourceView0.Release();
 
-			//Release output duplication frame
-			if (vDirectXInstance.iDxgiOutputDuplication0 != NULL)
-			{
-				vDirectXInstance.iDxgiOutputDuplication0->ReleaseFrame();
-			}
-
 			return true;
 		}
 		catch (...)
@@ -37,7 +31,6 @@ namespace
 			vCaptureInstance.iDxgiResource0.Release();
 			vCaptureInstance.iD3D11Texture2D0CpuRead.Release();
 			vCaptureInstance.iD3D11Texture2D0Screen.Release();
-			vCaptureInstance.iD3D11Texture2D0Cursor.Release();
 			vCaptureInstance.iD3D11Texture2D0RenderTargetView.Release();
 
 			return true;
@@ -70,7 +63,7 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesMedia()
+	BOOL CaptureResetVariablesMediaAll()
 	{
 		try
 		{
@@ -100,6 +93,32 @@ namespace
 		}
 	}
 
+	BOOL WgcResetVariablesAll()
+	{
+		try
+		{
+			//Status
+			vWgcInstance.vInstanceInitialized = false;
+
+			//Direct3D
+			vWgcInstance.vFramePixelFormat = winrt::Windows::Graphics::DirectX::DirectXPixelFormat::Unknown;
+			vWgcInstance.vDirect3D11Device = NULL;
+
+			//Capture
+			vWgcInstance.vFrameSizeCurrent = { 0 ,0 };
+			vWgcInstance.vGraphicsCaptureItem = NULL;
+			vWgcInstance.vGraphicsCaptureSession = NULL;
+			vWgcInstance.vGraphicsCaptureFramePool = NULL;
+
+			std::cout << "Reset all Windows Graphics Capture variables." << std::endl;
+			return true;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
 	BOOL DirectXResetVariablesAll()
 	{
 		try
@@ -112,16 +131,11 @@ namespace
 			vDirectXInstance.iDxgiAdapter4.Release();
 			vDirectXInstance.iDxgiOutput0.Release();
 			vDirectXInstance.iDxgiOutput6.Release();
-			vDirectXInstance.iDxgiOutputDuplication0.Release();
 			vDirectXInstance.iD3D11Device0.Release();
 			vDirectXInstance.iD3D11Device5.Release();
 			vDirectXInstance.iD3D11Multithread.Release();
 			vDirectXInstance.iD3D11DeviceContext0.Release();
 			vDirectXInstance.iD3D11DeviceContext4.Release();
-
-			//States
-			vDirectXInstance.iD3D11SamplerState0.Release();
-			vDirectXInstance.iD3D11BlendState0.Release();
 
 			//Views
 			vDirectXInstance.iD3D11InputLayout0.Release();
@@ -159,7 +173,7 @@ namespace
 			CaptureResetVariablesBitmapImage();
 
 			//Media
-			CaptureResetVariablesMedia();
+			CaptureResetVariablesMediaAll();
 
 			std::cout << "Reset all Capture variables." << std::endl;
 			return true;

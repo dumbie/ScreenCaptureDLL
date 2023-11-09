@@ -11,8 +11,11 @@ namespace
 	CaptureEvent vCaptureEventVideoCaptureStopped;
 
 	//Capture
+	WgcInstance vWgcInstance;
 	DirectXInstance vDirectXInstance;
 	CaptureInstance vCaptureInstance;
+	CaptureSettings vCaptureSettings;
+	CaptureDetails vCaptureDetails;
 	UINT vReferenceTimeFrameDuration = 100000;
 	UINT vReferenceTimeToSeconds = 10000000;
 	UINT vReferenceTimeToMilliseconds = 10000;
@@ -50,12 +53,5 @@ namespace
 		{DirectX::XMFLOAT3(1.0f, -1.0f, 0), DirectX::XMFLOAT2(1.0f, 1.0f)},
 		{DirectX::XMFLOAT3(1.0f, 1.0f, 0), DirectX::XMFLOAT2(1.0f, 0.0f)}
 	};
-	VertexVertice VertexVerticesArrayCursor[] =
-	{
-		{DirectX::XMFLOAT3(-1.0f, -1.0f, 0), DirectX::XMFLOAT2(0.0f, 1.0f)},
-		{DirectX::XMFLOAT3(-1.0f, 1.0f, 0), DirectX::XMFLOAT2(0.0f, 0.0f)},
-		{DirectX::XMFLOAT3(1.0f, -1.0f, 0), DirectX::XMFLOAT2(1.0f, 1.0f)},
-		{DirectX::XMFLOAT3(1.0f, 1.0f, 0), DirectX::XMFLOAT2(1.0f, 0.0f)}
-	};
-	UINT VertexVerticesCount = ARRAYSIZE(VertexVerticesArrayScreen);
+	UINT VertexVerticesCountScreen = ARRAYSIZE(VertexVerticesArrayScreen);
 };

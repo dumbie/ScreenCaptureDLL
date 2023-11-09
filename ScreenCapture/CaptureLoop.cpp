@@ -7,6 +7,53 @@
 
 namespace
 {
+	VOID LoopCaptureStatus()
+	{
+		try
+		{
+			//Loop variables
+			HWND vPreviousForegroundWindow = NULL;
+			LONG vPreviousForegroundStyle = NULL;
+
+			//Check capture status while allowed
+			while (vWgcInstance.vCaptureStatusLoopAllowed)
+			{
+				//Wait for foreground change
+				Sleep(500);
+
+				//Get foreground window
+				HWND currentForegroundWindow = GetForegroundWindow();
+				LONG currentForegroundStyle = GetWindowLongA(currentForegroundWindow, GWL_STYLE);
+
+				//Fix find way to detect monitor awake
+				//Fix find way to detect display driver reset
+				//Fix find way to detect display hdr switching
+
+				//Check foreground window change
+				if (vPreviousForegroundStyle != currentForegroundStyle || vPreviousForegroundWindow != currentForegroundWindow)
+				{
+					std::cout << "Foreground window / style has changed." << std::endl;
+					vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(true);
+					vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(false);
+				}
+
+				//Update previous variables
+				vPreviousForegroundStyle = currentForegroundStyle;
+				vPreviousForegroundWindow = currentForegroundWindow;
+
+				//Check screen resolution change
+				if (vWgcInstance.vFrameSizeCurrent != vWgcInstance.vGraphicsCaptureItem.Size())
+				{
+					std::cout << "Frame resolution has changed." << std::endl;
+				}
+			}
+		}
+		catch (...) {}
+
+		//Reset thread variables
+		vWgcInstance.vCaptureStatusLoopFinished = true;
+	}
+
 	VOID LoopWriteScreen()
 	{
 		try
@@ -32,10 +79,10 @@ namespace
 				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vCaptureInstance.vMediaTimeStartLoop;
 
 				//Update screen texture
-				if (UpdateScreenTexture(true))
+				if (UpdateScreenTexture())
 				{
 					//Write media bytes to sink
-					std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureInstance.vCaptureDetails.TotalByteSize, false, vCaptureInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+					std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureDetails.TotalByteSize, false, vCaptureInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
 					threadWriteSample.detach();
 
 					//Reset capture fail count
@@ -48,7 +95,7 @@ namespace
 				}
 
 				//Check capture fail count
-				if (vCaptureInstance.vCaptureFailCount > 50)
+				if (vCaptureInstance.vCaptureFailCount > 100)
 				{
 					std::cout << "Screen capture failed multiple times, stopping video capture." << std::endl;
 					CaptureVideoStopCode();

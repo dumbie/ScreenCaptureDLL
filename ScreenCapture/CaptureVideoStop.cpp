@@ -32,7 +32,7 @@ namespace
 
 			//Release resources
 			CaptureResetVariablesTexturesLoop();
-			CaptureResetVariablesMedia();
+			CaptureResetVariablesMediaAll();
 
 			//Play audio effect
 			PlayAudio(L"Assets\\Capture\\CaptureVideoStop.mp3");
@@ -47,7 +47,7 @@ namespace
 		{
 			//Release resources
 			CaptureResetVariablesTexturesLoop();
-			CaptureResetVariablesMedia();
+			CaptureResetVariablesMediaAll();
 
 			return false;
 		}

@@ -105,14 +105,14 @@ namespace
 			}
 
 			//Bitmap frame set size
-			hResult = vCaptureInstance.iWICBitmapFrameEncode->SetSize(vCaptureInstance.vCaptureDetails.OutputWidth, vCaptureInstance.vCaptureDetails.OutputHeight);
+			hResult = vCaptureInstance.iWICBitmapFrameEncode->SetSize(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesBitmapImage();
 				return false;
 			}
 
-			std::cout << "Bitmap frame size, Width: " << vCaptureInstance.vCaptureDetails.OutputWidth << " Height: " << vCaptureInstance.vCaptureDetails.OutputHeight << std::endl;
+			std::cout << "Bitmap frame size, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight << std::endl;
 
 			//Bitmap frame set resolution
 			hResult = vCaptureInstance.iWICBitmapFrameEncode->SetResolution(96, 96);
@@ -125,7 +125,7 @@ namespace
 			//Write data to bitmap frame and convert jpg
 			if (iWicFormatGuid == GUID_ContainerFormatJpeg && vCaptureInstance.iWicPixelFormatGuidSource != vCaptureInstance.iWicPixelFormatGuidJpeg)
 			{
-				hResult = vCaptureInstance.iWICImagingFactory->CreateBitmapFromMemory(vCaptureInstance.vCaptureDetails.OutputWidth, vCaptureInstance.vCaptureDetails.OutputHeight, vCaptureInstance.iWicPixelFormatGuidSource, vCaptureInstance.vCaptureDetails.WidthByteSize, vCaptureInstance.vCaptureDetails.TotalByteSize, bitmapData, &vCaptureInstance.iWICBitmap);
+				hResult = vCaptureInstance.iWICImagingFactory->CreateBitmapFromMemory(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight, vCaptureInstance.iWicPixelFormatGuidSource, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData, &vCaptureInstance.iWICBitmap);
 				if (FAILED(hResult))
 				{
 					CaptureResetVariablesBitmapImage();
@@ -154,7 +154,7 @@ namespace
 					return false;
 				}
 
-				WICRect iWicRectangle = { 0, 0, (INT)vCaptureInstance.vCaptureDetails.OutputWidth, (INT)vCaptureInstance.vCaptureDetails.OutputHeight };
+				WICRect iWicRectangle = { 0, 0, (INT)vCaptureDetails.OutputWidth, (INT)vCaptureDetails.OutputHeight };
 				hResult = vCaptureInstance.iWICBitmapFrameEncode->WriteSource(vCaptureInstance.iWICFormatConverter, &iWicRectangle);
 				if (FAILED(hResult))
 				{
@@ -172,7 +172,7 @@ namespace
 					return false;
 				}
 
-				hResult = vCaptureInstance.iWICBitmapFrameEncode->WritePixels(vCaptureInstance.vCaptureDetails.OutputHeight, vCaptureInstance.vCaptureDetails.WidthByteSize, vCaptureInstance.vCaptureDetails.TotalByteSize, bitmapData);
+				hResult = vCaptureInstance.iWICBitmapFrameEncode->WritePixels(vCaptureDetails.OutputHeight, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData);
 				if (FAILED(hResult))
 				{
 					CaptureResetVariablesBitmapImage();
@@ -213,7 +213,7 @@ namespace
 		try
 		{
 			//Get screen bytes
-			std::vector<BYTE> screenBytes = GetScreenBytes(true, false);
+			std::vector<BYTE> screenBytes = GetScreenBytes(false);
 
 			//Check screen bytes
 			if (screenBytes.empty())
@@ -233,27 +233,27 @@ namespace
 			}
 			else if (imageFormat == JPG)
 			{
-				if (vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR) { return false; }
+				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
 				imageSaveFormat = GUID_ContainerFormatJpeg;
 			}
 			else if (imageFormat == PNG)
 			{
-				if (vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR) { return false; }
+				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
 				imageSaveFormat = GUID_ContainerFormatPng;
 			}
 			else if (imageFormat == BMP)
 			{
-				if (vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR) { return false; }
+				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
 				imageSaveFormat = GUID_ContainerFormatBmp;
 			}
 			else if (imageFormat == TIF)
 			{
-				if (vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR) { return false; }
+				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
 				imageSaveFormat = GUID_ContainerFormatTiff;
 			}
 			else if (imageFormat == HEIF)
 			{
-				if (vCaptureInstance.vCaptureDetails.HDREnabled && !vCaptureInstance.vCaptureDetails.HDRtoSDR) { return false; }
+				if (vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR) { return false; }
 				imageSaveFormat = GUID_ContainerFormatHeif;
 			}
 

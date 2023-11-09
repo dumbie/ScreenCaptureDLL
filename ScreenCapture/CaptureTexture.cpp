@@ -16,28 +16,28 @@ namespace
 			}
 
 			//Create image byte array
-			std::vector<BYTE> BitmapBytes(vCaptureInstance.vCaptureDetails.TotalByteSize);
+			std::vector<BYTE> BitmapBytes(vCaptureDetails.TotalByteSize);
 
 			//Write image byte array
 			BYTE* SourceBuffer = (BYTE*)iD3DMappedSubResource.pData;
 			if (textureFlip)
 			{
-				BYTE* BitmapBuffer = BitmapBytes.data() + vCaptureInstance.vCaptureDetails.TotalByteSize - vCaptureInstance.vCaptureDetails.WidthByteSize;
-				for (UINT i = 0; i < vCaptureInstance.vCaptureDetails.OutputHeight; i++)
+				BYTE* BitmapBuffer = BitmapBytes.data() + vCaptureDetails.TotalByteSize - vCaptureDetails.WidthByteSize;
+				for (UINT i = 0; i < vCaptureDetails.OutputHeight; i++)
 				{
-					memcpy(BitmapBuffer, SourceBuffer, vCaptureInstance.vCaptureDetails.WidthByteSize);
+					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
 					SourceBuffer += iD3DMappedSubResource.RowPitch;
-					BitmapBuffer -= vCaptureInstance.vCaptureDetails.WidthByteSize;
+					BitmapBuffer -= vCaptureDetails.WidthByteSize;
 				}
 			}
 			else
 			{
 				BYTE* BitmapBuffer = BitmapBytes.data();
-				for (UINT i = 0; i < vCaptureInstance.vCaptureDetails.OutputHeight; i++)
+				for (UINT i = 0; i < vCaptureDetails.OutputHeight; i++)
 				{
-					memcpy(BitmapBuffer, SourceBuffer, vCaptureInstance.vCaptureDetails.WidthByteSize);
+					memcpy(BitmapBuffer, SourceBuffer, vCaptureDetails.WidthByteSize);
 					SourceBuffer += iD3DMappedSubResource.RowPitch;
-					BitmapBuffer += vCaptureInstance.vCaptureDetails.WidthByteSize;
+					BitmapBuffer += vCaptureDetails.WidthByteSize;
 				}
 			}
 

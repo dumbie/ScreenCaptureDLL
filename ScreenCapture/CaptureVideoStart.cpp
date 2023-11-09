@@ -26,7 +26,7 @@ namespace
 			bool initializeDXGI = InitializeDxgiDeviceManager();
 			if (!initializeDXGI)
 			{
-				CaptureResetVariablesMedia();
+				CaptureResetVariablesMediaAll();
 				return false;
 			}
 
@@ -34,7 +34,7 @@ namespace
 			bool initializeMedia = InitializeMediaFoundation(filePath);
 			if (!initializeMedia)
 			{
-				CaptureResetVariablesMedia();
+				CaptureResetVariablesMediaAll();
 				return false;
 			}
 
@@ -42,7 +42,7 @@ namespace
 			hResult = vCaptureInstance.imfSinkWriter->BeginWriting();
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesMedia();
+				CaptureResetVariablesMediaAll();
 				return false;
 			}
 
@@ -67,7 +67,7 @@ namespace
 		catch (...)
 		{
 			CaptureResetVariablesTexturesLoop();
-			CaptureResetVariablesMedia();
+			CaptureResetVariablesMediaAll();
 			return false;
 		}
 	}

@@ -3,13 +3,13 @@
 
 namespace
 {
-	BOOL ResourceViewUpdateVertex(VertexVertice* vertexVerticesArray)
+	BOOL RenderUpdateVertex(VertexVertice* vertexVerticesArray, UINT vertexVerticesCount)
 	{
 		try
 		{
 			//Create buffer description
 			D3D11_BUFFER_DESC bufferDescription{};
-			bufferDescription.ByteWidth = sizeof(VertexVertice) * VertexVerticesCount;
+			bufferDescription.ByteWidth = sizeof(VertexVertice) * vertexVerticesCount;
 			bufferDescription.Usage = D3D11_USAGE_DEFAULT;
 			bufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			bufferDescription.CPUAccessFlags = 0;
@@ -38,12 +38,12 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "ResourceViewUpdateVertex failed." << std::endl;
+			std::cout << "RenderUpdateVertex failed." << std::endl;
 			return false;
 		}
 	}
 
-	BOOL ResourceViewDrawTexture2D(CComPtr<ID3D11Texture2D>& textureTarget)
+	BOOL RenderDrawTexture2D(CComPtr<ID3D11Texture2D>& textureTarget, UINT vertexVerticesCount)
 	{
 		try
 		{
@@ -58,13 +58,13 @@ namespace
 			vDirectXInstance.iD3D11DeviceContext4->PSSetShaderResources(0, 1, &vDirectXInstance.iD3D11ShaderResourceView0);
 
 			//Draw texture with shaders
-			vDirectXInstance.iD3D11DeviceContext4->Draw(VertexVerticesCount, 0);
+			vDirectXInstance.iD3D11DeviceContext4->Draw(vertexVerticesCount, 0);
 
 			return true;
 		}
 		catch (...)
 		{
-			std::cout << "ResourceViewDrawTexture2D failed." << std::endl;
+			std::cout << "RenderDrawTexture2D failed." << std::endl;
 			return false;
 		}
 	}

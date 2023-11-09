@@ -45,3 +45,10 @@
 #include <audioclient.h>
 #include <dshow.h>
 #include <avrt.h>
+
+//Windows Graphics Capture
+#include <Inspectable.h>
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Graphics.Capture.h>
+#include <Windows.Graphics.Capture.Interop.h>
+#include <Windows.Graphics.DirectX.Direct3D11.interop.h>

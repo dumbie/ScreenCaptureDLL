@@ -1,63 +1,41 @@
 #pragma once
+#include "CaptureIncludes.h"
 #include "CaptureVariables.h"
 #include "CaptureReset.cpp"
 #include "CaptureTexture.cpp"
 #include "CaptureRender.cpp"
-#include "CaptureCursor.cpp"
 
 namespace
 {
-	BOOL UpdateScreenTexture(BOOL waitNextFrame)
+	BOOL UpdateScreenTexture()
 	{
 		try
 		{
-			//Get output duplication frame
-			UINT timeoutInMilliseconds = 0;
-			if (waitNextFrame) { timeoutInMilliseconds = INFINITE; }
-			DXGI_OUTDUPL_FRAME_INFO iDxgiOutputDuplicationFrameInfo;
-			hResult = vDirectXInstance.iDxgiOutputDuplication0->AcquireNextFrame(timeoutInMilliseconds, &iDxgiOutputDuplicationFrameInfo, &vCaptureInstance.iDxgiResource0);
+			//Get frame from capture pool
+			auto frame = vWgcInstance.vGraphicsCaptureFramePool.TryGetNextFrame();
 
 			//Check if screen capture failed
-			if (FAILED(hResult))
+			if (frame == NULL)
 			{
-				//std::cout << "Acquire next frame, failed: " << hResult << std::endl;
+				//std::cout << "Frame is empty skipping convert." << std::endl;
 				CaptureResetVariablesTexturesLoop();
 				return false;
 			}
 
-			//Check mouse movement updates
-			if (vCaptureInstance.vCaptureSettings.MouseIgnoreMovement && iDxgiOutputDuplicationFrameInfo.LastPresentTime.QuadPart == 0)
-			{
-				//std::cout << "Acquire next frame, skipping mouse movement." << std::endl;
-				CaptureResetVariablesTexturesLoop();
-				return false;
-			}
-
-			//Draw screen capture to texture
-			hResult = vCaptureInstance.iDxgiResource0->QueryInterface(&vCaptureInstance.iD3D11Texture2D0Screen);
+			//Convert frame capture to texture
+			auto access = frame.Surface().as<Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
+			hResult = access->GetInterface(winrt::guid_of<ID3D11Texture2D>(), (void**)&vCaptureInstance.iD3D11Texture2D0Screen);
 			if (FAILED(hResult))
 			{
 				CaptureResetVariablesTexturesLoop();
 				return false;
 			}
-			ResourceViewUpdateVertex(VertexVerticesArrayScreen);
-			if (!ResourceViewDrawTexture2D(vCaptureInstance.iD3D11Texture2D0Screen))
+
+			//Draw screen capture texture
+			if (!RenderDrawTexture2D(vCaptureInstance.iD3D11Texture2D0Screen, VertexVerticesCountScreen))
 			{
 				CaptureResetVariablesTexturesLoop();
 				return false;
-			}
-
-			//Draw mouse cursor to texture
-			if (vCaptureInstance.vCaptureSettings.MouseDrawCursor)
-			{
-				UpdateMouseCursorVertex(iDxgiOutputDuplicationFrameInfo);
-				UpdateMouseCursorTexture(iDxgiOutputDuplicationFrameInfo);
-				if (vCaptureInstance.iD3D11Texture2D0Cursor != NULL)
-				{
-					ResourceViewUpdateVertex(VertexVerticesArrayCursor);
-					ResourceViewDrawTexture2D(vCaptureInstance.iD3D11Texture2D0Cursor);
-					//Fix do not use shaders when drawing mouse cursor
-				}
 			}
 
 			//Release resources
@@ -74,12 +52,12 @@ namespace
 		}
 	}
 
-	std::vector<BYTE> GetScreenBytes(BOOL waitNextFrame, BOOL flipScreen)
+	std::vector<BYTE> GetScreenBytes(BOOL flipScreen)
 	{
 		try
 		{
 			//Update screen texture
-			if (!UpdateScreenTexture(waitNextFrame))
+			if (!UpdateScreenTexture())
 			{
 				CaptureResetVariablesTexturesLoop();
 				return {};
