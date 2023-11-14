@@ -70,7 +70,10 @@ float4 AdjustHDRWhites(float4 color)
 
 float4 AdjustHDRtoSDR(float4 color)
 {
-	if (!HDRtoSDR) { return color; }
+	if (!HDRtoSDR)
+	{
+		return color;
+	}
 
 	//Adjust SDR white level and HDR paper white
 	color = AdjustHDRWhites(color);
@@ -84,48 +87,115 @@ float4 AdjustHDRtoSDR(float4 color)
 	return color;
 }
 
-float GaussianWeight(float2 dist, float sigma)
-{
-	return exp(-0.5F * dot(dist /= sigma, dist)) / (6.283185307F * sigma * sigma);
-}
-
-float4 AdjustBlur(PS_INPUT input)
+float4 AdjustBlur(float4 color, float2 texCoord, float2 texSize)
 {
 	if (Blur <= 2.0F)
 	{
-		return _texture2D.Sample(_samplerState, input.TexCoord);
+		return color;
 	}
 
-	float4 color;
-	float sigma = Blur * 0.25F;
-	float resolution = 1.0F / 1024.0F;
+	float Pi2 = 6.283185307179586476925286766559F;
+	float Directions = 24.0F;
+	float Quality = 12.0F;
+	float2 Radius = Blur / texSize;
+	float AddDirection = Pi2 / Directions;
+	float AddQuality = 1.0F / Quality;
 
-	for (int i = 0; i < Blur * Blur; i++)
+	for (float d = AddDirection; d <= Pi2; d += AddDirection)
 	{
-		float2 dist = float2(i % Blur, i / Blur) - (Blur / 2.0F);
-		color += GaussianWeight(dist, sigma) * _texture2D.Sample(_samplerState, input.TexCoord + resolution * dist);
+		for (float q = AddQuality; q <= 1.0F; q += AddQuality)
+		{
+			float2 offset = float2(cos(d), sin(d));
+			color += _texture2D.Sample(_samplerState, texCoord + offset * Radius * q);
+		}
 	}
 
-	return color;
+	return color / (Quality * Directions);
+}
+
+float4 AdjustTextureFilter(float4 color, float2 texCoord, float2 ddxy, int quality)
+{
+	if (quality == 4)
+	{
+		//Low quality 4 directions
+		float2 dir2 = ddxy * 0.125F;
+		float2 dir6 = ddxy * 0.375F;
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir2.x, -dir6.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir6.x, -dir2.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir6.x, dir2.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir2.x, dir6.y));
+		return color * 0.25F;
+	}
+	else if (quality == 8)
+	{
+		//Medium quality 8 directions
+		float2 dir1 = ddxy * 0.0625F;
+		float2 dir3 = ddxy * 0.1875F;
+		float2 dir5 = ddxy * 0.3125F;
+		float2 dir7 = ddxy * 0.4375F;
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir1.x, -dir3.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir1.x, dir3.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir5.x, dir1.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir3.x, -dir5.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir5.x, dir5.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir7.x, -dir1.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir3.x, dir7.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir7.x, -dir7.y));
+		return color * 0.125F;
+	}
+	else if (quality == 16)
+	{
+		//High quality 16 directions
+		float2 dir0 = ddxy;
+		float2 dir1 = ddxy * 0.0625F;
+		float2 dir2 = ddxy * 0.125F;
+		float2 dir3 = ddxy * 0.1875F;
+		float2 dir4 = ddxy * 0.25F;
+		float2 dir5 = ddxy * 0.3125F;
+		float2 dir6 = ddxy * 0.375F;
+		float2 dir7 = ddxy * 0.4375F;
+		float2 dir8 = ddxy * 0.5F;
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir1.x, dir1.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir1.x, -dir3.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir3.x, dir2.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir4.x, -dir1.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir5.x, -dir2.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir2.x, dir5.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir5.x, dir3.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir3.x, -dir5.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir2.x, dir6.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir0.x, -dir7.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir4.x, -dir6.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir6.x, dir4.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir8.x, dir0.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir7.x, -dir4.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(dir6.x, dir7.y));
+		color += _texture2D.Sample(_samplerState, texCoord + float2(-dir7.x, -dir8.y));
+		return color * 0.0625F;
+	}
+	else
+	{
+		//No texture filtering
+		return color;
+	}
 }
 
 float4 AdjustSaturation(float4 color)
 {
-	if (Saturation == 1.0F) { return color; }
+	if (Saturation == 1.0F)
+	{
+		return color;
+	}
 	float colorLuminance = (color.r + color.g + color.b) / 3.0F;
-	if (Saturation > 1.0F)
-	{
-		return max(colorLuminance + (color - colorLuminance) * Saturation, color);
-	}
-	else
-	{
-		return colorLuminance + (color - colorLuminance) * Saturation;
-	}
+	return colorLuminance + (color - colorLuminance) * Saturation;
 }
 
 float4 AdjustColorChannels(float4 color)
 {
-	if (RedChannel == 1.0F && GreenChannel == 1.0F && BlueChannel == 1.0F) { return color; }
+	if (RedChannel == 1.0F && GreenChannel == 1.0F && BlueChannel == 1.0F)
+	{
+		return color;
+	}
 	float4x4 matrix4x4 =
 	{
 		RedChannel, 0.0, 0.0, 0.0,
@@ -138,7 +208,10 @@ float4 AdjustColorChannels(float4 color)
 
 float4 AdjustBrightness(float4 color)
 {
-	if (Brightness == 1.0F) { return color; }
+	if (Brightness == 1.0F)
+	{
+		return color;
+	}
 	float4x4 matrix4x4 =
 	{
 		Brightness, 0.0, 0.0, 0.0,
@@ -151,7 +224,10 @@ float4 AdjustBrightness(float4 color)
 
 float4 AdjustContrast(float4 color)
 {
-	if (Contrast == 0.0F) { return color; }
+	if (Contrast == 0.0F)
+	{
+		return color;
+	}
 	float4x4 matrix4x4 =
 	{
 		1.0F, 0.0, 0.0, Contrast,
@@ -164,7 +240,10 @@ float4 AdjustContrast(float4 color)
 
 float4 AdjustGamma(float4 color)
 {
-	if (Gamma == 1.0F) { return color; }
+	if (Gamma == 1.0F)
+	{
+		return color;
+	}
 	float adjustGamma = Gamma / 1.0F;
 	return pow(color, adjustGamma);
 }
@@ -172,24 +251,23 @@ float4 AdjustGamma(float4 color)
 float4 main(PS_INPUT input) : SV_TARGET
 {
 	//Get texture colors
-	float4 color;
+	float4 color = _texture2D.Sample(_samplerState, input.TexCoord);
 
-	//Adjust blur
-	color = AdjustBlur(input);
+	//Get original texture alpha
+	float colorAlpha = color.a;
 
 	//Get texture size
-	float TexWidth;
-	float TexHeight;
-	_texture2D.GetDimensions(TexWidth, TexHeight);
+	float2 textureSize = (0.0F, 0.0F);
+	_texture2D.GetDimensions(textureSize.x, textureSize.y);
 
-	//Skip when mouse cursor
-	if (TexWidth <= 64 && TexHeight <= 64)
-	{
-		return _texture2D.Sample(_samplerState, input.TexCoord);
-	}
+	//Get texture ddxy
+	float2 textureDdxy = (ddx(input.TexCoord.x), ddy(input.TexCoord.y));
 
-	//Get original alpha
-	float colorAlpha = color.a;
+	//Adjust texture filter
+	color = AdjustTextureFilter(color, input.TexCoord, textureDdxy, 8);
+
+	//Adjust blur
+	color = AdjustBlur(color, input.TexCoord, textureSize);
 
 	//Adjust HDR to SDR
 	color = AdjustHDRtoSDR(color);
@@ -209,7 +287,7 @@ float4 main(PS_INPUT input) : SV_TARGET
 	//Adjust gamma
 	color = AdjustGamma(color);
 
-	//Set original alpha
+	//Set original texture alpha
 	color.a = colorAlpha;
 
 	//Return updated colors
