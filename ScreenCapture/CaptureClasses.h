@@ -115,18 +115,19 @@ namespace
 		BOOL vInstanceInitialized;
 
 		//Information
-		DXGI_OUTPUT_DESC1 iDxgiOutputDescription;
+		DXGI_OUTPUT_DESC1 iDxgiOutputDescription1;
 
 		//Direct3D
 		CComPtr<IDXGIDevice4> iDxgiDevice4;
 		CComPtr<IDXGIAdapter4> iDxgiAdapter4;
-		CComPtr<IDXGIOutput> iDxgiOutput0;
+		CComPtr<IDXGIFactory7> iDxgiFactory7;
 		CComPtr<IDXGIOutput6> iDxgiOutput6;
-		CComPtr<ID3D11Device> iD3D11Device0;
 		CComPtr<ID3D11Device5> iD3D11Device5;
-		CComPtr<ID3D11Multithread> iD3D11Multithread;
-		CComPtr<ID3D11DeviceContext> iD3D11DeviceContext0;
+		CComPtr<ID3D11Multithread> iD3D11Multithread0;
 		CComPtr<ID3D11DeviceContext4> iD3D11DeviceContext4;
+
+		//States
+		CComPtr<ID3D11SamplerState> iD3D11SamplerState0;
 
 		//Views
 		CComPtr<ID3D11InputLayout> iD3D11InputLayout0;

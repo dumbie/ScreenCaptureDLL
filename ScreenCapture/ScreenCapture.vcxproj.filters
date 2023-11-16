@@ -69,9 +69,6 @@
     <ClCompile Include="CaptureVideoStop.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="CaptureMessage.cpp">
-      <Filter>Source files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AssemblyInfo.rc">

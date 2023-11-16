@@ -129,13 +129,14 @@ namespace
 			//Devices
 			vDirectXInstance.iDxgiDevice4.Release();
 			vDirectXInstance.iDxgiAdapter4.Release();
-			vDirectXInstance.iDxgiOutput0.Release();
+			vDirectXInstance.iDxgiFactory7.Release();
 			vDirectXInstance.iDxgiOutput6.Release();
-			vDirectXInstance.iD3D11Device0.Release();
 			vDirectXInstance.iD3D11Device5.Release();
-			vDirectXInstance.iD3D11Multithread.Release();
-			vDirectXInstance.iD3D11DeviceContext0.Release();
+			vDirectXInstance.iD3D11Multithread0.Release();
 			vDirectXInstance.iD3D11DeviceContext4.Release();
+
+			//States
+			vDirectXInstance.iD3D11SamplerState0.Release();
 
 			//Views
 			vDirectXInstance.iD3D11InputLayout0.Release();

@@ -4,7 +4,6 @@
 #include "CaptureDetails.cpp"
 #include "CaptureLoop.cpp"
 #include "PlayAudio.cpp"
-#include "CaptureMessage.cpp"
 
 namespace
 {
@@ -22,14 +21,7 @@ namespace
 			//Create D3D11 Device
 			D3D_FEATURE_LEVEL iD3DFeatureLevel;
 			UINT iD3DCreateFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
-			hResult = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, iD3DCreateFlags, D3DFeatureLevelsArray, D3DFeatureLevelsCount, D3D11_SDK_VERSION, &vDirectXInstance.iD3D11Device0, &iD3DFeatureLevel, &vDirectXInstance.iD3D11DeviceContext0);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
-			//Convert variables
-			hResult = vDirectXInstance.iD3D11Device0->QueryInterface(&vDirectXInstance.iD3D11Device5);
+			hResult = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, iD3DCreateFlags, D3DFeatureLevelsArray, D3DFeatureLevelsCount, D3D11_SDK_VERSION, (ID3D11Device**)&vDirectXInstance.iD3D11Device5, &iD3DFeatureLevel, (ID3D11DeviceContext**)&vDirectXInstance.iD3D11DeviceContext4);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -43,21 +35,14 @@ namespace
 			}
 
 			//Convert variables
-			hResult = vDirectXInstance.iD3D11Device5->QueryInterface(&vDirectXInstance.iD3D11Multithread);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
-			//Convert variables
-			hResult = vDirectXInstance.iD3D11DeviceContext0->QueryInterface(&vDirectXInstance.iD3D11DeviceContext4);
+			hResult = vDirectXInstance.iD3D11Device5->QueryInterface(&vDirectXInstance.iD3D11Multithread0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Set multithread protected
-			hResult = vDirectXInstance.iD3D11Multithread->SetMultithreadProtected(true);
+			hResult = vDirectXInstance.iD3D11Multithread0->SetMultithreadProtected(true);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -71,31 +56,28 @@ namespace
 			}
 
 			//Get DXGI Output
-			hResult = vDirectXInstance.iDxgiAdapter4->EnumOutputs(monitorId, &vDirectXInstance.iDxgiOutput0);
+			hResult = vDirectXInstance.iDxgiAdapter4->EnumOutputs(monitorId, (IDXGIOutput**)&vDirectXInstance.iDxgiOutput6);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
-			//Convert variables
-			hResult = vDirectXInstance.iDxgiOutput0->QueryInterface(&vDirectXInstance.iDxgiOutput6);
+			//Get DXGI Factory
+			hResult = vDirectXInstance.iDxgiAdapter4->GetParent(IID_PPV_ARGS(&vDirectXInstance.iDxgiFactory7));
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Get output description
-			hResult = vDirectXInstance.iDxgiOutput6->GetDesc1(&vDirectXInstance.iDxgiOutputDescription);
+			hResult = vDirectXInstance.iDxgiOutput6->GetDesc1(&vDirectXInstance.iDxgiOutputDescription1);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Release resources
-			vDirectXInstance.iD3D11Device0.Release();
-			vDirectXInstance.iD3D11DeviceContext0.Release();
 			vDirectXInstance.iDxgiAdapter4.Release();
-			vDirectXInstance.iDxgiOutput0.Release();
 			vDirectXInstance.iDxgiOutput6.Release();
 
 			//Update instance status
@@ -111,7 +93,49 @@ namespace
 		}
 	}
 
-	BOOL InitializeWgc(UINT monitorId)
+	BOOL InitializeSamplerState()
+	{
+		try
+		{
+			//Create sampler description
+			D3D11_SAMPLER_DESC iD3DSamplerDescription{};
+			iD3DSamplerDescription.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+			iD3DSamplerDescription.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+			iD3DSamplerDescription.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+			iD3DSamplerDescription.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+			iD3DSamplerDescription.MipLODBias = 0.0F;
+			iD3DSamplerDescription.MaxAnisotropy = 0;
+			iD3DSamplerDescription.ComparisonFunc = D3D11_COMPARISON_NEVER;
+			iD3DSamplerDescription.BorderColor[0] = 1.0F;
+			iD3DSamplerDescription.BorderColor[1] = 1.0F;
+			iD3DSamplerDescription.BorderColor[2] = 1.0F;
+			iD3DSamplerDescription.BorderColor[3] = 1.0F;
+			iD3DSamplerDescription.MinLOD = -D3D11_FLOAT32_MAX;
+			iD3DSamplerDescription.MaxLOD = D3D11_FLOAT32_MAX;
+
+			//Create sampler state
+			hResult = vDirectXInstance.iD3D11Device5->CreateSamplerState(&iD3DSamplerDescription, &vDirectXInstance.iD3D11SamplerState0);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Set sampler state
+			vDirectXInstance.iD3D11DeviceContext4->PSSetSamplers(0, 1, &vDirectXInstance.iD3D11SamplerState0);
+
+			//Release resources
+			vDirectXInstance.iD3D11SamplerState0.Release();
+
+			return true;
+		}
+		catch (...)
+		{
+			std::cout << "InitializeSamplerState failed: " << hResult << std::endl;
+			return false;
+		}
+	}
+
+	BOOL InitializeWgc()
 	{
 		try
 		{
@@ -153,7 +177,7 @@ namespace
 			//}
 
 			//Create capture item for monitor
-			hResult = interop_factory->CreateForMonitor(vDirectXInstance.iDxgiOutputDescription.Monitor, interop_uuid, (void**)&vWgcInstance.vGraphicsCaptureItem);
+			hResult = interop_factory->CreateForMonitor(vDirectXInstance.iDxgiOutputDescription1.Monitor, interop_uuid, (void**)&vWgcInstance.vGraphicsCaptureItem);
 			if (FAILED(hResult))
 			{
 				std::cout << "CreateForMonitor failed." << std::endl;
@@ -182,13 +206,13 @@ namespace
 
 			//Update instance status
 			vWgcInstance.vInstanceInitialized = true;
-			std::cout << "Windows Graphics Capture initialized for monitor: " << monitorId << std::endl;
+			std::cout << "Windows Graphics Capture initialized." << std::endl;
 
 			return true;
 		}
 		catch (...)
 		{
-			std::cout << "InitializeWgc for monitor " << monitorId << " failed: " << hResult << std::endl;
+			std::cout << "InitializeWgc failed: " << hResult << std::endl;
 			return false;
 		}
 	}
@@ -201,7 +225,7 @@ namespace
 			D3D11_TEXTURE2D_DESC iD3DTexture2D0DescRenderTargetView{};
 			iD3DTexture2D0DescRenderTargetView.Width = vCaptureDetails.OutputWidth;
 			iD3DTexture2D0DescRenderTargetView.Height = vCaptureDetails.OutputHeight;
-			iD3DTexture2D0DescRenderTargetView.MipLevels = 1;
+			iD3DTexture2D0DescRenderTargetView.MipLevels = vCaptureInstance.vCaptureTextureMipLevels;
 			iD3DTexture2D0DescRenderTargetView.ArraySize = 1;
 			iD3DTexture2D0DescRenderTargetView.Format = vCaptureInstance.vCaptureDxgiFormat;
 			iD3DTexture2D0DescRenderTargetView.SampleDesc.Count = 1;
@@ -369,83 +393,6 @@ namespace
 		}
 	}
 
-	BOOL SetCaptureDetails(UINT monitorId)
-	{
-		try
-		{
-			//Get and set HDR details
-			vCaptureDetails.HDREnabled = vDirectXInstance.iDxgiOutputDescription.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020 || vDirectXInstance.iDxgiOutputDescription.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
-			if (vCaptureDetails.HDREnabled)
-			{
-				vCaptureDetails.HDRtoSDR = vCaptureSettings.HDRtoSDR;
-				if (vCaptureDetails.HDRtoSDR)
-				{
-					vCaptureInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
-					vCaptureInstance.vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM; //DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
-					vCaptureDetails.PixelByteSize = 4;
-					vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(monitorId);
-				}
-				else
-				{
-					vCaptureInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat64bppRGBAHalf;
-					vCaptureInstance.vCaptureDxgiFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-					vCaptureDetails.PixelByteSize = 8;
-				}
-			}
-			else
-			{
-				vCaptureDetails.HDRtoSDR = false;
-				vCaptureInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
-				vCaptureInstance.vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
-				vCaptureDetails.PixelByteSize = 4;
-			}
-
-			//Get monitor details
-			UINT monitorPixelsWidth = 0;
-			UINT monitorPixelsHeight = 0;
-			UINT monitorRefreshRate = GetMonitorRefreshRate(vDirectXInstance.iDxgiOutputDescription.Monitor);
-			GetMonitorResolution(vDirectXInstance.iDxgiOutputDescription.Monitor, monitorPixelsWidth, monitorPixelsHeight);
-
-			//Update capture variables
-			vCaptureDetails.OriginalWidth = monitorPixelsWidth;
-			vCaptureDetails.OriginalHeight = monitorPixelsHeight;
-			vCaptureDetails.RefreshRate = monitorRefreshRate;
-			vCaptureInstance.vCaptureTextureResizing = vCaptureSettings.MaxPixelDimension != 0 && vCaptureDetails.OriginalWidth > vCaptureSettings.MaxPixelDimension && vCaptureDetails.OriginalHeight > vCaptureSettings.MaxPixelDimension;
-			if (vCaptureInstance.vCaptureTextureResizing)
-			{
-				DOUBLE resizedWidth = 0.01;
-				DOUBLE resizedHeight = 0.01;
-				UINT minDimension = min(vCaptureDetails.OriginalWidth, vCaptureDetails.OriginalHeight);
-				//Find nearest full pixel dimensions to keep original ratio
-				while (resizedWidth != (UINT)resizedWidth || resizedHeight != (UINT)resizedHeight)
-				{
-					DOUBLE differenceRatio = (DOUBLE)minDimension / vCaptureSettings.MaxPixelDimension;
-					resizedWidth = vCaptureDetails.OriginalWidth / differenceRatio;
-					resizedHeight = vCaptureDetails.OriginalHeight / differenceRatio;
-					vCaptureSettings.MaxPixelDimension++;
-				}
-				vCaptureDetails.OutputWidth = resizedWidth;
-				vCaptureDetails.OutputHeight = resizedHeight;
-			}
-			else
-			{
-				vCaptureDetails.OutputWidth = vCaptureDetails.OriginalWidth;
-				vCaptureDetails.OutputHeight = vCaptureDetails.OriginalHeight;
-			}
-			std::cout << "Screen capture output, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight << std::endl;
-			vCaptureDetails.WidthByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.PixelByteSize;
-			vCaptureDetails.TotalByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.OutputHeight * vCaptureDetails.PixelByteSize;
-			vCaptureInstance.vCaptureTextureMipLevels = 1 + log2(max(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight));
-
-			return true;
-		}
-		catch (...)
-		{
-			std::cout << "SetCaptureDetails failed: " << hResult << std::endl;
-			return false;
-		}
-	}
-
 	BOOL CaptureInitializeCode(CaptureSettings captureSettings, CaptureDetails& captureDetails, BOOL forceInitialize)
 	{
 		try
@@ -477,9 +424,6 @@ namespace
 			//Update capture settings
 			vCaptureSettings = captureSettings;
 
-			//Create message capture window
-			WindowCreateHiddenMessageCapture();
-
 			//Initialize DirectX
 			if (!InitializeDirectX(captureSettings.MonitorId))
 			{
@@ -495,7 +439,21 @@ namespace
 			}
 
 			//Set capture details
-			if (!SetCaptureDetails(captureSettings.MonitorId))
+			if (!SetCaptureDetails())
+			{
+				//Reset all used variables
+				WgcResetVariablesAll();
+				DirectXResetVariablesAll();
+				CaptureResetVariablesAll();
+
+				//Play audio effect
+				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+
+				return false;
+			}
+
+			//Initialize sampler state
+			if (!InitializeSamplerState())
 			{
 				//Reset all used variables
 				WgcResetVariablesAll();
@@ -509,7 +467,7 @@ namespace
 			}
 
 			//Initialize Windows Graphics Capture
-			if (!InitializeWgc(captureSettings.MonitorId))
+			if (!InitializeWgc())
 			{
 				//Reset all used variables
 				WgcResetVariablesAll();
