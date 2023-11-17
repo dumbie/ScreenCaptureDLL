@@ -9,6 +9,7 @@ namespace
 	//Events
 	typedef void(*CaptureEvent)();
 	CaptureEvent vCaptureEventVideoCaptureStopped;
+	CaptureEvent vCaptureEventDeviceChangeDetected;
 
 	//Capture
 	WgcInstance vWgcInstance;

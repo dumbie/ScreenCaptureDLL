@@ -115,5 +115,10 @@ namespace
 		{
 			vCaptureEventVideoCaptureStopped = captureEvent;
 		}
+
+		__declspec(dllexport) void CaptureEventDeviceChangeDetected(CaptureEvent captureEvent)
+		{
+			vCaptureEventDeviceChangeDetected = captureEvent;
+		}
 	}
 };

@@ -19,15 +19,11 @@ namespace
 			while (vWgcInstance.vCaptureStatusLoopAllowed)
 			{
 				//Wait for foreground change
-				Sleep(500);
+				Sleep(1000);
 
 				//Get foreground window
 				HWND currentForegroundWindow = GetForegroundWindow();
 				LONG currentForegroundStyle = GetWindowLongA(currentForegroundWindow, GWL_STYLE);
-
-				//Fix find way to detect monitor awake
-				//Fix find way to detect display driver reset
-				//Fix find way to detect display hdr switching
 
 				//Check foreground window change
 				if (vPreviousForegroundStyle != currentForegroundStyle || vPreviousForegroundWindow != currentForegroundWindow)
@@ -41,10 +37,14 @@ namespace
 				vPreviousForegroundStyle = currentForegroundStyle;
 				vPreviousForegroundWindow = currentForegroundWindow;
 
-				//Check screen resolution change
-				if (vWgcInstance.vFrameSizeCurrent != vWgcInstance.vGraphicsCaptureItem.Size())
+				//Check capture device change
+				if (!vDirectXInstance.iDxgiFactory7->IsCurrent())
 				{
-					std::cout << "Frame resolution has changed." << std::endl;
+					//Trigger capture event
+					vCaptureEventDeviceChangeDetected();
+
+					//Note: triggers on resolution change, hdr switch and driver resets.
+					std::cout << "Capture device has changed, reset recommended." << std::endl;
 				}
 			}
 		}
