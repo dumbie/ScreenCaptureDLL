@@ -11,12 +11,19 @@ namespace
 	CaptureEvent vCaptureEventVideoCaptureStopped;
 	CaptureEvent vCaptureEventDeviceChangeDetected;
 
-	//Capture
+	//Instances
 	WgcInstance vWgcInstance;
 	DirectXInstance vDirectXInstance;
 	CaptureInstance vCaptureInstance;
+	BitmapImageInstance vBitmapImageInstance;
+	MediaFoundationInstance vMediaFoundationInstance;
+
+	//Settings
+	MediaSettings vMediaSettings;
 	CaptureSettings vCaptureSettings;
 	CaptureDetails vCaptureDetails;
+
+	//Timings
 	UINT vReferenceTimeFrameDuration = 100000;
 	UINT vReferenceTimeToSeconds = 10000000;
 	UINT vReferenceTimeToMilliseconds = 10000;

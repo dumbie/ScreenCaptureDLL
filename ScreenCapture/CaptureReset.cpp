@@ -3,18 +3,18 @@
 
 namespace
 {
-	BOOL CaptureResetVariablesTexturesLoop()
+	BOOL TextureResetVariablesLoop()
 	{
 		try
 		{
 			//Textures
-			vCaptureInstance.iDxgiResource0.Release();
 			vCaptureInstance.iD3D11Texture2D0CpuRead.Release();
 			vCaptureInstance.iD3D11Texture2D0Screen.Release();
 
 			//Views
 			vDirectXInstance.iD3D11ShaderResourceView0.Release();
 
+			//std::cout << "Reset loop Texture variables." << std::endl;
 			return true;
 		}
 		catch (...)
@@ -23,16 +23,23 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesTexturesAll()
+	BOOL CaptureResetVariablesAll()
 	{
 		try
 		{
+			//Status
+			vCaptureInstance.vInstanceInitialized = false;
+			vCaptureInstance.vCaptureFailCount = 0;
+
+			//Bytes
+			vCaptureInstance.vScreenBytesCache.clear();
+
 			//Textures
-			vCaptureInstance.iDxgiResource0.Release();
 			vCaptureInstance.iD3D11Texture2D0CpuRead.Release();
 			vCaptureInstance.iD3D11Texture2D0Screen.Release();
 			vCaptureInstance.iD3D11Texture2D0RenderTargetView.Release();
 
+			std::cout << "Reset all Capture variables." << std::endl;
 			return true;
 		}
 		catch (...)
@@ -41,19 +48,46 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesBitmapImage()
+	BOOL BitmapImageResetVariablesAll()
 	{
 		try
 		{
-			//Bitmap
-			vCaptureInstance.iPropertyBag2.Release();
-			vCaptureInstance.iWICImagingFactory.Release();
-			vCaptureInstance.iWICStream.Release();
-			vCaptureInstance.iWICBitmapEncoder.Release();
-			vCaptureInstance.iWICBitmapFrameEncode.Release();
-			vCaptureInstance.iWICMetadataQueryWriter.Release();
-			vCaptureInstance.iWICFormatConverter.Release();
-			vCaptureInstance.iWICBitmap.Release();
+			//Bitmap image
+			vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormatDontCare;
+			vBitmapImageInstance.iPropertyBag2.Release();
+			vBitmapImageInstance.iWICImagingFactory.Release();
+			vBitmapImageInstance.iWICStream.Release();
+			vBitmapImageInstance.iWICBitmapEncoder.Release();
+			vBitmapImageInstance.iWICBitmapFrameEncode.Release();
+			vBitmapImageInstance.iWICMetadataQueryWriter.Release();
+			vBitmapImageInstance.iWICFormatConverter.Release();
+			vBitmapImageInstance.iWICBitmap.Release();
+
+			std::cout << "Reset all Bitmap Image variables." << std::endl;
+			return true;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
+	BOOL MediaFoundationLoopStop()
+	{
+		try
+		{
+			if (vMediaFoundationInstance.vMediaWriteLoopAllowed)
+			{
+				//Status
+				vMediaFoundationInstance.vMediaWriteLoopAllowed = false;
+
+				//Wait for loop to finish
+				while (!vMediaFoundationInstance.vMediaWriteLoopFinishedScreen && !vMediaFoundationInstance.vMediaWriteLoopFinishedAudio)
+				{
+					std::cout << "Waiting for media capture loop to stop..." << std::endl;
+					Sleep(100);
+				}
+			}
 
 			return true;
 		}
@@ -63,27 +97,54 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesMediaAll()
+	BOOL MediaFoundationResetVariablesAll()
 	{
 		try
 		{
+			//Status
+			vMediaFoundationInstance.vMediaCapturing = false;
+
+			//Stop media capture loop
+			MediaFoundationLoopStop();
+
 			//Media foundation
-			vCaptureInstance.vMediaCapturing = false;
-			vCaptureInstance.vMediaWriteLoopAllowed = false;
-			vCaptureInstance.imfSinkWriter.Release();
-			vCaptureInstance.imfDXGIDeviceManager.Release();
+			vMediaFoundationInstance.imfSinkWriter.Release();
+			vMediaFoundationInstance.imfDXGIDeviceManager.Release();
 
-			//Audio
-			vCaptureInstance.iDevice.Release();
-			vCaptureInstance.iAudioDeviceCapture.Release();
-			vCaptureInstance.iAudioDeviceRender.Release();
-			vCaptureInstance.iAudioClientCapture.Release();
-			vCaptureInstance.iAudioClientRender.Release();
-			vCaptureInstance.iAudioWaveFormatExCapture.Free();
-			vCaptureInstance.iAudioWaveFormatExRender.Free();
+			//Device audio
+			vMediaFoundationInstance.iDevice.Release();
+			vMediaFoundationInstance.iAudioDeviceCapture.Release();
+			vMediaFoundationInstance.iAudioDeviceRender.Release();
+			vMediaFoundationInstance.iAudioClientCapture.Release();
+			vMediaFoundationInstance.iAudioClientRender.Release();
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Free();
+			vMediaFoundationInstance.iAudioWaveFormatExRender.Free();
 
-			//Bytes
-			vCaptureInstance.vScreenBytesCache.clear();
+			std::cout << "Reset all Media Foundation variables." << std::endl;
+			return true;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
+	BOOL WgcLoopStop()
+	{
+		try
+		{
+			if (vWgcInstance.vGraphicsStatusLoopAllowed)
+			{
+				//Status
+				vWgcInstance.vGraphicsStatusLoopAllowed = false;
+
+				//Wait for loop to finish
+				while (!vWgcInstance.vGraphicsStatusLoopFinished)
+				{
+					std::cout << "Waiting for wgc status loop to stop..." << std::endl;
+					Sleep(100);
+				}
+			}
 
 			return true;
 		}
@@ -100,14 +161,31 @@ namespace
 			//Status
 			vWgcInstance.vInstanceInitialized = false;
 
-			//Direct3D
+			//Stop wgc status loop
+			WgcLoopStop();
+
+			//Frame
+			vWgcInstance.vFrameSizeCurrent = { 0 ,0 };
 			vWgcInstance.vFramePixelFormat = winrt::Windows::Graphics::DirectX::DirectXPixelFormat::Unknown;
-			vWgcInstance.vDirect3D11Device = NULL;
+
+			//Direct3D
+			if (vWgcInstance.vGraphicsD3D11Device)
+			{
+				vWgcInstance.vGraphicsD3D11Device.Close();
+			}
+			vWgcInstance.vGraphicsD3D11Device = NULL;
 
 			//Capture
-			vWgcInstance.vFrameSizeCurrent = { 0 ,0 };
 			vWgcInstance.vGraphicsCaptureItem = NULL;
+			if (vWgcInstance.vGraphicsCaptureSession)
+			{
+				vWgcInstance.vGraphicsCaptureSession.Close();
+			}
 			vWgcInstance.vGraphicsCaptureSession = NULL;
+			if (vWgcInstance.vGraphicsCaptureFramePool)
+			{
+				vWgcInstance.vGraphicsCaptureFramePool.Close();
+			}
 			vWgcInstance.vGraphicsCaptureFramePool = NULL;
 
 			std::cout << "Reset all Windows Graphics Capture variables." << std::endl;
@@ -144,11 +222,12 @@ namespace
 			vDirectXInstance.iD3D11ShaderResourceView0.Release();
 
 			//Shaders
-			vDirectXInstance.iD3D11Buffer0.Release();
-			vDirectXInstance.iD3DBlob0VertexShader.Release();
-			vDirectXInstance.iD3DBlob0PixelShader.Release();
-			vDirectXInstance.iD3D11VertexShader0.Release();
-			vDirectXInstance.iD3D11PixelShader0.Release();
+			vDirectXInstance.iD3D11BufferVertex0.Release();
+			vDirectXInstance.iD3D11BufferPixel0.Release();
+			vDirectXInstance.iD3DBlobShaderVertex0.Release();
+			vDirectXInstance.iD3DBlobShaderPixel0.Release();
+			vDirectXInstance.iD3D11ShaderVertex0.Release();
+			vDirectXInstance.iD3D11ShaderPixel0.Release();
 
 			std::cout << "Reset all DirectX variables." << std::endl;
 			return true;
@@ -159,24 +238,25 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesAll()
+	BOOL ResetVariablesAll()
 	{
 		try
 		{
-			//Status
-			vCaptureInstance.vInstanceInitialized = false;
-			vCaptureInstance.vCaptureFailCount = 0;
+			//Capture
+			CaptureResetVariablesAll();
 
-			//Textures
-			CaptureResetVariablesTexturesAll();
+			//Windows Graphics Capture
+			WgcResetVariablesAll();
 
-			//Bitmap
-			CaptureResetVariablesBitmapImage();
+			//DirectX
+			DirectXResetVariablesAll();
 
-			//Media
-			CaptureResetVariablesMediaAll();
+			//Media foundation
+			MediaFoundationResetVariablesAll();
 
-			std::cout << "Reset all Capture variables." << std::endl;
+			//Bitmap image
+			BitmapImageResetVariablesAll();
+
 			return true;
 		}
 		catch (...)

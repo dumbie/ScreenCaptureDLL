@@ -18,7 +18,7 @@ namespace
 			if (frame == NULL)
 			{
 				//std::cout << "Frame is empty skipping convert." << std::endl;
-				CaptureResetVariablesTexturesLoop();
+				TextureResetVariablesLoop();
 				return false;
 			}
 
@@ -27,19 +27,19 @@ namespace
 			hResult = access->GetInterface(winrt::guid_of<ID3D11Texture2D>(), (void**)&vCaptureInstance.iD3D11Texture2D0Screen);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesTexturesLoop();
+				TextureResetVariablesLoop();
 				return false;
 			}
 
 			//Draw screen capture texture
 			if (!RenderDrawTexture2D(vCaptureInstance.iD3D11Texture2D0Screen, VertexVerticesCountScreen))
 			{
-				CaptureResetVariablesTexturesLoop();
+				TextureResetVariablesLoop();
 				return false;
 			}
 
 			//Release resources
-			CaptureResetVariablesTexturesLoop();
+			TextureResetVariablesLoop();
 
 			//Return result
 			return true;
@@ -47,7 +47,7 @@ namespace
 		catch (...)
 		{
 			std::cout << "UpdateScreenTexture failed." << std::endl;
-			CaptureResetVariablesTexturesLoop();
+			TextureResetVariablesLoop();
 			return false;
 		}
 	}
@@ -56,17 +56,24 @@ namespace
 	{
 		try
 		{
+			//Check if initialized
+			if (!vCaptureInstance.vInstanceInitialized)
+			{
+				TextureResetVariablesLoop();
+				return {};
+			}
+
 			//Update screen texture
 			if (!UpdateScreenTexture())
 			{
-				CaptureResetVariablesTexturesLoop();
+				TextureResetVariablesLoop();
 				return {};
 			}
 
 			//Convert to cpu read texture
 			if (!Texture2DConvertToCpuRead(vCaptureInstance.iD3D11Texture2D0RenderTargetView))
 			{
-				CaptureResetVariablesTexturesLoop();
+				TextureResetVariablesLoop();
 				return {};
 			}
 
@@ -74,7 +81,7 @@ namespace
 			std::vector<BYTE> screenBytes = Texture2DConvertToScreenBytes(vCaptureInstance.iD3D11Texture2D0CpuRead, flipScreen);
 
 			//Release resources
-			CaptureResetVariablesTexturesLoop();
+			TextureResetVariablesLoop();
 
 			//Return result
 			return screenBytes;
@@ -82,7 +89,7 @@ namespace
 		catch (...)
 		{
 			std::cout << "GetScreenBytes failed." << std::endl;
-			CaptureResetVariablesTexturesLoop();
+			TextureResetVariablesLoop();
 			return {};
 		}
 	}

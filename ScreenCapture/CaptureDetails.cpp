@@ -160,14 +160,14 @@ namespace
 				vCaptureDetails.HDRtoSDR = vCaptureSettings.HDRtoSDR;
 				if (vCaptureDetails.HDRtoSDR)
 				{
-					vCaptureInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
+					vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
 					vCaptureInstance.vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM; //DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
 					vCaptureDetails.PixelByteSize = 4;
 					vCaptureDetails.SDRWhiteLevel = GetMonitorSDRWhiteLevel(vDirectXInstance.iDxgiOutputDescription1.Monitor);
 				}
 				else
 				{
-					vCaptureInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat64bppRGBAHalf;
+					vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat64bppRGBAHalf;
 					vCaptureInstance.vCaptureDxgiFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
 					vCaptureDetails.PixelByteSize = 8;
 				}
@@ -175,7 +175,7 @@ namespace
 			else
 			{
 				vCaptureDetails.HDRtoSDR = false;
-				vCaptureInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
+				vBitmapImageInstance.iWicPixelFormatGuidSource = GUID_WICPixelFormat32bppBGRA;
 				vCaptureInstance.vCaptureDxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
 				vCaptureDetails.PixelByteSize = 4;
 			}

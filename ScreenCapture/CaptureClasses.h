@@ -95,15 +95,17 @@ namespace
 	{
 		//Status
 		BOOL vInstanceInitialized;
-		BOOL vCaptureStatusLoopAllowed;
-		BOOL vCaptureStatusLoopFinished;
+		BOOL vGraphicsStatusLoopAllowed;
+		BOOL vGraphicsStatusLoopFinished;
+
+		//Frame
+		winrt::Windows::Graphics::SizeInt32 vFrameSizeCurrent = { 0 ,0 };
+		winrt::Windows::Graphics::DirectX::DirectXPixelFormat vFramePixelFormat = winrt::Windows::Graphics::DirectX::DirectXPixelFormat::Unknown;
 
 		//Direct3D
-		winrt::Windows::Graphics::DirectX::DirectXPixelFormat vFramePixelFormat = winrt::Windows::Graphics::DirectX::DirectXPixelFormat::Unknown;
-		winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice vDirect3D11Device = NULL;
+		winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice vGraphicsD3D11Device = NULL;
 
 		//Capture
-		winrt::Windows::Graphics::SizeInt32 vFrameSizeCurrent{ 0 ,0 };
 		winrt::Windows::Graphics::Capture::GraphicsCaptureItem vGraphicsCaptureItem = NULL;
 		winrt::Windows::Graphics::Capture::GraphicsCaptureSession vGraphicsCaptureSession = NULL;
 		winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool vGraphicsCaptureFramePool = NULL;
@@ -135,11 +137,50 @@ namespace
 		CComPtr<ID3D11ShaderResourceView> iD3D11ShaderResourceView0;
 
 		//Shaders
-		CComPtr<ID3D11Buffer> iD3D11Buffer0;
-		CComPtr<ID3DBlob> iD3DBlob0VertexShader;
-		CComPtr<ID3DBlob> iD3DBlob0PixelShader;
-		CComPtr<ID3D11VertexShader> iD3D11VertexShader0;
-		CComPtr<ID3D11PixelShader> iD3D11PixelShader0;
+		CComPtr<ID3D11Buffer> iD3D11BufferVertex0;
+		CComPtr<ID3D11Buffer> iD3D11BufferPixel0;
+		CComPtr<ID3DBlob> iD3DBlobShaderVertex0;
+		CComPtr<ID3DBlob> iD3DBlobShaderPixel0;
+		CComPtr<ID3D11VertexShader> iD3D11ShaderVertex0;
+		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0;
+	};
+
+	struct BitmapImageInstance
+	{
+		//Bitmap image
+		WICPixelFormatGUID iWicPixelFormatGuidSource = GUID_WICPixelFormatDontCare;
+		WICPixelFormatGUID iWicPixelFormatGuidJpeg = GUID_WICPixelFormat24bppBGR;
+		CComPtr<IPropertyBag2> iPropertyBag2;
+		CComPtr<IWICImagingFactory> iWICImagingFactory;
+		CComPtr<IWICStream> iWICStream;
+		CComPtr<IWICBitmapEncoder> iWICBitmapEncoder;
+		CComPtr<IWICBitmapFrameEncode> iWICBitmapFrameEncode;
+		CComPtr<IWICMetadataQueryWriter> iWICMetadataQueryWriter;
+		CComPtr<IWICFormatConverter> iWICFormatConverter;
+		CComPtr<IWICBitmap> iWICBitmap;
+	};
+
+	struct MediaFoundationInstance
+	{
+		//Media foundation
+		CComPtr<IMFSinkWriterEx> imfSinkWriter;
+		CComPtr<IMFDXGIDeviceManager> imfDXGIDeviceManager;
+		BOOL vMediaCapturing;
+		BOOL vMediaWriteLoopAllowed;
+		BOOL vMediaWriteLoopFinishedScreen;
+		BOOL vMediaWriteLoopFinishedAudio;
+		DWORD vOutVideoStreamIndex = 0;
+		DWORD vOutAudioStreamIndex = 0;
+		ULONGLONG vMediaTimeStartLoop = 0;
+
+		//Device audio
+		CComPtr<IMMDevice> iDevice;
+		CComPtr<IAudioClient3> iAudioDeviceCapture;
+		CComPtr<IAudioClient3> iAudioDeviceRender;
+		CComPtr<IAudioCaptureClient> iAudioClientCapture;
+		CComPtr<IAudioRenderClient> iAudioClientRender;
+		CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatExCapture;
+		CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatExRender;
 	};
 
 	struct CaptureInstance
@@ -156,41 +197,7 @@ namespace
 		//Bytes
 		std::vector<BYTE> vScreenBytesCache;
 
-		//Image
-		WICPixelFormatGUID iWicPixelFormatGuidSource;
-		WICPixelFormatGUID iWicPixelFormatGuidJpeg = GUID_WICPixelFormat24bppBGR;
-		CComPtr<IPropertyBag2> iPropertyBag2;
-		CComPtr<IWICImagingFactory> iWICImagingFactory;
-		CComPtr<IWICStream> iWICStream;
-		CComPtr<IWICBitmapEncoder> iWICBitmapEncoder;
-		CComPtr<IWICBitmapFrameEncode> iWICBitmapFrameEncode;
-		CComPtr<IWICMetadataQueryWriter> iWICMetadataQueryWriter;
-		CComPtr<IWICFormatConverter> iWICFormatConverter;
-		CComPtr<IWICBitmap> iWICBitmap;
-
-		//Media foundation
-		CComPtr<IMFSinkWriterEx> imfSinkWriter;
-		CComPtr<IMFDXGIDeviceManager> imfDXGIDeviceManager;
-		MediaSettings vMediaSettings{};
-		BOOL vMediaCapturing;
-		BOOL vMediaWriteLoopAllowed;
-		BOOL vMediaWriteLoopFinishedScreen;
-		BOOL vMediaWriteLoopFinishedAudio;
-		DWORD vOutVideoStreamIndex = 0;
-		DWORD vOutAudioStreamIndex = 0;
-		ULONGLONG vMediaTimeStartLoop = 0;
-
-		//Device Audio
-		CComPtr<IMMDevice> iDevice;
-		CComPtr<IAudioClient3> iAudioDeviceCapture;
-		CComPtr<IAudioClient3> iAudioDeviceRender;
-		CComPtr<IAudioCaptureClient> iAudioClientCapture;
-		CComPtr<IAudioRenderClient> iAudioClientRender;
-		CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatExCapture;
-		CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatExRender;
-
 		//Textures
-		CComPtr<IDXGIResource> iDxgiResource0;
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0CpuRead;
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0Screen;
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetView;

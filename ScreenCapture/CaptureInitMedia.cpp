@@ -11,14 +11,14 @@ namespace
 		{
 			//Create DXGI device manager
 			UINT resetToken;
-			hResult = MFCreateDXGIDeviceManager(&resetToken, &vCaptureInstance.imfDXGIDeviceManager);
+			hResult = MFCreateDXGIDeviceManager(&resetToken, &vMediaFoundationInstance.imfDXGIDeviceManager);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Reset DXGI device manager
-			hResult = vCaptureInstance.imfDXGIDeviceManager->ResetDevice(vDirectXInstance.iD3D11Device5, resetToken);
+			hResult = vMediaFoundationInstance.imfDXGIDeviceManager->ResetDevice(vDirectXInstance.iD3D11Device5, resetToken);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -57,8 +57,8 @@ namespace
 			//Set IMF attributes
 			imfAttributes->SetUINT32(MF_READWRITE_ENABLE_HARDWARE_TRANSFORMS, 1);
 			imfAttributes->SetUINT32(MF_SINK_WRITER_DISABLE_THROTTLING, 1);
-			imfAttributes->SetUnknown(MF_SINK_WRITER_D3D_MANAGER, vCaptureInstance.imfDXGIDeviceManager);
-			imfAttributes->SetUnknown(MF_SOURCE_READER_D3D_MANAGER, vCaptureInstance.imfDXGIDeviceManager);
+			imfAttributes->SetUnknown(MF_SINK_WRITER_D3D_MANAGER, vMediaFoundationInstance.imfDXGIDeviceManager);
+			imfAttributes->SetUnknown(MF_SOURCE_READER_D3D_MANAGER, vMediaFoundationInstance.imfDXGIDeviceManager);
 			imfAttributes->SetGUID(MF_TRANSCODE_CONTAINERTYPE, MFTranscodeContainerType_MPEG4);
 
 			//Create IMF sink writer
@@ -70,7 +70,7 @@ namespace
 			}
 
 			//Convert variables
-			hResult = imfSinkWriterNormal->QueryInterface(&vCaptureInstance.imfSinkWriter);
+			hResult = imfSinkWriterNormal->QueryInterface(&vMediaFoundationInstance.imfSinkWriter);
 			if (FAILED(hResult))
 			{
 				return false;

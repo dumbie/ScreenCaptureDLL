@@ -13,14 +13,14 @@ namespace
 			BYTE* mediaBuffer;
 			UINT64 devicePosition;
 			UINT64 qpcPosition;
-			hResult = vCaptureInstance.iAudioClientCapture->GetBuffer(&mediaBuffer, &mediaFramesRead, &mediaFlags, &devicePosition, &qpcPosition);
+			hResult = vMediaFoundationInstance.iAudioClientCapture->GetBuffer(&mediaBuffer, &mediaFramesRead, &mediaFlags, &devicePosition, &qpcPosition);
 			if (FAILED(hResult))
 			{
 				return {};
 			}
 
 			//Release audio buffer
-			hResult = vCaptureInstance.iAudioClientCapture->ReleaseBuffer(mediaFramesRead);
+			hResult = vMediaFoundationInstance.iAudioClientCapture->ReleaseBuffer(mediaFramesRead);
 			if (FAILED(hResult))
 			{
 				return {};
@@ -35,7 +35,7 @@ namespace
 			}
 
 			//Calculate target frames read
-			UINT32 mediaFramesTarget = vCaptureInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec / 100;
+			UINT32 mediaFramesTarget = vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec / 100;
 
 			//Check media frames read
 			if (mediaFramesRead == mediaFramesTarget)
@@ -43,7 +43,7 @@ namespace
 				//std::cout << "Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags << std::endl;
 
 				//Calculate media size
-				UINT audioBytesSize = mediaFramesRead * vCaptureInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
+				UINT audioBytesSize = mediaFramesRead * vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
 
 				//Create bytes array
 				std::vector<BYTE> audioBytes(audioBytesSize);
@@ -59,7 +59,7 @@ namespace
 				//std::cout << "Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags << std::endl;
 
 				//Calculate media size
-				UINT audioBytesSize = mediaFramesTarget * vCaptureInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
+				UINT audioBytesSize = mediaFramesTarget * vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
 
 				//Create bytes array
 				std::vector<BYTE> audioBytes(audioBytesSize);

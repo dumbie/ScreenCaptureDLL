@@ -41,9 +41,7 @@ namespace
 		{
 			try
 			{
-				BOOL resetDirectX = DirectXResetVariablesAll();
-				BOOL resetCapture = CaptureResetVariablesAll();
-				return resetDirectX && resetCapture;
+				return ResetVariablesAll();
 			}
 			catch (...)
 			{
@@ -108,7 +106,7 @@ namespace
 
 		__declspec(dllexport) BOOL CaptureVideoIsRecording()
 		{
-			return vCaptureInstance.vMediaCapturing;
+			return vMediaFoundationInstance.vMediaCapturing;
 		}
 
 		__declspec(dllexport) void CaptureEventVideoCaptureStopped(CaptureEvent captureEvent)

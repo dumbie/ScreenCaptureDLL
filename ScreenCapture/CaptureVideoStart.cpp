@@ -11,22 +11,22 @@ namespace
 	{
 		try
 		{
-			if (vCaptureInstance.vMediaCapturing) { return false; }
+			if (vMediaFoundationInstance.vMediaCapturing) { return false; }
 
 			//Update media settings
-			vCaptureInstance.vMediaSettings = mediaSettings;
+			vMediaSettings = mediaSettings;
 
 			//Start video capture loop
-			vCaptureInstance.vMediaCapturing = true;
-			vCaptureInstance.vMediaWriteLoopAllowed = true;
-			vCaptureInstance.vMediaWriteLoopFinishedScreen = false;
-			vCaptureInstance.vMediaWriteLoopFinishedAudio = false;
+			vMediaFoundationInstance.vMediaCapturing = true;
+			vMediaFoundationInstance.vMediaWriteLoopAllowed = true;
+			vMediaFoundationInstance.vMediaWriteLoopFinishedScreen = false;
+			vMediaFoundationInstance.vMediaWriteLoopFinishedAudio = false;
 
 			//Initialize DXGI device manager
 			bool initializeDXGI = InitializeDxgiDeviceManager();
 			if (!initializeDXGI)
 			{
-				CaptureResetVariablesMediaAll();
+				MediaFoundationResetVariablesAll();
 				return false;
 			}
 
@@ -34,22 +34,22 @@ namespace
 			bool initializeMedia = InitializeMediaFoundation(filePath);
 			if (!initializeMedia)
 			{
-				CaptureResetVariablesMediaAll();
+				MediaFoundationResetVariablesAll();
 				return false;
 			}
 
 			//Begin media write
-			hResult = vCaptureInstance.imfSinkWriter->BeginWriting();
+			hResult = vMediaFoundationInstance.imfSinkWriter->BeginWriting();
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesMediaAll();
+				MediaFoundationResetVariablesAll();
 				return false;
 			}
 
 			//Set media loop start time
 			LARGE_INTEGER qpcTimeCurrent;
 			QueryPerformanceCounter(&qpcTimeCurrent);
-			vCaptureInstance.vMediaTimeStartLoop = qpcTimeCurrent.QuadPart;
+			vMediaFoundationInstance.vMediaTimeStartLoop = qpcTimeCurrent.QuadPart;
 
 			//Loop media write screen
 			std::thread threadLoopWriteScreen(LoopWriteScreen);
@@ -66,8 +66,7 @@ namespace
 		}
 		catch (...)
 		{
-			CaptureResetVariablesTexturesLoop();
-			CaptureResetVariablesMediaAll();
+			MediaFoundationResetVariablesAll();
 			return false;
 		}
 	}

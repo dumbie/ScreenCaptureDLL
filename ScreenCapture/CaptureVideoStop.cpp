@@ -10,18 +10,10 @@ namespace
 		try
 		{
 			//Stop media capture loop
-			vCaptureInstance.vMediaCapturing = false;
-			vCaptureInstance.vMediaWriteLoopAllowed = false;
-
-			//Wait for loop to finish
-			while (!vCaptureInstance.vMediaWriteLoopFinishedScreen && !vCaptureInstance.vMediaWriteLoopFinishedAudio)
-			{
-				std::cout << "Waiting for media capture loop to stop..." << std::endl;
-				Sleep(1000);
-			}
+			MediaFoundationLoopStop();
 
 			//Finalize media write
-			hResult = vCaptureInstance.imfSinkWriter->Finalize();
+			hResult = vMediaFoundationInstance.imfSinkWriter->Finalize();
 			if (FAILED(hResult))
 			{
 				std::cout << "Failed to finalize media capture..." << std::endl;
@@ -31,14 +23,17 @@ namespace
 			MFShutdown();
 
 			//Release resources
-			CaptureResetVariablesTexturesLoop();
-			CaptureResetVariablesMediaAll();
+			TextureResetVariablesLoop();
+			MediaFoundationResetVariablesAll();
 
 			//Play audio effect
 			PlayAudio(L"Assets\\Capture\\CaptureVideoStop.mp3");
 
 			//Trigger capture event
-			vCaptureEventVideoCaptureStopped();
+			if (vCaptureEventVideoCaptureStopped)
+			{
+				vCaptureEventVideoCaptureStopped();
+			}
 
 			std::cout << "Stopped media capture..." << std::endl;
 			return true;
@@ -46,8 +41,8 @@ namespace
 		catch (...)
 		{
 			//Release resources
-			CaptureResetVariablesTexturesLoop();
-			CaptureResetVariablesMediaAll();
+			TextureResetVariablesLoop();
+			MediaFoundationResetVariablesAll();
 
 			return false;
 		}

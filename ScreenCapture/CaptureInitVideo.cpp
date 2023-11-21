@@ -18,11 +18,11 @@ namespace
 
 			//Set video format
 			GUID videoFormat{};
-			if (vCaptureInstance.vMediaSettings.VideoFormat == H264)
+			if (vMediaSettings.VideoFormat == H264)
 			{
 				videoFormat = MFVideoFormat_H264;
 			}
-			else if (vCaptureInstance.vMediaSettings.VideoFormat == HEVC)
+			else if (vMediaSettings.VideoFormat == HEVC)
 			{
 				videoFormat = MFVideoFormat_HEVC;
 			}
@@ -63,9 +63,9 @@ namespace
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
 			MFSetAttributeSize(imfMediaTypeVideoOut, MF_MT_FRAME_SIZE, vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight);
-			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_FRAME_RATE, vCaptureInstance.vMediaSettings.VideoFrameRate, 1);
+			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_FRAME_RATE, vMediaSettings.VideoFrameRate, 1);
 			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_PIXEL_ASPECT_RATIO, 1, 1);
-			hResult = vCaptureInstance.imfSinkWriter->AddStream(imfMediaTypeVideoOut, &vCaptureInstance.vOutVideoStreamIndex);
+			hResult = vMediaFoundationInstance.imfSinkWriter->AddStream(imfMediaTypeVideoOut, &vMediaFoundationInstance.vOutVideoStreamIndex);
 			if (FAILED(hResult))
 			{
 				std::cout << "AddStream video failed." << std::endl;
@@ -118,7 +118,7 @@ namespace
 				std::cout << "Set media type format to SDR." << std::endl;
 				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_ARGB32);
 			}
-			hResult = vCaptureInstance.imfSinkWriter->SetInputMediaType(vCaptureInstance.vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
+			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
 			if (FAILED(hResult))
 			{
 				std::cout << "SetInputMediaType video failed: " << hResult << std::endl;

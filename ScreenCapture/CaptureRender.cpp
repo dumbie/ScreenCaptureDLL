@@ -21,7 +21,7 @@ namespace
 			subResourceData.pSysMem = vertexVerticesArray;
 
 			//Create vertex buffer
-			hResult = vDirectXInstance.iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &vDirectXInstance.iD3D11Buffer0);
+			hResult = vDirectXInstance.iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &vDirectXInstance.iD3D11BufferVertex0);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -30,7 +30,7 @@ namespace
 			//Set vertex buffer
 			UINT bufferOffsets = 0;
 			UINT bufferStrides = sizeof(VertexVertice);
-			vDirectXInstance.iD3D11DeviceContext4->IASetVertexBuffers(0, 1, &vDirectXInstance.iD3D11Buffer0, &bufferStrides, &bufferOffsets);
+			vDirectXInstance.iD3D11DeviceContext4->IASetVertexBuffers(0, 1, &vDirectXInstance.iD3D11BufferVertex0, &bufferStrides, &bufferOffsets);
 			vDirectXInstance.iD3D11DeviceContext4->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 			//Return result

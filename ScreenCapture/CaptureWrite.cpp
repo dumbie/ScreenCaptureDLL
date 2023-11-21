@@ -75,7 +75,7 @@ namespace
 			}
 
 			//Write media to sample
-			hResult = vCaptureInstance.imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
+			hResult = vMediaFoundationInstance.imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
 			if (FAILED(hResult))
 			{
 				std::cout << "Write texture sample failed: " << hResult << std::endl;
@@ -178,7 +178,7 @@ namespace
 			}
 
 			//Write media to sample
-			hResult = vCaptureInstance.imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
+			hResult = vMediaFoundationInstance.imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
 			if (FAILED(hResult))
 			{
 				std::cout << "Write bytes sample failed: " << hResult << std::endl;

@@ -11,47 +11,47 @@ namespace
 		try
 		{
 			//Create wic factory
-			hResult = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_ALL, IID_IWICImagingFactory, (LPVOID*)&vCaptureInstance.iWICImagingFactory);
+			hResult = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_ALL, IID_IWICImagingFactory, (LPVOID*)&vBitmapImageInstance.iWICImagingFactory);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
-			hResult = vCaptureInstance.iWICImagingFactory->CreateStream(&vCaptureInstance.iWICStream);
+			hResult = vBitmapImageInstance.iWICImagingFactory->CreateStream(&vBitmapImageInstance.iWICStream);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
-			hResult = vCaptureInstance.iWICStream->InitializeFromFilename(filePath, GENERIC_WRITE);
+			hResult = vBitmapImageInstance.iWICStream->InitializeFromFilename(filePath, GENERIC_WRITE);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
 			//Create bitmap encoder
-			hResult = vCaptureInstance.iWICImagingFactory->CreateEncoder(iWicFormatGuid, NULL, &vCaptureInstance.iWICBitmapEncoder);
+			hResult = vBitmapImageInstance.iWICImagingFactory->CreateEncoder(iWicFormatGuid, NULL, &vBitmapImageInstance.iWICBitmapEncoder);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
-			hResult = vCaptureInstance.iWICBitmapEncoder->Initialize(vCaptureInstance.iWICStream, WICBitmapEncoderNoCache);
+			hResult = vBitmapImageInstance.iWICBitmapEncoder->Initialize(vBitmapImageInstance.iWICStream, WICBitmapEncoderNoCache);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
 			//Create bitmap frame
-			hResult = vCaptureInstance.iWICBitmapEncoder->CreateNewFrame(&vCaptureInstance.iWICBitmapFrameEncode, &vCaptureInstance.iPropertyBag2);
+			hResult = vBitmapImageInstance.iWICBitmapEncoder->CreateNewFrame(&vBitmapImageInstance.iWICBitmapFrameEncode, &vBitmapImageInstance.iPropertyBag2);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
@@ -65,19 +65,19 @@ namespace
 				variantValue.vt = VT_R4;
 				variantValue.fltVal = imageQuality / 100.0F;
 
-				vCaptureInstance.iPropertyBag2->Write(1, &propertyValue, &variantValue);
+				vBitmapImageInstance.iPropertyBag2->Write(1, &propertyValue, &variantValue);
 			}
 
 			//Initialize bitmap frame
-			hResult = vCaptureInstance.iWICBitmapFrameEncode->Initialize(vCaptureInstance.iPropertyBag2);
+			hResult = vBitmapImageInstance.iWICBitmapFrameEncode->Initialize(vBitmapImageInstance.iPropertyBag2);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
 			//Bitmap frame set metadata
-			if (SUCCEEDED(vCaptureInstance.iWICBitmapFrameEncode->GetMetadataQueryWriter(&vCaptureInstance.iWICMetadataQueryWriter)))
+			if (SUCCEEDED(vBitmapImageInstance.iWICBitmapFrameEncode->GetMetadataQueryWriter(&vBitmapImageInstance.iWICMetadataQueryWriter)))
 			{
 				//Set application name
 				PROPVARIANT propVariantAppName{};
@@ -85,11 +85,11 @@ namespace
 				propVariantAppName.pszVal = "ScreenCaptureDLL";
 				if (iWicFormatGuid == GUID_ContainerFormatPng)
 				{
-					vCaptureInstance.iWICMetadataQueryWriter->SetMetadataByName(L"/tEXt/{str=Software}", &propVariantAppName);
+					vBitmapImageInstance.iWICMetadataQueryWriter->SetMetadataByName(L"/tEXt/{str=Software}", &propVariantAppName);
 				}
 				else
 				{
-					vCaptureInstance.iWICMetadataQueryWriter->SetMetadataByName(L"System.ApplicationName", &propVariantAppName);
+					vBitmapImageInstance.iWICMetadataQueryWriter->SetMetadataByName(L"System.ApplicationName", &propVariantAppName);
 				}
 
 				//Set date taken
@@ -101,109 +101,109 @@ namespace
 				PROPVARIANT propVariantDateTaken{};
 				propVariantDateTaken.vt = VT_FILETIME;
 				propVariantDateTaken.filetime = currentFileTime;
-				vCaptureInstance.iWICMetadataQueryWriter->SetMetadataByName(L"System.Photo.DateTaken", &propVariantDateTaken);
+				vBitmapImageInstance.iWICMetadataQueryWriter->SetMetadataByName(L"System.Photo.DateTaken", &propVariantDateTaken);
 			}
 
 			//Bitmap frame set size
-			hResult = vCaptureInstance.iWICBitmapFrameEncode->SetSize(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight);
+			hResult = vBitmapImageInstance.iWICBitmapFrameEncode->SetSize(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
 			std::cout << "Bitmap frame size, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight << std::endl;
 
 			//Bitmap frame set resolution
-			hResult = vCaptureInstance.iWICBitmapFrameEncode->SetResolution(96, 96);
+			hResult = vBitmapImageInstance.iWICBitmapFrameEncode->SetResolution(96, 96);
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
 			//Write data to bitmap frame and convert jpg
-			if (iWicFormatGuid == GUID_ContainerFormatJpeg && vCaptureInstance.iWicPixelFormatGuidSource != vCaptureInstance.iWicPixelFormatGuidJpeg)
+			if (iWicFormatGuid == GUID_ContainerFormatJpeg && vBitmapImageInstance.iWicPixelFormatGuidSource != vBitmapImageInstance.iWicPixelFormatGuidJpeg)
 			{
-				hResult = vCaptureInstance.iWICImagingFactory->CreateBitmapFromMemory(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight, vCaptureInstance.iWicPixelFormatGuidSource, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData, &vCaptureInstance.iWICBitmap);
+				hResult = vBitmapImageInstance.iWICImagingFactory->CreateBitmapFromMemory(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight, vBitmapImageInstance.iWicPixelFormatGuidSource, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData, &vBitmapImageInstance.iWICBitmap);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesBitmapImage();
+					BitmapImageResetVariablesAll();
 					return false;
 				}
 
-				hResult = vCaptureInstance.iWICImagingFactory->CreateFormatConverter(&vCaptureInstance.iWICFormatConverter);
+				hResult = vBitmapImageInstance.iWICImagingFactory->CreateFormatConverter(&vBitmapImageInstance.iWICFormatConverter);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesBitmapImage();
+					BitmapImageResetVariablesAll();
 					return false;
 				}
 
-				hResult = vCaptureInstance.iWICFormatConverter->Initialize(vCaptureInstance.iWICBitmap, vCaptureInstance.iWicPixelFormatGuidJpeg, WICBitmapDitherTypeNone, 0, 0, WICBitmapPaletteTypeCustom);
+				hResult = vBitmapImageInstance.iWICFormatConverter->Initialize(vBitmapImageInstance.iWICBitmap, vBitmapImageInstance.iWicPixelFormatGuidJpeg, WICBitmapDitherTypeNone, 0, 0, WICBitmapPaletteTypeCustom);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesBitmapImage();
+					BitmapImageResetVariablesAll();
 					return false;
 				}
 
 				//Bitmap frame set pixelformat
-				hResult = vCaptureInstance.iWICBitmapFrameEncode->SetPixelFormat(&vCaptureInstance.iWicPixelFormatGuidJpeg);
+				hResult = vBitmapImageInstance.iWICBitmapFrameEncode->SetPixelFormat(&vBitmapImageInstance.iWicPixelFormatGuidJpeg);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesBitmapImage();
+					BitmapImageResetVariablesAll();
 					return false;
 				}
 
 				WICRect iWicRectangle = { 0, 0, (INT)vCaptureDetails.OutputWidth, (INT)vCaptureDetails.OutputHeight };
-				hResult = vCaptureInstance.iWICBitmapFrameEncode->WriteSource(vCaptureInstance.iWICFormatConverter, &iWicRectangle);
+				hResult = vBitmapImageInstance.iWICBitmapFrameEncode->WriteSource(vBitmapImageInstance.iWICFormatConverter, &iWicRectangle);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesBitmapImage();
+					BitmapImageResetVariablesAll();
 					return false;
 				}
 			}
 			else
 			{
 				//Bitmap frame set pixelformat
-				hResult = vCaptureInstance.iWICBitmapFrameEncode->SetPixelFormat(&vCaptureInstance.iWicPixelFormatGuidSource);
+				hResult = vBitmapImageInstance.iWICBitmapFrameEncode->SetPixelFormat(&vBitmapImageInstance.iWicPixelFormatGuidSource);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesBitmapImage();
+					BitmapImageResetVariablesAll();
 					return false;
 				}
 
-				hResult = vCaptureInstance.iWICBitmapFrameEncode->WritePixels(vCaptureDetails.OutputHeight, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData);
+				hResult = vBitmapImageInstance.iWICBitmapFrameEncode->WritePixels(vCaptureDetails.OutputHeight, vCaptureDetails.WidthByteSize, vCaptureDetails.TotalByteSize, bitmapData);
 				if (FAILED(hResult))
 				{
-					CaptureResetVariablesBitmapImage();
+					BitmapImageResetVariablesAll();
 					return false;
 				}
 			}
 
 			//Commit bitmap frame
-			hResult = vCaptureInstance.iWICBitmapFrameEncode->Commit();
+			hResult = vBitmapImageInstance.iWICBitmapFrameEncode->Commit();
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
 			//Commit bitmap encoder
-			hResult = vCaptureInstance.iWICBitmapEncoder->Commit();
+			hResult = vBitmapImageInstance.iWICBitmapEncoder->Commit();
 			if (FAILED(hResult))
 			{
-				CaptureResetVariablesBitmapImage();
+				BitmapImageResetVariablesAll();
 				return false;
 			}
 
 			//Release resources
-			CaptureResetVariablesBitmapImage();
+			BitmapImageResetVariablesAll();
 
 			return true;
 		}
 		catch (...)
 		{
-			CaptureResetVariablesBitmapImage();
+			BitmapImageResetVariablesAll();
 			return false;
 		}
 	}

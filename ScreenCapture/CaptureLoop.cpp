@@ -16,11 +16,8 @@ namespace
 			LONG vPreviousForegroundStyle = NULL;
 
 			//Check capture status while allowed
-			while (vWgcInstance.vCaptureStatusLoopAllowed)
+			while (vWgcInstance.vGraphicsStatusLoopAllowed)
 			{
-				//Wait for foreground change
-				Sleep(1000);
-
 				//Get foreground window
 				HWND currentForegroundWindow = GetForegroundWindow();
 				LONG currentForegroundStyle = GetWindowLongA(currentForegroundWindow, GWL_STYLE);
@@ -41,17 +38,23 @@ namespace
 				if (!vDirectXInstance.iDxgiFactory7->IsCurrent())
 				{
 					//Trigger capture event
-					vCaptureEventDeviceChangeDetected();
+					if (vCaptureEventDeviceChangeDetected)
+					{
+						vCaptureEventDeviceChangeDetected();
+					}
 
 					//Note: triggers on resolution change, hdr switch and driver resets.
 					std::cout << "Capture device has changed, reset recommended." << std::endl;
 				}
+
+				//Wait for foreground change
+				Sleep(1000);
 			}
 		}
 		catch (...) {}
 
 		//Reset thread variables
-		vWgcInstance.vCaptureStatusLoopFinished = true;
+		vWgcInstance.vGraphicsStatusLoopFinished = true;
 	}
 
 	VOID LoopWriteScreen()
@@ -60,7 +63,7 @@ namespace
 		{
 			//Get media frame duration time
 			ULONGLONG mediaTimeDuration;
-			MFFrameRateToAverageTimePerFrame(vCaptureInstance.vMediaSettings.VideoFrameRate, 1, &mediaTimeDuration);
+			MFFrameRateToAverageTimePerFrame(vMediaSettings.VideoFrameRate, 1, &mediaTimeDuration);
 
 			//Set thread characteristics
 			DWORD taskIndex = 1;
@@ -71,18 +74,18 @@ namespace
 			}
 
 			//Write media in loop while allowed
-			while (vCaptureInstance.vMediaWriteLoopAllowed)
+			while (vMediaFoundationInstance.vMediaWriteLoopAllowed)
 			{
 				//Get media frame start time
 				LARGE_INTEGER qpcTimeCurrent;
 				QueryPerformanceCounter(&qpcTimeCurrent);
-				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vCaptureInstance.vMediaTimeStartLoop;
+				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaFoundationInstance.vMediaTimeStartLoop;
 
 				//Update screen texture
 				if (UpdateScreenTexture())
 				{
 					//Write media bytes to sink
-					std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureDetails.TotalByteSize, false, vCaptureInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+					std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureDetails.TotalByteSize, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
 					threadWriteSample.detach();
 
 					//Reset capture fail count
@@ -108,7 +111,7 @@ namespace
 		catch (...) {}
 
 		//Reset thread variables
-		vCaptureInstance.vMediaWriteLoopFinishedScreen = true;
+		vMediaFoundationInstance.vMediaWriteLoopFinishedScreen = true;
 	}
 
 	VOID LoopWriteAudio()
@@ -127,12 +130,12 @@ namespace
 			}
 
 			//Write media in loop while allowed
-			while (vCaptureInstance.vMediaWriteLoopAllowed)
+			while (vMediaFoundationInstance.vMediaWriteLoopAllowed)
 			{
 				//Get media frame start time
 				LARGE_INTEGER qpcTimeCurrent;
 				QueryPerformanceCounter(&qpcTimeCurrent);
-				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vCaptureInstance.vMediaTimeStartLoop;
+				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaFoundationInstance.vMediaTimeStartLoop;
 
 				//Get audio bytes
 				std::vector<BYTE> audioBytes = GetAudioBytes();
@@ -141,7 +144,7 @@ namespace
 				if (!audioBytes.empty())
 				{
 					//Write media bytes to sink
-					WriteMediaDataBytes(audioBytes, true, false, vCaptureInstance.vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
+					WriteMediaDataBytes(audioBytes, true, false, vMediaFoundationInstance.vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
 				}
 				else
 				{
@@ -154,6 +157,6 @@ namespace
 		catch (...) {}
 
 		//Reset thread variables
-		vCaptureInstance.vMediaWriteLoopFinishedAudio = true;
+		vMediaFoundationInstance.vMediaWriteLoopFinishedAudio = true;
 	}
 }

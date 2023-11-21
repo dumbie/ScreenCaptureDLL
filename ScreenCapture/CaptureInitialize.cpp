@@ -76,10 +76,6 @@ namespace
 				return false;
 			}
 
-			//Release resources
-			vDirectXInstance.iDxgiAdapter4.Release();
-			vDirectXInstance.iDxgiOutput6.Release();
-
 			//Update instance status
 			vDirectXInstance.vInstanceInitialized = true;
 			std::cout << "DirectX initialized for monitor: " << monitorId << std::endl;
@@ -123,9 +119,6 @@ namespace
 			//Set sampler state
 			vDirectXInstance.iD3D11DeviceContext4->PSSetSamplers(0, 1, &vDirectXInstance.iD3D11SamplerState0);
 
-			//Release resources
-			vDirectXInstance.iD3D11SamplerState0.Release();
-
 			return true;
 		}
 		catch (...)
@@ -147,8 +140,7 @@ namespace
 				std::cout << "CreateDirect3D11DeviceFromDXGIDevice failed." << std::endl;
 				return false;
 			}
-			vWgcInstance.vDirect3D11Device = inspectable.as<winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice>();
-
+			vWgcInstance.vGraphicsD3D11Device = inspectable.as<winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice>();
 
 			//Set capture frame details
 			vWgcInstance.vFrameSizeCurrent = { (INT)vCaptureDetails.OriginalWidth, (INT)vCaptureDetails.OriginalHeight };
@@ -162,7 +154,7 @@ namespace
 			}
 
 			//Create capture frame pool
-			vWgcInstance.vGraphicsCaptureFramePool = winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::CreateFreeThreaded(vWgcInstance.vDirect3D11Device, vWgcInstance.vFramePixelFormat, 1, vWgcInstance.vFrameSizeCurrent);
+			vWgcInstance.vGraphicsCaptureFramePool = winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::CreateFreeThreaded(vWgcInstance.vGraphicsD3D11Device, vWgcInstance.vFramePixelFormat, 1, vWgcInstance.vFrameSizeCurrent);
 
 			//Set graphic capture item
 			auto interop_factory = winrt::get_activation_factory<winrt::Windows::Graphics::Capture::GraphicsCaptureItem, IGraphicsCaptureItemInterop>();
@@ -193,12 +185,9 @@ namespace
 			vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(false);
 			vWgcInstance.vGraphicsCaptureSession.StartCapture();
 
-			//Release resources
-			vDirectXInstance.iDxgiDevice4.Release();
-			vWgcInstance.vDirect3D11Device = NULL;
-
 			//Update thread variables
-			vWgcInstance.vCaptureStatusLoopAllowed = true;
+			vWgcInstance.vGraphicsStatusLoopAllowed = true;
+			vWgcInstance.vGraphicsStatusLoopFinished = false;
 
 			//Loop capture check status
 			std::thread threadLoopCheckStatus(LoopCaptureStatus);
@@ -251,9 +240,6 @@ namespace
 			//Clear render target view
 			vDirectXInstance.iD3D11DeviceContext4->ClearRenderTargetView(vDirectXInstance.iD3D11RenderTargetView0, ColorRgbaBlack);
 
-			//Release resources
-			vDirectXInstance.iD3D11RenderTargetView0.Release();
-
 			return true;
 		}
 		catch (...)
@@ -287,31 +273,31 @@ namespace
 		try
 		{
 			//Load shaders from file
-			hResult = D3DCompileFromFile(L"Resources\\VertexShader.hlsl", 0, 0, "main", "vs_5_0", 0, 0, &vDirectXInstance.iD3DBlob0VertexShader, 0);
+			hResult = D3DCompileFromFile(L"Resources\\VertexShader.hlsl", 0, 0, "main", "vs_5_0", 0, 0, &vDirectXInstance.iD3DBlobShaderVertex0, 0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
-			hResult = D3DCompileFromFile(L"Resources\\PixelShader.hlsl", 0, 0, "main", "ps_5_0", 0, 0, &vDirectXInstance.iD3DBlob0PixelShader, 0);
+			hResult = D3DCompileFromFile(L"Resources\\PixelShader.hlsl", 0, 0, "main", "ps_5_0", 0, 0, &vDirectXInstance.iD3DBlobShaderPixel0, 0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Create shaders from blob
-			hResult = vDirectXInstance.iD3D11Device5->CreateVertexShader(vDirectXInstance.iD3DBlob0VertexShader->GetBufferPointer(), vDirectXInstance.iD3DBlob0VertexShader->GetBufferSize(), NULL, &vDirectXInstance.iD3D11VertexShader0);
+			hResult = vDirectXInstance.iD3D11Device5->CreateVertexShader(vDirectXInstance.iD3DBlobShaderVertex0->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderVertex0->GetBufferSize(), NULL, &vDirectXInstance.iD3D11ShaderVertex0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
-			hResult = vDirectXInstance.iD3D11Device5->CreatePixelShader(vDirectXInstance.iD3DBlob0PixelShader->GetBufferPointer(), vDirectXInstance.iD3DBlob0PixelShader->GetBufferSize(), NULL, &vDirectXInstance.iD3D11PixelShader0);
+			hResult = vDirectXInstance.iD3D11Device5->CreatePixelShader(vDirectXInstance.iD3DBlobShaderPixel0->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderPixel0->GetBufferSize(), NULL, &vDirectXInstance.iD3D11ShaderPixel0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Create and set input layout
-			hResult = vDirectXInstance.iD3D11Device5->CreateInputLayout(InputElementsArray, InputElementsCount, vDirectXInstance.iD3DBlob0VertexShader->GetBufferPointer(), vDirectXInstance.iD3DBlob0VertexShader->GetBufferSize(), &vDirectXInstance.iD3D11InputLayout0);
+			hResult = vDirectXInstance.iD3D11Device5->CreateInputLayout(InputElementsArray, InputElementsCount, vDirectXInstance.iD3DBlobShaderVertex0->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderVertex0->GetBufferSize(), &vDirectXInstance.iD3D11InputLayout0);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -319,16 +305,8 @@ namespace
 			vDirectXInstance.iD3D11DeviceContext4->IASetInputLayout(vDirectXInstance.iD3D11InputLayout0);
 
 			//Set shaders
-			vDirectXInstance.iD3D11DeviceContext4->VSSetShader(vDirectXInstance.iD3D11VertexShader0, NULL, 0);
-			vDirectXInstance.iD3D11DeviceContext4->PSSetShader(vDirectXInstance.iD3D11PixelShader0, NULL, 0);
-
-			//Release resources
-			vDirectXInstance.iD3D11Buffer0.Release();
-			vDirectXInstance.iD3DBlob0VertexShader.Release();
-			vDirectXInstance.iD3DBlob0PixelShader.Release();
-			vDirectXInstance.iD3D11VertexShader0.Release();
-			vDirectXInstance.iD3D11PixelShader0.Release();
-			vDirectXInstance.iD3D11InputLayout0.Release();
+			vDirectXInstance.iD3D11DeviceContext4->VSSetShader(vDirectXInstance.iD3D11ShaderVertex0, NULL, 0);
+			vDirectXInstance.iD3D11DeviceContext4->PSSetShader(vDirectXInstance.iD3D11ShaderPixel0, NULL, 0);
 
 			return true;
 		}
@@ -372,17 +350,14 @@ namespace
 			subResourceData.pSysMem = &shaderVariables;
 
 			//Create shader variables buffer
-			hResult = vDirectXInstance.iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &vDirectXInstance.iD3D11Buffer0);
+			hResult = vDirectXInstance.iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &vDirectXInstance.iD3D11BufferPixel0);
 			if (FAILED(hResult))
 			{
 				return false;
 			}
 
 			//Set shader variables
-			vDirectXInstance.iD3D11DeviceContext4->PSSetConstantBuffers(0, 1, &vDirectXInstance.iD3D11Buffer0);
-
-			//Release resources
-			vDirectXInstance.iD3D11Buffer0.Release();
+			vDirectXInstance.iD3D11DeviceContext4->PSSetConstantBuffers(0, 1, &vDirectXInstance.iD3D11BufferPixel0);
 
 			return true;
 		}
@@ -417,9 +392,7 @@ namespace
 			SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 
 			//Reset all used variables
-			WgcResetVariablesAll();
-			DirectXResetVariablesAll();
-			CaptureResetVariablesAll();
+			ResetVariablesAll();
 
 			//Update capture settings
 			vCaptureSettings = captureSettings;
@@ -428,9 +401,7 @@ namespace
 			if (!InitializeDirectX(captureSettings.MonitorId))
 			{
 				//Reset all used variables
-				WgcResetVariablesAll();
-				DirectXResetVariablesAll();
-				CaptureResetVariablesAll();
+				ResetVariablesAll();
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
@@ -442,9 +413,7 @@ namespace
 			if (!SetCaptureDetails())
 			{
 				//Reset all used variables
-				WgcResetVariablesAll();
-				DirectXResetVariablesAll();
-				CaptureResetVariablesAll();
+				ResetVariablesAll();
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
@@ -456,9 +425,7 @@ namespace
 			if (!InitializeSamplerState())
 			{
 				//Reset all used variables
-				WgcResetVariablesAll();
-				DirectXResetVariablesAll();
-				CaptureResetVariablesAll();
+				ResetVariablesAll();
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
@@ -470,9 +437,7 @@ namespace
 			if (!InitializeWgc())
 			{
 				//Reset all used variables
-				WgcResetVariablesAll();
-				DirectXResetVariablesAll();
-				CaptureResetVariablesAll();
+				ResetVariablesAll();
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
@@ -484,9 +449,7 @@ namespace
 			if (!InitializeShaders())
 			{
 				//Reset all used variables
-				WgcResetVariablesAll();
-				DirectXResetVariablesAll();
-				CaptureResetVariablesAll();
+				ResetVariablesAll();
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
@@ -498,9 +461,7 @@ namespace
 			if (!InitializeRenderTargetView())
 			{
 				//Reset all used variables
-				WgcResetVariablesAll();
-				DirectXResetVariablesAll();
-				CaptureResetVariablesAll();
+				ResetVariablesAll();
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
@@ -512,8 +473,7 @@ namespace
 			if (!InitializeViewPort())
 			{
 				//Reset all used variables
-				DirectXResetVariablesAll();
-				CaptureResetVariablesAll();
+				ResetVariablesAll();
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
@@ -525,9 +485,7 @@ namespace
 			if (!SetShaderVariables())
 			{
 				//Reset all used variables
-				WgcResetVariablesAll();
-				DirectXResetVariablesAll();
-				CaptureResetVariablesAll();
+				ResetVariablesAll();
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
@@ -535,13 +493,11 @@ namespace
 				return false;
 			}
 
-			//Update view vertex vertices
+			//Update vertex vertices
 			if (!RenderUpdateVertex(VertexVerticesArrayScreen, VertexVerticesCountScreen))
 			{
 				//Reset all used variables
-				WgcResetVariablesAll();
-				DirectXResetVariablesAll();
-				CaptureResetVariablesAll();
+				ResetVariablesAll();
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
@@ -564,9 +520,7 @@ namespace
 			std::cout << "InitializeCapture failed: " << hResult << std::endl;
 
 			//Reset all used variables
-			WgcResetVariablesAll();
-			DirectXResetVariablesAll();
-			CaptureResetVariablesAll();
+			ResetVariablesAll();
 
 			//Play audio effect
 			PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
