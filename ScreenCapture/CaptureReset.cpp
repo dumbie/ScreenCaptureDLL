@@ -23,12 +23,40 @@ namespace
 		}
 	}
 
+	BOOL CaptureStatusLoopStop()
+	{
+		try
+		{
+			if (vCaptureInstance.vCaptureStatusLoopAllowed)
+			{
+				//Status
+				vCaptureInstance.vCaptureStatusLoopAllowed = false;
+
+				//Wait for loop to finish
+				while (!vCaptureInstance.vCaptureStatusLoopFinished)
+				{
+					std::cout << "Waiting for capture status loop to stop..." << std::endl;
+					Sleep(100);
+				}
+			}
+
+			return true;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
 	BOOL CaptureResetVariablesAll()
 	{
 		try
 		{
 			//Status
 			vCaptureInstance.vInstanceInitialized = false;
+
+			//Stop capture status loop
+			CaptureStatusLoopStop();
 
 			//Bytes
 			vCaptureInstance.vScreenBytesCache.clear();
@@ -128,40 +156,12 @@ namespace
 		}
 	}
 
-	BOOL WgcLoopStop()
-	{
-		try
-		{
-			if (vWgcInstance.vGraphicsStatusLoopAllowed)
-			{
-				//Status
-				vWgcInstance.vGraphicsStatusLoopAllowed = false;
-
-				//Wait for loop to finish
-				while (!vWgcInstance.vGraphicsStatusLoopFinished)
-				{
-					std::cout << "Waiting for wgc status loop to stop..." << std::endl;
-					Sleep(100);
-				}
-			}
-
-			return true;
-		}
-		catch (...)
-		{
-			return false;
-		}
-	}
-
 	BOOL WgcResetVariablesAll()
 	{
 		try
 		{
 			//Status
 			vWgcInstance.vInstanceInitialized = false;
-
-			//Stop wgc status loop
-			WgcLoopStop();
 
 			//Frame
 			vWgcInstance.vFrameSizeCurrent = { 0 ,0 };

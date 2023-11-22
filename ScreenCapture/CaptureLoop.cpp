@@ -16,7 +16,7 @@ namespace
 			LONG vPreviousForegroundStyle = NULL;
 
 			//Check capture status while allowed
-			while (vWgcInstance.vGraphicsStatusLoopAllowed)
+			while (vCaptureInstance.vCaptureStatusLoopAllowed)
 			{
 				//Get foreground window
 				HWND currentForegroundWindow = GetForegroundWindow();
@@ -54,7 +54,7 @@ namespace
 		catch (...) {}
 
 		//Reset thread variables
-		vWgcInstance.vGraphicsStatusLoopFinished = true;
+		vCaptureInstance.vCaptureStatusLoopFinished = true;
 	}
 
 	VOID LoopWriteScreen()

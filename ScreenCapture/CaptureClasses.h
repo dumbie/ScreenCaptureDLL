@@ -99,8 +99,6 @@ namespace
 	{
 		//Status
 		BOOL vInstanceInitialized;
-		BOOL vGraphicsStatusLoopAllowed;
-		BOOL vGraphicsStatusLoopFinished;
 
 		//Frame
 		winrt::Windows::Graphics::SizeInt32 vFrameSizeCurrent = { 0 ,0 };
@@ -191,6 +189,8 @@ namespace
 	{
 		//Status
 		BOOL vInstanceInitialized;
+		BOOL vCaptureStatusLoopAllowed;
+		BOOL vCaptureStatusLoopFinished;
 		BOOL vCaptureTextureResizing;
 		UINT vCaptureTextureMipLevels;
 

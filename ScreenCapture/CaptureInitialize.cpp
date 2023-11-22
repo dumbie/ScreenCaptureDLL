@@ -185,14 +185,6 @@ namespace
 			vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(false);
 			vWgcInstance.vGraphicsCaptureSession.StartCapture();
 
-			//Update thread variables
-			vWgcInstance.vGraphicsStatusLoopAllowed = true;
-			vWgcInstance.vGraphicsStatusLoopFinished = false;
-
-			//Loop capture check status
-			std::thread threadLoopCheckStatus(LoopCaptureStatus);
-			threadLoopCheckStatus.detach();
-
 			//Update instance status
 			vWgcInstance.vInstanceInitialized = true;
 			std::cout << "Windows Graphics Capture initialized." << std::endl;
@@ -505,6 +497,14 @@ namespace
 
 				return false;
 			}
+
+			//Update thread variables
+			vCaptureInstance.vCaptureStatusLoopAllowed = true;
+			vCaptureInstance.vCaptureStatusLoopFinished = false;
+
+			//Loop capture status check
+			std::thread threadLoopCaptureStatus(LoopCaptureStatus);
+			threadLoopCaptureStatus.detach();
 
 			//Update variables
 			vCaptureInstance.vInstanceInitialized = true;
