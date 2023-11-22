@@ -77,6 +77,7 @@ namespace
 
 	struct ShaderVariables
 	{
+		BOOL TextureFilterUse;
 		BOOL HDRtoSDR;
 		FLOAT HDRPaperWhite;
 		FLOAT HDRMaximumNits;
@@ -89,6 +90,9 @@ namespace
 		FLOAT Contrast;
 		FLOAT Gamma;
 		FLOAT Blur;
+		FLOAT Unused1;
+		FLOAT Unused2;
+		FLOAT Unused3;
 	};
 
 	struct WgcInstance
@@ -189,7 +193,6 @@ namespace
 		BOOL vInstanceInitialized;
 		BOOL vCaptureTextureResizing;
 		UINT vCaptureTextureMipLevels;
-		UINT vCaptureFailCount = 0;
 
 		//Information
 		DXGI_FORMAT vCaptureDxgiFormat;

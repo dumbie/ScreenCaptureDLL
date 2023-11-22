@@ -323,6 +323,7 @@ namespace
 		{
 			//Create shader variables
 			ShaderVariables shaderVariables{};
+			shaderVariables.TextureFilterUse = vCaptureInstance.vCaptureTextureResizing;
 			shaderVariables.HDRtoSDR = vCaptureDetails.HDRtoSDR;
 			shaderVariables.HDRPaperWhite = vCaptureSettings.HDRPaperWhite;
 			shaderVariables.HDRMaximumNits = vCaptureSettings.HDRMaximumNits;
@@ -338,7 +339,7 @@ namespace
 
 			//Create buffer description
 			D3D11_BUFFER_DESC bufferDescription{};
-			bufferDescription.ByteWidth = sizeof(ShaderVariables);
+			bufferDescription.ByteWidth = sizeof(shaderVariables);
 			bufferDescription.Usage = D3D11_USAGE_DEFAULT;
 			bufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			bufferDescription.CPUAccessFlags = 0;

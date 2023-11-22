@@ -29,7 +29,6 @@ namespace
 		{
 			//Status
 			vCaptureInstance.vInstanceInitialized = false;
-			vCaptureInstance.vCaptureFailCount = 0;
 
 			//Bytes
 			vCaptureInstance.vScreenBytesCache.clear();

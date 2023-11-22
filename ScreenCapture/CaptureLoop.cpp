@@ -87,21 +87,6 @@ namespace
 					//Write media bytes to sink
 					std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureDetails.TotalByteSize, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
 					threadWriteSample.detach();
-
-					//Reset capture fail count
-					vCaptureInstance.vCaptureFailCount = 0;
-				}
-				else
-				{
-					//Update capture fail count
-					vCaptureInstance.vCaptureFailCount++;
-				}
-
-				//Check capture fail count
-				if (vCaptureInstance.vCaptureFailCount > 100)
-				{
-					std::cout << "Screen capture failed multiple times, stopping video capture." << std::endl;
-					CaptureVideoStopCode();
 				}
 
 				//Delay screen capture
