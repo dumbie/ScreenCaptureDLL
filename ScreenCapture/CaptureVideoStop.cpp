@@ -32,7 +32,8 @@ namespace
 			//Trigger capture event
 			if (vCaptureEventVideoCaptureStopped)
 			{
-				vCaptureEventVideoCaptureStopped();
+				std::thread threadEvent(vCaptureEventVideoCaptureStopped);
+				threadEvent.detach();
 			}
 
 			std::cout << "Stopped media capture..." << std::endl;

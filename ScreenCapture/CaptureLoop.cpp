@@ -40,7 +40,8 @@ namespace
 					//Trigger capture event
 					if (vCaptureEventDeviceChangeDetected)
 					{
-						vCaptureEventDeviceChangeDetected();
+						std::thread threadEvent(vCaptureEventDeviceChangeDetected);
+						threadEvent.detach();
 					}
 
 					//Note: triggers on resolution change, hdr switch and driver resets.
