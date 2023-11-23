@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
-using static ScreenCapture.CaptureImport;
 
 namespace ScreenCapture
 {
@@ -37,7 +36,7 @@ namespace ScreenCapture
             }
         }
 
-        public static void StopCaptureVideoEvent()
+        public static void CaptureEventVideoCaptureStopped()
         {
             try
             {
@@ -47,18 +46,29 @@ namespace ScreenCapture
             catch { }
         }
 
-        public static async Task StartCaptureVideoToFile()
+        public static void CaptureEventDeviceChangeDetected()
+        {
+            try
+            {
+                Debug.WriteLine("Device change event triggered, stopping capture.");
+                AppClose.Application_Exit();
+            }
+            catch { }
+        }
+
+        public static async Task<bool> StartCaptureVideoToFile()
         {
             try
             {
                 //Check video capture
                 if (CaptureImport.CaptureVideoIsRecording())
                 {
-                    return;
+                    return false;
                 }
 
                 //Register capture events
-                CaptureImport.CaptureEventVideoCaptureStopped(new CaptureEvent(StopCaptureVideoEvent));
+                CaptureImport.CaptureEventVideoCaptureStopped(CaptureEventVideoCaptureStopped);
+                CaptureImport.CaptureEventDeviceChangeDetected(CaptureEventDeviceChangeDetected);
 
                 //Capture tool settings
                 VideoFormats VideoSaveFormat = (VideoFormats)SettingLoad(vConfigurationTool, "VideoSaveFormat", typeof(int));
@@ -74,7 +84,7 @@ namespace ScreenCapture
 
                 int CaptureMonitorId = SettingLoad(vConfigurationTool, "CaptureMonitorId", typeof(int)) - 1;
                 bool CaptureSoundEffect = SettingLoad(vConfigurationTool, "CaptureSoundEffect", typeof(bool));
-                bool CaptureMouseDrawCursor = SettingLoad(vConfigurationTool, "CaptureMouseDrawCursor", typeof(bool));
+                bool CaptureDrawMouseCursor = SettingLoad(vConfigurationTool, "CaptureDrawMouseCursor", typeof(bool));
 
                 //Screen capture settings
                 CaptureSettings captureSettings = new CaptureSettings();
@@ -82,7 +92,7 @@ namespace ScreenCapture
                 captureSettings.MaxPixelDimension = VideoMaxPixelDimension;
                 captureSettings.MonitorId = CaptureMonitorId;
                 captureSettings.SoundEffect = CaptureSoundEffect;
-                captureSettings.MouseDrawCursor = CaptureMouseDrawCursor;
+                captureSettings.DrawMouseCursor = CaptureDrawMouseCursor;
 
                 //Media recording settings
                 MediaSettings mediaSettings = new MediaSettings();
@@ -99,7 +109,7 @@ namespace ScreenCapture
                 if (!CaptureImport.CaptureInitialize(captureSettings, out CaptureDetails vCaptureDetails, false))
                 {
                     Debug.WriteLine("Failed to initialize screen capture.");
-                    return;
+                    return false;
                 }
                 else
                 {
@@ -127,7 +137,7 @@ namespace ScreenCapture
                 fileSaveName = "Video " + AVFiles.FileNameReplaceInvalidChars(fileSaveName, "-");
                 vCaptureFileName = fileSaveName;
 
-                //Check screenshot location
+                //Check capture location
                 string fileSaveFolder = SettingLoad(vConfigurationTool, "CaptureLocation", typeof(string));
                 if (string.IsNullOrWhiteSpace(fileSaveFolder) || !Directory.Exists(fileSaveFolder))
                 {
@@ -146,26 +156,32 @@ namespace ScreenCapture
 
                 //Start video capture
                 bool captureStarted = CaptureImport.CaptureVideoStart(fileSavePath, mediaSettings);
-
-                //Play capture sound
                 if (captureStarted)
                 {
+                    //Show capture overlay window
+                    vWindowOverlay.Show();
+
                     //Create application tray menu
                     AppTrayMenu.Application_CreateTrayMenu();
 
                     //Start pipes server
                     SocketServer.EnablePipesServer();
 
-                    Debug.WriteLine("Started screen capturing video.");
+                    //Return result
+                    Debug.WriteLine("Successfully started video screen capture.");
+                    return true;
                 }
                 else
                 {
-                    Debug.WriteLine("Failed screen capturing video.");
+                    //Return result
+                    Debug.WriteLine("Failed starting video screen capture.");
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Screen video capture failed: " + ex.Message);
+                return false;
             }
         }
     }

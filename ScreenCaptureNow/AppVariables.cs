@@ -1,4 +1,5 @@
 ﻿using ArnoldVinkCode;
+using ScreenCaptureNow;
 using System.Configuration;
 using static ArnoldVinkCode.AVSettings;
 
@@ -14,5 +15,8 @@ namespace ScreenCapture
 
         //Capture Variables
         public static string vCaptureFileName = string.Empty;
+
+        //Window Variables
+        public static WindowOverlay vWindowOverlay = new WindowOverlay();
     }
 }

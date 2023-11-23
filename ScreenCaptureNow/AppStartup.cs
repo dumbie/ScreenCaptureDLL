@@ -65,7 +65,14 @@ namespace ScreenCapture
                 else if (launchAction == 2)
                 {
                     //Capture video to file
-                    await ScreenCaptureCode.StartCaptureVideoToFile();
+                    bool captureResult = await ScreenCaptureCode.StartCaptureVideoToFile();
+
+                    //Check capture result
+                    if (!captureResult)
+                    {
+                        //Close application
+                        AppClose.Application_Exit();
+                    }
                 }
                 else
                 {

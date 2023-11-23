@@ -20,14 +20,14 @@ namespace ScreenCapture
                 int ScreenshotMaxPixelDimension = SettingLoad(vConfigurationTool, "ScreenshotMaxPixelDimension", typeof(int));
                 int CaptureMonitorId = SettingLoad(vConfigurationTool, "CaptureMonitorId", typeof(int)) - 1;
                 bool CaptureSoundEffect = SettingLoad(vConfigurationTool, "CaptureSoundEffect", typeof(bool));
-                bool CaptureMouseDrawCursor = SettingLoad(vConfigurationTool, "CaptureMouseDrawCursor", typeof(bool));
+                bool CaptureDrawMouseCursor = SettingLoad(vConfigurationTool, "CaptureDrawMouseCursor", typeof(bool));
 
                 //Screen capture settings
                 CaptureSettings captureSettings = new CaptureSettings();
                 captureSettings.MonitorId = CaptureMonitorId;
                 captureSettings.MaxPixelDimension = ScreenshotMaxPixelDimension;
                 captureSettings.SoundEffect = CaptureSoundEffect;
-                captureSettings.MouseDrawCursor = CaptureMouseDrawCursor;
+                captureSettings.DrawMouseCursor = CaptureDrawMouseCursor;
 
                 //Check HDR to SDR setting
                 if (ScreenshotSaveFormat == ImageFormats.JPG || ScreenshotSaveFormat == ImageFormats.PNG || ScreenshotSaveFormat == ImageFormats.BMP || ScreenshotSaveFormat == ImageFormats.TIF || ScreenshotSaveFormat == ImageFormats.HEIF)
@@ -67,7 +67,7 @@ namespace ScreenCapture
                 fileSaveName = "Screenshot " + AVFiles.FileNameReplaceInvalidChars(fileSaveName, "-");
                 vCaptureFileName = fileSaveName;
 
-                //Check screenshot location
+                //Check capture location
                 string fileSaveFolder = SettingLoad(vConfigurationTool, "CaptureLocation", typeof(string));
                 if (string.IsNullOrWhiteSpace(fileSaveFolder) || !Directory.Exists(fileSaveFolder))
                 {

@@ -127,6 +127,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WindowOverlay.xaml.cs">
+      <DependentUpon>WindowOverlay.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -160,6 +163,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\AppIconProcessing.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="WindowOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
