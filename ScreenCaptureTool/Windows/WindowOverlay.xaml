@@ -20,7 +20,7 @@
             <SolidColorBrush Color="{DynamicResource ApplicationBlackColor}"/>
         </Border.Background>
         <StackPanel Orientation="Horizontal">
-            <Ellipse Margin="5" Fill="{DynamicResource ApplicationInvalidBrush}" Width="15" Height="15"/>
+            <Ellipse Name="ellipse_Status" Margin="5" Fill="{DynamicResource ApplicationInvalidBrush}" Width="15" Height="15"/>
             <TextBlock Name="textblock_Timing" Margin="0,0,5,0" VerticalAlignment="Center" Style="{StaticResource TextBlockWhiteLight}" Text="1s"/>
         </StackPanel>
     </Border>

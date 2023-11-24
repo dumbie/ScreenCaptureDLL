@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using static ArnoldVinkCode.AVProcess;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
@@ -54,6 +56,10 @@ namespace ScreenCapture
                     //Update the tray notify icon
                     AppTrayMenuNow.TrayNotifyIcon.Text = AVFunctions.StringCut("Processing " + vCaptureFileName, 59, "...");
                     AppTrayMenuNow.TrayNotifyIcon.Icon = new Icon(Assembly.GetEntryAssembly().GetManifestResourceStream("ScreenCaptureTool.Assets.AppIconProcessing.ico"));
+                    AVActions.DispatcherInvoke(delegate
+                    {
+                        vWindowOverlay.ellipse_Status.Fill = (SolidColorBrush)Application.Current.Resources["ApplicationIgnoredBrush"];
+                    });
 
                     //Request to stop video capture
                     bool captureResultStop = CaptureImport.CaptureVideoStop();
@@ -114,6 +120,7 @@ namespace ScreenCapture
 
                 int CaptureMonitorId = SettingLoad(vConfiguration, "CaptureMonitorId", typeof(int)) - 1;
                 bool CaptureSoundEffect = SettingLoad(vConfiguration, "CaptureSoundEffect", typeof(bool));
+                bool CaptureDrawBorder = SettingLoad(vConfiguration, "CaptureDrawBorder", typeof(bool));
                 bool CaptureDrawMouseCursor = SettingLoad(vConfiguration, "CaptureDrawMouseCursor", typeof(bool));
 
                 //Screen capture settings
@@ -122,6 +129,7 @@ namespace ScreenCapture
                 captureSettings.MaxPixelDimension = VideoMaxPixelDimension;
                 captureSettings.MonitorId = CaptureMonitorId;
                 captureSettings.SoundEffect = CaptureSoundEffect;
+                captureSettings.DrawBorder = CaptureDrawBorder;
                 captureSettings.DrawMouseCursor = CaptureDrawMouseCursor;
 
                 //Media recording settings
