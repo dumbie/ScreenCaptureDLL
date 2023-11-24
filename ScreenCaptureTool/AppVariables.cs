@@ -1,6 +1,5 @@
 ﻿using ArnoldVinkCode;
 using System.Configuration;
-using System.Windows.Media;
 using static ArnoldVinkCode.AVSettings;
 
 namespace ScreenCapture
@@ -13,10 +12,17 @@ namespace ScreenCapture
         //Setting Variables
         public static bool vComboboxSaveEnabled = true;
 
-        //Player Variables
-        public static MediaPlayer vWindowsMediaPlayer = new MediaPlayer();
-
         //Sockets Variables
         public static ArnoldVinkSockets vArnoldVinkSockets = null;
+
+        //Pipes Variables
+        public static ArnoldVinkPipes vArnoldVinkPipes = null;
+
+        //Capture Variables
+        public static string vCaptureFileName = string.Empty;
+
+        //Application Windows
+        public static WindowMain vWindowMain = new WindowMain();
+        public static WindowOverlay vWindowOverlay = new WindowOverlay();
     }
 }

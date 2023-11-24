@@ -8,7 +8,7 @@ using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
 {
-    public partial class AppTrayMenu
+    public partial class AppTrayMenuNow
     {
         //Tray Menu Variables
         public static NotifyIcon TrayNotifyIcon = new NotifyIcon();
@@ -21,12 +21,12 @@ namespace ScreenCapture
             {
                 Debug.WriteLine("Creating application tray menu.");
 
-                //Create a context menu for systray
+                //Create a context menu for system tray
                 TrayContextMenu.MenuItems.Add("Stop screen capture", NotifyIcon_Stop);
 
                 //Initialize the tray notify icon
                 TrayNotifyIcon.Text = AVFunctions.StringCut("Capturing " + vCaptureFileName, 59, "...");
-                TrayNotifyIcon.Icon = new Icon(Assembly.GetEntryAssembly().GetManifestResourceStream("ScreenCaptureNow.Assets.AppIconRecording.ico"));
+                TrayNotifyIcon.Icon = new Icon(Assembly.GetEntryAssembly().GetManifestResourceStream("ScreenCaptureTool.Assets.AppIconRecording.ico"));
 
                 //Add menu to tray icon and show it
                 TrayNotifyIcon.ContextMenu = TrayContextMenu;

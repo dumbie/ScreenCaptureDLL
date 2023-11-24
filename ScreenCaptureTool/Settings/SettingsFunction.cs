@@ -7,7 +7,7 @@ using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
 {
-    partial class WindowMain
+    public partial class WindowMain
     {
         //Change screenshot location
         private void button_CaptureLocationChange_Click(object sender, RoutedEventArgs e)
@@ -39,7 +39,7 @@ namespace ScreenCapture
         }
 
         //Open capture location
-        public static void OpenCaptureLocation()
+        public void OpenCaptureLocation()
         {
             try
             {

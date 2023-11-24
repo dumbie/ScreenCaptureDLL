@@ -11,7 +11,7 @@ namespace ScreenCapture
     partial class WindowMain
     {
         //Load - Application Settings
-        void Settings_Load()
+        public void Settings_Load()
         {
             try
             {
@@ -24,7 +24,7 @@ namespace ScreenCapture
 
                 //General
                 checkbox_CaptureSoundEffect.IsChecked = SettingLoad(vConfiguration, "CaptureSoundEffect", typeof(bool));
-                checkbox_CaptureMouseDrawCursor.IsChecked = SettingLoad(vConfiguration, "CaptureMouseDrawCursor", typeof(bool));
+                checkbox_CaptureDrawMouseCursor.IsChecked = SettingLoad(vConfiguration, "CaptureDrawMouseCursor", typeof(bool));
                 textblock_CaptureLocation.Text = textblock_CaptureLocation.Tag + SettingLoad(vConfiguration, "CaptureLocation", typeof(string));
 
                 textblock_CaptureMonitorId.Text = textblock_CaptureMonitorId.Tag + SettingLoad(vConfiguration, "CaptureMonitorId", typeof(string));

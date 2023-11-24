@@ -7,10 +7,32 @@ using static ArnoldVinkCode.AVClassConverters;
 
 namespace ScreenCapture
 {
-    partial class WindowMain
+    partial class SocketServer
     {
+        //Handle received pipe string
+        public static void ReceivedPipesHandler(string receivedString)
+        {
+            try
+            {
+                void TaskAction()
+                {
+                    try
+                    {
+                        Debug.WriteLine("Received pipe string: " + receivedString);
+                        if (receivedString == "-videostop")
+                        {
+                            AppClose.Application_Exit();
+                        }
+                    }
+                    catch { }
+                }
+                AVActions.TaskStartBackground(TaskAction);
+            }
+            catch { }
+        }
+
         //Handle received socket data
-        public void ReceivedSocketHandler(TcpClient tcpClient, UdpEndPointDetails endPoint, byte[] receivedBytes)
+        public static void ReceivedSocketHandler(TcpClient tcpClient, UdpEndPointDetails endPoint, byte[] receivedBytes)
         {
             try
             {
@@ -34,7 +56,7 @@ namespace ScreenCapture
             catch { }
         }
 
-        async Task ReceivedUdpSocketHandlerThread(UdpEndPointDetails endPoint, byte[] receivedBytes)
+        public static async Task ReceivedUdpSocketHandlerThread(UdpEndPointDetails endPoint, byte[] receivedBytes)
         {
             try
             {
@@ -47,11 +69,11 @@ namespace ScreenCapture
                     Debug.WriteLine("Received socket string: " + deserializedBytes);
                     if (deserializedBytes == "CaptureImage")
                     {
-                        CaptureScreen.CaptureImageToFile();
+                        CaptureScreen.CaptureImageProcess();
                     }
                     else if (deserializedBytes == "CaptureVideo")
                     {
-                        await CaptureScreen.CaptureVideoToFile();
+                        await CaptureScreen.CaptureVideoProcess();
                     }
                 }
             }

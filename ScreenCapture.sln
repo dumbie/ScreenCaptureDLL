@@ -13,13 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenCapturePreview", "Scr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenCaptureTool", "ScreenCaptureTool\ScreenCaptureTool.csproj", "{74AE8DF1-5709-454A-B67F-E6923124DD97}"
 	ProjectSection(ProjectDependencies) = postProject
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B} = {02A0CEDF-5090-4478-A44C-8D575F0DD61B}
 		{D41825DF-7633-4BD6-A5C5-119494CF050B} = {D41825DF-7633-4BD6-A5C5-119494CF050B}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArnoldVinkCode", "..\ArnoldVinkCode\Desktop\ArnoldVinkCode.csproj", "{478ED5D3-38AF-47FC-AE14-B67976AB952C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenCaptureNow", "ScreenCaptureNow\ScreenCaptureNow.csproj", "{02A0CEDF-5090-4478-A44C-8D575F0DD61B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,18 +76,6 @@ Global
 		{478ED5D3-38AF-47FC-AE14-B67976AB952C}.Release|x64.Build.0 = Release|Any CPU
 		{478ED5D3-38AF-47FC-AE14-B67976AB952C}.Release|x86.ActiveCfg = Release|Any CPU
 		{478ED5D3-38AF-47FC-AE14-B67976AB952C}.Release|x86.Build.0 = Release|Any CPU
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Debug|Any CPU.Build.0 = Debug|x64
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Debug|x64.ActiveCfg = Debug|x64
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Debug|x64.Build.0 = Debug|x64
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Debug|x86.ActiveCfg = Debug|x86
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Debug|x86.Build.0 = Debug|x86
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Release|Any CPU.ActiveCfg = Release|x64
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Release|Any CPU.Build.0 = Release|x64
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Release|x64.ActiveCfg = Release|x64
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Release|x64.Build.0 = Release|x64
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Release|x86.ActiveCfg = Release|x86
-		{02A0CEDF-5090-4478-A44C-8D575F0DD61B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,7 +6,7 @@ using System.Windows.Threading;
 using static ArnoldVinkCode.AVInteropDll;
 using static ArnoldVinkCode.AVWindowFunctions;
 
-namespace ScreenCaptureNow
+namespace ScreenCapture
 {
     public partial class WindowOverlay : Window
     {

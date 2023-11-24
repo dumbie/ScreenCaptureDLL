@@ -44,7 +44,7 @@ namespace ScreenCapture
                 {
                     new ComboBoxItemValue()
                     {
-                        Text = "H264",
+                        Text = "H264 (SDR only)",
                     },
                     new ComboBoxItemValue()
                     {
@@ -71,6 +71,11 @@ namespace ScreenCapture
                     {
                         Text = "90 FPS",
                         Value = "90"
+                    },
+                    new ComboBoxItemValue()
+                    {
+                        Text = "120 FPS",
+                        Value = "120"
                     }
                 };
                 combobox_VideoFrameRate.Items.Clear();

@@ -8,7 +8,7 @@ namespace ScreenCapture
     public partial class WindowMain
     {
         //Check - Application Settings
-        void Settings_Check()
+        public void Settings_Check()
         {
             try
             {
@@ -21,7 +21,7 @@ namespace ScreenCapture
                 //General
                 if (!SettingCheck(vConfiguration, "CaptureSoundEffect")) { SettingSave(vConfiguration, "CaptureSoundEffect", "True"); }
                 if (!SettingCheck(vConfiguration, "CaptureMonitorId")) { SettingSave(vConfiguration, "CaptureMonitorId", "1"); }
-                if (!SettingCheck(vConfiguration, "CaptureMouseDrawCursor")) { SettingSave(vConfiguration, "CaptureMouseDrawCursor", "False"); }
+                if (!SettingCheck(vConfiguration, "CaptureDrawMouseCursor")) { SettingSave(vConfiguration, "CaptureDrawMouseCursor", "False"); }
                 if (!SettingCheck(vConfiguration, "CaptureLocation")) { SettingSave(vConfiguration, "CaptureLocation", "Captures"); }
 
                 //Screenshot

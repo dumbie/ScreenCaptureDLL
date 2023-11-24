@@ -10,7 +10,7 @@ namespace ScreenCapture
     partial class WindowMain
     {
         //Save - Application Settings
-        void Settings_Save()
+        public void Settings_Save()
         {
             try
             {
@@ -20,9 +20,9 @@ namespace ScreenCapture
                     SettingSave(vConfiguration, "CaptureSoundEffect", checkbox_CaptureSoundEffect.IsChecked);
                 };
 
-                checkbox_CaptureMouseDrawCursor.Click += (sender, e) =>
+                checkbox_CaptureDrawMouseCursor.Click += (sender, e) =>
                 {
-                    SettingSave(vConfiguration, "CaptureMouseDrawCursor", checkbox_CaptureMouseDrawCursor.IsChecked);
+                    SettingSave(vConfiguration, "CaptureDrawMouseCursor", checkbox_CaptureDrawMouseCursor.IsChecked);
                 };
 
                 slider_CaptureMonitorId.ValueChanged += (sender, e) =>

@@ -2,25 +2,25 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
-using System.Windows;
 using System.Windows.Forms;
+using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
 {
-    public partial class WindowMain
+    public partial class AppTrayMenuTool
     {
         //Tray Menu Variables
         public static NotifyIcon TrayNotifyIcon = new NotifyIcon();
         public static ContextMenu TrayContextMenu = new ContextMenu();
 
         //Create the application tray menu
-        public void Application_CreateTrayMenu()
+        public static void Application_CreateTrayMenu()
         {
             try
             {
                 Debug.WriteLine("Creating application tray menu.");
 
-                //Create a context menu for systray
+                //Create a context menu for system tray
                 TrayContextMenu.MenuItems.Add("Open capture location", NotifyIcon_OpenCapture);
                 TrayContextMenu.MenuItems.Add("-");
                 TrayContextMenu.MenuItems.Add("Settings", NotifyIcon_Settings);
@@ -41,42 +41,6 @@ namespace ScreenCapture
             catch { }
         }
 
-        //Show or hide the application window
-        public void Application_ShowHideWindow()
-        {
-            try
-            {
-                if (ShowInTaskbar)
-                {
-                    Debug.WriteLine("Minimizing application to tray.");
-                    ShowInTaskbar = false;
-                    Visibility = Visibility.Collapsed;
-                    WindowState = WindowState.Normal;
-                }
-                else
-                {
-                    Debug.WriteLine("Show the application from tray.");
-                    ShowInTaskbar = true;
-                    Visibility = Visibility.Visible;
-                    WindowState = WindowState.Normal;
-                }
-            }
-            catch { }
-        }
-
-        //Hide the application window
-        void Application_HideWindow()
-        {
-            try
-            {
-                Debug.WriteLine("Minimizing application to tray.");
-                ShowInTaskbar = false;
-                Visibility = Visibility.Collapsed;
-                WindowState = WindowState.Normal;
-            }
-            catch { }
-        }
-
         //Change tray icon
         public static void Application_ChangeTrayIcon(string iconName)
         {
@@ -92,34 +56,34 @@ namespace ScreenCapture
             catch { }
         }
 
-        void NotifyIcon_DoubleClick(object sender, EventArgs args)
+        public static void NotifyIcon_DoubleClick(object sender, EventArgs args)
         {
             try
             {
-                Application_ShowHideWindow();
+                vWindowMain.Application_ShowHideWindow();
             }
             catch { }
         }
 
-        void NotifyIcon_OpenCapture(object sender, EventArgs args)
+        public static void NotifyIcon_OpenCapture(object sender, EventArgs args)
         {
             try
             {
-                OpenCaptureLocation();
+                vWindowMain.OpenCaptureLocation();
             }
             catch { }
         }
 
-        void NotifyIcon_Settings(object sender, EventArgs args)
+        public static void NotifyIcon_Settings(object sender, EventArgs args)
         {
             try
             {
-                Application_ShowHideWindow();
+                vWindowMain.Application_ShowHideWindow();
             }
             catch { }
         }
 
-        void NotifyIcon_Website(object sender, EventArgs args)
+        public static void NotifyIcon_Website(object sender, EventArgs args)
         {
             try
             {
@@ -128,11 +92,11 @@ namespace ScreenCapture
             catch { }
         }
 
-        async void NotifyIcon_Exit(object sender, EventArgs args)
+        public static async void NotifyIcon_Exit(object sender, EventArgs args)
         {
             try
             {
-                await Application_Exit_Prompt();
+                await AppClose.Application_Exit_Prompt();
             }
             catch { }
         }

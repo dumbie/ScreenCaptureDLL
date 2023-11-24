@@ -14,6 +14,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -103,11 +103,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="..\ScreenCaptureShared\CaptureBitmap.cs">
+      <Link>CaptureBitmap.cs</Link>
+    </Compile>
+    <Compile Include="..\ScreenCaptureShared\CaptureClasses.cs">
+      <Link>CaptureClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\ScreenCaptureShared\CaptureImport.cs">
+      <Link>CaptureImport.cs</Link>
+    </Compile>
     <Compile Include="..\ScreenCaptureShared\Properties\AssemblyVersion.cs">
       <Link>Properties\AssemblyVersion.cs</Link>
     </Compile>
     <Compile Include="AppCheck.cs" />
     <Compile Include="AppClose.cs" />
+    <Compile Include="AppTrayMenuNow.cs" />
     <Compile Include="CaptureVideo.cs" />
     <Compile Include="Settings\SettingsMenu.cs" />
     <Compile Include="Settings\SettingsComboBox.cs" />
@@ -117,7 +127,7 @@
     <Compile Include="AppStartup.cs" />
     <Compile Include="AppVariables.cs" />
     <Compile Include="AppHotKey.cs" />
-    <Compile Include="AppTrayMenu.cs" />
+    <Compile Include="AppTrayMenuTool.cs" />
     <Compile Include="CaptureImage.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -127,8 +137,11 @@
     <Compile Include="Settings\SettingsLoad.cs" />
     <Compile Include="Settings\SettingsFunction.cs" />
     <Compile Include="Settings\SettingsSave.cs" />
-    <Compile Include="WindowMain.xaml.cs">
+    <Compile Include="Windows\WindowMain.xaml.cs">
       <DependentUpon>WindowMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\WindowOverlay.xaml.cs">
+      <DependentUpon>WindowOverlay.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -157,9 +170,13 @@
     <EmbeddedResource Include="Assets\AppIconRecording.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="WindowMain.xaml">
+    <Page Include="Windows\WindowMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\WindowOverlay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +186,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Assets\AppIconProcessing.ico" />
     <Content Include="Assets\Capture\CaptureScreenshot.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

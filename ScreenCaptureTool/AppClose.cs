@@ -1,36 +1,24 @@
 ﻿using ArnoldVinkCode;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace ScreenCapture
 {
-    public partial class WindowMain
+    public partial class AppClose
     {
-        //Application Close Handler
-        protected async override void OnClosing(CancelEventArgs e)
-        {
-            try
-            {
-                e.Cancel = true;
-                await Application_Exit_Prompt();
-            }
-            catch { }
-        }
-
         //Application close prompt
-        public async Task Application_Exit_Prompt()
+        public static async Task Application_Exit_Prompt()
         {
             try
             {
                 List<string> messageAnswers = new List<string>();
-                messageAnswers.Add("Exit application");
+                messageAnswers.Add("Close application");
                 messageAnswers.Add("Cancel");
 
-                string messageResult = await new AVMessageBox().Popup(this, "Do you really want to exit Screen Capture Tool?", "You will no longer be able to take screenshots using the set shortcuts.", messageAnswers);
-                if (messageResult == "Exit application")
+                string messageResult = await new AVMessageBox().Popup(null, "Do you really want to close Screen Capture Tool?", "You will no longer be able to take screenshots using the set shortcuts.", messageAnswers);
+                if (messageResult == "Close application")
                 {
                     Application_Exit();
                 }
@@ -39,14 +27,21 @@ namespace ScreenCapture
         }
 
         //Close the application
-        public void Application_Exit()
+        public static void Application_Exit()
         {
             try
             {
                 Debug.WriteLine("Exiting application.");
 
-                //Hide the visible tray icon
-                TrayNotifyIcon.Visible = false;
+                //Stop active video capture
+                CaptureScreen.StopCaptureVideoToFile();
+
+                //Reset screen capture resources
+                CaptureImport.CaptureReset();
+
+                //Hide the visible tray icons
+                AppTrayMenuTool.TrayNotifyIcon.Visible = false;
+                AppTrayMenuNow.TrayNotifyIcon.Visible = false;
 
                 //Close the application
                 Environment.Exit(0);
