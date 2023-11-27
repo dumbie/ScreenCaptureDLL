@@ -25,9 +25,12 @@ namespace
 				//Check foreground window change
 				if (vPreviousForegroundStyle != currentForegroundStyle || vPreviousForegroundWindow != currentForegroundWindow)
 				{
-					std::cout << "Foreground window / style has changed." << std::endl;
-					vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(true);
-					vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(false);
+					if (!vCaptureSettings.DrawBorder)
+					{
+						std::cout << "Foreground window / style has changed." << std::endl;
+						vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(true);
+						vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(false);
+					}
 				}
 
 				//Update previous variables

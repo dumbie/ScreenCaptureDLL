@@ -181,8 +181,8 @@ namespace
 
 			//Start capture session
 			vWgcInstance.vGraphicsCaptureSession = vWgcInstance.vGraphicsCaptureFramePool.CreateCaptureSession(vWgcInstance.vGraphicsCaptureItem);
-			vWgcInstance.vGraphicsCaptureSession.IsCursorCaptureEnabled(true);
-			vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(false);
+			vWgcInstance.vGraphicsCaptureSession.IsCursorCaptureEnabled(vCaptureSettings.DrawMouseCursor);
+			vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(vCaptureSettings.DrawBorder);
 			vWgcInstance.vGraphicsCaptureSession.StartCapture();
 
 			//Update instance status

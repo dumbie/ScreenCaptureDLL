@@ -45,7 +45,7 @@ namespace
 		UINT MonitorId = 0;
 		UINT MaxPixelDimension = 0;
 		BOOL SoundEffect = true;
-		BOOL DrawCaptureBorder = false;
+		BOOL DrawBorder = false;
 		BOOL DrawMouseCursor = true;
 		BOOL HDRtoSDR = false;
 		FLOAT HDRPaperWhite = 80.0F;
