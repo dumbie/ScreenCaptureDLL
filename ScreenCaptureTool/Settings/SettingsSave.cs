@@ -20,6 +20,11 @@ namespace ScreenCapture
                     SettingSave(vConfiguration, "CaptureSoundEffect", checkbox_CaptureSoundEffect.IsChecked);
                 };
 
+                checkbox_CaptureDrawBorder.Click += (sender, e) =>
+                {
+                    SettingSave(vConfiguration, "CaptureDrawBorder", checkbox_CaptureDrawBorder.IsChecked);
+                };
+
                 checkbox_CaptureDrawMouseCursor.Click += (sender, e) =>
                 {
                     SettingSave(vConfiguration, "CaptureDrawMouseCursor", checkbox_CaptureDrawMouseCursor.IsChecked);

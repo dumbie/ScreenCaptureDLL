@@ -21,7 +21,8 @@ namespace ScreenCapture
                 //General
                 if (!SettingCheck(vConfiguration, "CaptureSoundEffect")) { SettingSave(vConfiguration, "CaptureSoundEffect", "True"); }
                 if (!SettingCheck(vConfiguration, "CaptureMonitorId")) { SettingSave(vConfiguration, "CaptureMonitorId", "1"); }
-                if (!SettingCheck(vConfiguration, "CaptureDrawMouseCursor")) { SettingSave(vConfiguration, "CaptureDrawMouseCursor", "False"); }
+                if (!SettingCheck(vConfiguration, "CaptureDrawBorder")) { SettingSave(vConfiguration, "CaptureDrawBorder", "False"); }
+                if (!SettingCheck(vConfiguration, "CaptureDrawMouseCursor")) { SettingSave(vConfiguration, "CaptureDrawMouseCursor", "True"); }
                 if (!SettingCheck(vConfiguration, "CaptureLocation")) { SettingSave(vConfiguration, "CaptureLocation", "Captures"); }
 
                 //Screenshot

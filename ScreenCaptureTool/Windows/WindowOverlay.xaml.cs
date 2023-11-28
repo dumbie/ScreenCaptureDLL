@@ -41,7 +41,7 @@ namespace ScreenCapture
                 WindowUpdateStyle(vInteropWindowHandle, true, true, true);
 
                 //Set window display affinity
-                SetWindowDisplayAffinity(vInteropWindowHandle, DisplayAffinity.ExcludeFromCapture);
+                SetWindowDisplayAffinity(vInteropWindowHandle, DisplayAffinityFlags.WDA_EXCLUDEFROMCAPTURE);
 
                 //Start timing update timer
                 vRecordingTime = 0;

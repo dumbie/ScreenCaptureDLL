@@ -24,6 +24,7 @@ namespace ScreenCapture
 
                 //General
                 checkbox_CaptureSoundEffect.IsChecked = SettingLoad(vConfiguration, "CaptureSoundEffect", typeof(bool));
+                checkbox_CaptureDrawBorder.IsChecked = SettingLoad(vConfiguration, "CaptureDrawBorder", typeof(bool));
                 checkbox_CaptureDrawMouseCursor.IsChecked = SettingLoad(vConfiguration, "CaptureDrawMouseCursor", typeof(bool));
                 textblock_CaptureLocation.Text = textblock_CaptureLocation.Tag + SettingLoad(vConfiguration, "CaptureLocation", typeof(string));
 

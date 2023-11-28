@@ -10,10 +10,11 @@ namespace ScreenCapture
 {
     public partial class CaptureScreen
     {
-        public static void CaptureImageProcess()
+        public static async Task CaptureImageProcess(int captureDelay)
         {
             try
             {
+                await Task.Delay(captureDelay);
                 Debug.WriteLine("Starting image capture process.");
                 Process startProcess = new Process();
                 startProcess.StartInfo.FileName = "ScreenCaptureTool.exe";
@@ -36,6 +37,7 @@ namespace ScreenCapture
                 int ScreenshotMaxPixelDimension = SettingLoad(vConfiguration, "ScreenshotMaxPixelDimension", typeof(int));
                 int CaptureMonitorId = SettingLoad(vConfiguration, "CaptureMonitorId", typeof(int)) - 1;
                 bool CaptureSoundEffect = SettingLoad(vConfiguration, "CaptureSoundEffect", typeof(bool));
+                bool CaptureDrawBorder = SettingLoad(vConfiguration, "CaptureDrawBorder", typeof(bool));
                 bool CaptureDrawMouseCursor = SettingLoad(vConfiguration, "CaptureDrawMouseCursor", typeof(bool));
 
                 //Screen capture settings
@@ -43,6 +45,7 @@ namespace ScreenCapture
                 captureSettings.MonitorId = CaptureMonitorId;
                 captureSettings.MaxPixelDimension = ScreenshotMaxPixelDimension;
                 captureSettings.SoundEffect = CaptureSoundEffect;
+                captureSettings.DrawBorder = CaptureDrawBorder;
                 captureSettings.DrawMouseCursor = CaptureDrawMouseCursor;
 
                 //Check HDR to SDR setting
