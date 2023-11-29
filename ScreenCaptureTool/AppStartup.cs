@@ -81,7 +81,10 @@ namespace ScreenCapture
                     if (captureResult)
                     {
                         //Show capture overlay window
-                        vWindowOverlay.Show();
+                        if (SettingLoad(vConfiguration, "VideoOverlayShow", typeof(bool)))
+                        {
+                            vWindowOverlay.Show();
+                        }
 
                         //Create application tray menu
                         AppTrayMenuNow.Application_CreateTrayMenu();
@@ -118,7 +121,7 @@ namespace ScreenCapture
                     if (SettingLoad(vConfiguration, "AppFirstLaunch", typeof(bool)))
                     {
                         Debug.WriteLine("First launch showing the window.");
-                        vWindowMain.Application_ShowHideWindow();
+                        vWindowMain.Application_ShowWindow();
                     }
 
                     //Register keyboard hotkeys

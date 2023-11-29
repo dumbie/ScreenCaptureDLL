@@ -40,6 +40,8 @@ namespace ScreenCapture
                 if (!SettingCheck(vConfiguration, "AudioBitRate")) { SettingSave(vConfiguration, "AudioBitRate", "256"); }
                 if (!SettingCheck(vConfiguration, "AudioBitDepth")) { SettingSave(vConfiguration, "AudioBitDepth", "16"); }
                 if (!SettingCheck(vConfiguration, "AudioSampleRate")) { SettingSave(vConfiguration, "AudioSampleRate", "48000"); }
+                if (!SettingCheck(vConfiguration, "VideoOverlayShow")) { SettingSave(vConfiguration, "VideoOverlayShow", "True"); }
+                if (!SettingCheck(vConfiguration, "VideoOverlayPosition")) { SettingSave(vConfiguration, "VideoOverlayPosition", "BottomCenter"); }
 
                 //Shortcuts
                 Check_SetShortcut_Keys();

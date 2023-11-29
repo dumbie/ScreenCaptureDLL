@@ -44,8 +44,7 @@ namespace ScreenCapture
                 combobox_VideoSaveFormat.SelectedIndex = SettingLoad(vConfiguration, "VideoSaveFormat", typeof(int));
 
                 int VideoFrameRate = SettingLoad(vConfiguration, "VideoFrameRate", typeof(int));
-                ComboBoxItemValue VideoFrameRateItem = combobox_VideoFrameRate.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == VideoFrameRate.ToString()).FirstOrDefault();
-                combobox_VideoFrameRate.SelectedItem = VideoFrameRateItem;
+                combobox_VideoFrameRate.SelectedItem = combobox_VideoFrameRate.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == VideoFrameRate.ToString()).FirstOrDefault();
 
                 textblock_VideoSaveQuality.Text = textblock_VideoSaveQuality.Tag + SettingLoad(vConfiguration, "VideoSaveQuality", typeof(string)) + "%";
                 slider_VideoSaveQuality.Value = SettingLoad(vConfiguration, "VideoSaveQuality", typeof(double));
@@ -56,21 +55,23 @@ namespace ScreenCapture
                 combobox_AudioSaveFormat.SelectedIndex = SettingLoad(vConfiguration, "AudioSaveFormat", typeof(int));
 
                 int AudioChannels = SettingLoad(vConfiguration, "AudioChannels", typeof(int));
-                ComboBoxItemValue AudioChannelsItem = combobox_AudioChannels.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == AudioChannels.ToString()).FirstOrDefault();
-                combobox_AudioChannels.SelectedItem = AudioChannelsItem;
+                combobox_AudioChannels.SelectedItem = combobox_AudioChannels.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == AudioChannels.ToString()).FirstOrDefault();
 
                 textblock_AudioBitRate.Text = textblock_AudioBitRate.Tag + SettingLoad(vConfiguration, "AudioBitRate", typeof(string)) + " kbps";
                 slider_AudioBitRate.Value = SettingLoad(vConfiguration, "AudioBitRate", typeof(double));
 
                 int AudioBitDepth = SettingLoad(vConfiguration, "AudioBitDepth", typeof(int));
-                ComboBoxItemValue AudioBitDepthItem = combobox_AudioBitDepth.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == AudioBitDepth.ToString()).FirstOrDefault();
-                combobox_AudioBitDepth.SelectedItem = AudioBitDepthItem;
+                combobox_AudioBitDepth.SelectedItem = combobox_AudioBitDepth.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == AudioBitDepth.ToString()).FirstOrDefault();
 
                 int AudioSampleRate = SettingLoad(vConfiguration, "AudioSampleRate", typeof(int));
-                ComboBoxItemValue AudioSampleRateItem = combobox_AudioSampleRate.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == AudioSampleRate.ToString()).FirstOrDefault();
-                combobox_AudioSampleRate.SelectedItem = AudioSampleRateItem;
+                combobox_AudioSampleRate.SelectedItem = combobox_AudioSampleRate.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == AudioSampleRate.ToString()).FirstOrDefault();
 
-                //Check launch on Windows startup
+                checkbox_VideoOverlayShow.IsChecked = SettingLoad(vConfiguration, "VideoOverlayShow", typeof(bool));
+
+                string VideoOverlayPosition = SettingLoad(vConfiguration, "VideoOverlayPosition", typeof(string));
+                combobox_VideoOverlayPosition.SelectedItem = combobox_VideoOverlayPosition.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == VideoOverlayPosition.ToString()).FirstOrDefault();
+
+                //Launch on Windows startup
                 checkbox_WindowsStartup.IsChecked = AVSettings.StartupShortcutCheck();
             }
             catch (Exception ex)

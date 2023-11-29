@@ -78,6 +78,7 @@ namespace ScreenCapture
                     SettingSave(vConfiguration, "VideoMaxPixelDimension", slider_VideoMaxPixelDimension.Value);
                 };
 
+                //Audio
                 combobox_AudioSaveFormat.SelectionChanged += (sender, e) =>
                 {
                     SettingSave(vConfiguration, "AudioSaveFormat", combobox_AudioSaveFormat.SelectedIndex);
@@ -107,6 +108,19 @@ namespace ScreenCapture
                     SettingSave(vConfiguration, "AudioSampleRate", saveValue.Value);
                 };
 
+                //Overlay
+                checkbox_VideoOverlayShow.Click += (sender, e) =>
+                {
+                    SettingSave(vConfiguration, "VideoOverlayShow", checkbox_VideoOverlayShow.IsChecked);
+                };
+
+                combobox_VideoOverlayPosition.SelectionChanged += (sender, e) =>
+                {
+                    ComboBoxItemValue saveValue = (ComboBoxItemValue)combobox_VideoOverlayPosition.SelectedItem;
+                    SettingSave(vConfiguration, "VideoOverlayPosition", saveValue.Value);
+                };
+
+                //Launch on Windows startup
                 checkbox_WindowsStartup.Click += (sender, e) =>
                 {
                     try

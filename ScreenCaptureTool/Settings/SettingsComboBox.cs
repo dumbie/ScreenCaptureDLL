@@ -174,6 +174,53 @@ namespace ScreenCapture
                 combobox_AudioSampleRate.Items.Clear();
                 combobox_AudioSampleRate.ItemsSource = itemsAudioSampleRate;
                 combobox_AudioSampleRate.DisplayMemberPath = "Text";
+
+                List<ComboBoxItemValue> itemsVideoOverlayPosition = new List<ComboBoxItemValue>
+                {
+                    new ComboBoxItemValue()
+                    {
+                        Text = "Top Left",
+                        Value = "TopLeft"
+                    },
+                    new ComboBoxItemValue()
+                    {
+                        Text = "Top Center",
+                        Value = "TopCenter"
+                    },
+                    new ComboBoxItemValue()
+                    {
+                        Text = "Top Right",
+                        Value = "TopRight"
+                    },
+                    new ComboBoxItemValue()
+                    {
+                        Text = "Right Center",
+                        Value = "RightCenter"
+                    },
+                    new ComboBoxItemValue()
+                    {
+                        Text = "Bottom Right",
+                        Value = "BottomRight"
+                    },
+                    new ComboBoxItemValue()
+                    {
+                        Text = "Bottom Center",
+                        Value = "BottomCenter"
+                    },
+                    new ComboBoxItemValue()
+                    {
+                        Text = "Bottom Left",
+                        Value = "BottomLeft"
+                    },
+                    new ComboBoxItemValue()
+                    {
+                        Text = "Left Center",
+                        Value = "LeftCenter"
+                    }
+                };
+                combobox_VideoOverlayPosition.Items.Clear();
+                combobox_VideoOverlayPosition.ItemsSource = itemsVideoOverlayPosition;
+                combobox_VideoOverlayPosition.DisplayMemberPath = "Text";
             }
             catch { }
         }

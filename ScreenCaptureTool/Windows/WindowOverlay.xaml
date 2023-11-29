@@ -15,7 +15,7 @@
         ResizeMode="NoResize"
         Background="Transparent">
 
-    <Border CornerRadius="10" Opacity="0.8" Margin="0,0,0,75" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+    <Border Name="border_Overlay" CornerRadius="10" Opacity="0.8" Margin="75" VerticalAlignment="Bottom" HorizontalAlignment="Center">
         <Border.Background>
             <SolidColorBrush Color="{DynamicResource ApplicationBlackColor}"/>
         </Border.Background>
