@@ -66,10 +66,15 @@ namespace ScreenCapture
                     SettingSave(vConfiguration, "VideoFrameRate", saveValue.Value);
                 };
 
-                slider_VideoSaveQuality.ValueChanged += (sender, e) =>
+                combobox_VideoRateControl.SelectionChanged += (sender, e) =>
                 {
-                    textblock_VideoSaveQuality.Text = textblock_VideoSaveQuality.Tag + slider_VideoSaveQuality.Value.ToString() + "%";
-                    SettingSave(vConfiguration, "VideoSaveQuality", slider_VideoSaveQuality.Value);
+                    SettingSave(vConfiguration, "VideoRateControl", combobox_VideoRateControl.SelectedIndex);
+                };
+
+                slider_VideoBitRate.ValueChanged += (sender, e) =>
+                {
+                    textblock_VideoBitRate.Text = textblock_VideoBitRate.Tag + slider_VideoBitRate.Value.ToString() + " Kbps";
+                    SettingSave(vConfiguration, "VideoBitRate", slider_VideoBitRate.Value);
                 };
 
                 slider_VideoMaxPixelDimension.ValueChanged += (sender, e) =>

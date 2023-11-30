@@ -46,8 +46,10 @@ namespace ScreenCapture
                 int VideoFrameRate = SettingLoad(vConfiguration, "VideoFrameRate", typeof(int));
                 combobox_VideoFrameRate.SelectedItem = combobox_VideoFrameRate.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == VideoFrameRate.ToString()).FirstOrDefault();
 
-                textblock_VideoSaveQuality.Text = textblock_VideoSaveQuality.Tag + SettingLoad(vConfiguration, "VideoSaveQuality", typeof(string)) + "%";
-                slider_VideoSaveQuality.Value = SettingLoad(vConfiguration, "VideoSaveQuality", typeof(double));
+                combobox_VideoRateControl.SelectedIndex = SettingLoad(vConfiguration, "VideoRateControl", typeof(int));
+
+                textblock_VideoBitRate.Text = textblock_VideoBitRate.Tag + SettingLoad(vConfiguration, "VideoBitRate", typeof(string)) + " Kbps";
+                slider_VideoBitRate.Value = SettingLoad(vConfiguration, "VideoBitRate", typeof(double));
 
                 textblock_VideoMaxPixelDimension.Text = textblock_VideoMaxPixelDimension.Tag + SettingLoad(vConfiguration, "VideoMaxPixelDimension", typeof(string)) + "px";
                 slider_VideoMaxPixelDimension.Value = SettingLoad(vConfiguration, "VideoMaxPixelDimension", typeof(double));

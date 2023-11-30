@@ -27,7 +27,7 @@ namespace
 				{
 					if (!vCaptureSettings.DrawBorder)
 					{
-						std::cout << "Foreground window / style has changed." << std::endl;
+						std::cout << "Foreground window or style has changed, hiding capture border: " << vWgcInstance.vGraphicsCaptureSession.IsBorderRequired() << std::endl;
 						vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(true);
 						vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(false);
 					}

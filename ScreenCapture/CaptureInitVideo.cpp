@@ -76,18 +76,21 @@ namespace
 			CComPtr<IMFAttributes> imfAttributesEncoding;
 			MFCreateAttributes(&imfAttributesEncoding, 0);
 
-			//CBR
-			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_CBR);
-			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonMeanBitRate, 25000 * 1000);
-
-			//VBR
-			//imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_UnconstrainedVBR);
-			//imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonMeanBitRate, 25000 * 1000 * 2);
-
-			////Quality
-			//imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_Quality);
-			//imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQuality, vCaptureInstance.vMediaSettings.VideoQuality);
-			//imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQualityVsSpeed, 75);
+			//Set video rate control
+			if (vMediaSettings.VideoRateControl == CBR)
+			{
+				//Constant Rate Control
+				std::cout << "Set media control rate to constant: " << vMediaSettings.VideoBitRate << std::endl;
+				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_CBR);
+				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonMeanBitRate, vMediaSettings.VideoBitRate * 1000);
+			}
+			else if (vMediaSettings.VideoRateControl == VBR)
+			{
+				//Variable Rate Control
+				std::cout << "Set media control rate to variable: " << vMediaSettings.VideoBitRate << std::endl;
+				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_UnconstrainedVBR);
+				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonMeanBitRate, vMediaSettings.VideoBitRate * 1000 * 2);
+			}
 
 			//Settings
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVLowLatencyMode, 1);

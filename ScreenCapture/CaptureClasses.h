@@ -14,6 +14,12 @@ namespace
 		HEIF = 5
 	};
 
+	enum VideoRateControls
+	{
+		VBR = 0,
+		CBR = 1
+	};
+
 	enum VideoFormats
 	{
 		H264 = 0,
@@ -36,7 +42,8 @@ namespace
 		UINT AudioBitDepth = 16;
 		UINT AudioSampleRate = 48000;
 		VideoFormats VideoFormat = HEVC;
-		UINT VideoQuality = 60;
+		VideoRateControls VideoRateControl = VBR;
+		UINT VideoBitRate = 25000;
 		UINT VideoFrameRate = 60;
 	};
 

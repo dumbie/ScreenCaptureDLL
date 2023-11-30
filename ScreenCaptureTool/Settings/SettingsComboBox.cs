@@ -221,6 +221,21 @@ namespace ScreenCapture
                 combobox_VideoOverlayPosition.Items.Clear();
                 combobox_VideoOverlayPosition.ItemsSource = itemsVideoOverlayPosition;
                 combobox_VideoOverlayPosition.DisplayMemberPath = "Text";
+
+                List<ComboBoxItemValue> itemsVideoRateControl = new List<ComboBoxItemValue>
+                {
+                    new ComboBoxItemValue()
+                    {
+                        Text = "Variable Rate Control",
+                    },
+                    new ComboBoxItemValue()
+                    {
+                        Text = "Constant Rate Control",
+                    }
+                };
+                combobox_VideoRateControl.Items.Clear();
+                combobox_VideoRateControl.ItemsSource = itemsVideoRateControl;
+                combobox_VideoRateControl.DisplayMemberPath = "Text";
             }
             catch { }
         }

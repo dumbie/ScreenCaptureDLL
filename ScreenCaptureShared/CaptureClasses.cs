@@ -11,6 +11,12 @@
         HEIF = 5
     }
 
+    public enum VideoRateControls : int
+    {
+        VBR = 0,
+        CBR = 1
+    }
+
     public enum VideoFormats : int
     {
         H264 = 0,
@@ -34,7 +40,8 @@
         public int AudioBitDepth { get; set; } = 16;
         public int AudioSampleRate { get; set; } = 48000;
         public VideoFormats VideoFormat { get; set; } = VideoFormats.HEVC;
-        public int VideoQuality { get; set; } = 60;
+        public VideoRateControls VideoRateControl { get; set; } = VideoRateControls.VBR;
+        public int VideoBitRate { get; set; } = 25000;
         public int VideoFrameRate { get; set; } = 60;
     };
 
@@ -44,8 +51,8 @@
         public int MonitorId { get; set; } = 0;
         public int MaxPixelDimension { get; set; } = 0;
         public bool SoundEffect { get; set; } = true;
-        public bool MouseIgnoreMovement { get; set; } = false;
-        public bool MouseDrawCursor { get; set; } = true;
+        public bool DrawBorder { get; set; } = false;
+        public bool DrawMouseCursor { get; set; } = true;
         public bool HDRtoSDR { get; set; } = false;
         public float HDRPaperWhite { get; set; } = 80.0F;
         public float HDRMaximumNits { get; set; } = 1000.0F;

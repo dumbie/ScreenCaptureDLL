@@ -108,7 +108,8 @@ namespace ScreenCapture
 
                 //Capture tool settings
                 VideoFormats VideoSaveFormat = (VideoFormats)SettingLoad(vConfiguration, "VideoSaveFormat", typeof(int));
-                int VideoSaveQuality = SettingLoad(vConfiguration, "VideoSaveQuality", typeof(int));
+                VideoRateControls VideoRateControl = (VideoRateControls)SettingLoad(vConfiguration, "VideoRateControl", typeof(int));
+                int VideoBitRate = SettingLoad(vConfiguration, "VideoBitRate", typeof(int));
                 int VideoFrameRate = SettingLoad(vConfiguration, "VideoFrameRate", typeof(int));
                 int VideoMaxPixelDimension = SettingLoad(vConfiguration, "VideoMaxPixelDimension", typeof(int));
 
@@ -136,7 +137,8 @@ namespace ScreenCapture
                 MediaSettings mediaSettings = new MediaSettings();
                 mediaSettings.VideoFormat = VideoSaveFormat;
                 mediaSettings.VideoFrameRate = VideoFrameRate;
-                mediaSettings.VideoQuality = VideoSaveQuality;
+                mediaSettings.VideoRateControl = VideoRateControl;
+                mediaSettings.VideoBitRate = VideoBitRate;
                 mediaSettings.AudioFormat = AudioSaveFormat;
                 mediaSettings.AudioChannels = AudioChannels;
                 mediaSettings.AudioBitRate = AudioBitRate;
