@@ -21,6 +21,8 @@ namespace ScreenCapture
                 Debug.WriteLine("Creating application tray menu.");
 
                 //Create a context menu for system tray
+                TrayContextMenu.MenuItems.Add("Screen image capture", NotifyIcon_ImageCapture);
+                TrayContextMenu.MenuItems.Add("Start/stop video capture", NotifyIcon_StartVideoCapture);
                 TrayContextMenu.MenuItems.Add("Open capture location", NotifyIcon_OpenCapture);
                 TrayContextMenu.MenuItems.Add("-");
                 TrayContextMenu.MenuItems.Add("Settings", NotifyIcon_Settings);
@@ -61,6 +63,24 @@ namespace ScreenCapture
             try
             {
                 vWindowMain.Application_ShowHideWindow();
+            }
+            catch { }
+        }
+
+        public static async void NotifyIcon_ImageCapture(object sender, EventArgs args)
+        {
+            try
+            {
+                await CaptureScreen.CaptureImageProcess(1000);
+            }
+            catch { }
+        }
+
+        public static async void NotifyIcon_StartVideoCapture(object sender, EventArgs args)
+        {
+            try
+            {
+                await CaptureScreen.CaptureVideoProcess(1000);
             }
             catch { }
         }

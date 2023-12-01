@@ -17,10 +17,11 @@ namespace ScreenCapture
 {
     public partial class CaptureScreen
     {
-        public static async Task CaptureVideoProcess()
+        public static async Task CaptureVideoProcess(int captureDelay)
         {
             try
             {
+                await Task.Delay(captureDelay);
                 //Check if capture process is running
                 List<ProcessMulti> screenCaptureProcess = Get_ProcessesMultiByName("ScreenCaptureTool", true);
                 bool processRunningVideo = screenCaptureProcess.Any(x => x.Argument.ToLower() == "-video");
@@ -72,22 +73,22 @@ namespace ScreenCapture
             }
         }
 
-        public static void CaptureEventVideoCaptureStopped()
+        public static async void CaptureEventVideoCaptureStopped()
         {
             try
             {
                 Debug.WriteLine("Video capture stopped event triggered, closing application.");
-                AppClose.Application_Exit();
+                await AppClose.Application_Exit();
             }
             catch { }
         }
 
-        public static void CaptureEventDeviceChangeDetected()
+        public static async void CaptureEventDeviceChangeDetected()
         {
             try
             {
                 Debug.WriteLine("Device change event triggered, stopping capture and closing application.");
-                AppClose.Application_Exit();
+                await AppClose.Application_Exit();
             }
             catch { }
         }
