@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ScreenCapture"
         mc:Ignorable="d"
-        Title="Screen Capture Preview" MinHeight="750" Height="750" Width="1280">
+        Title="Screen Capture Preview"
+        MinHeight="750"
+        Height="750"
+        Width="1280"
+        Topmost="False">
     <Grid>
         <Image Name="image_DebugPreview"/>
         <Border Margin="10" MinWidth="180" CornerRadius="8" VerticalAlignment="Top" HorizontalAlignment="Right">
@@ -44,6 +48,9 @@
 
                 <TextBlock x:Name="text_Blur" Text="Blur: 0,0000" Tag="Blur:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_Blur" Value="0.00" Minimum="0.00" Maximum="80.00" ValueChanged="slider_ValueChanged"/>
+
+                <Button x:Name="button_Reset" Margin="0,5,0,0" Content="Restart capture" Click="button_Restart_Click"/>
+                <Button x:Name="button_Stop" Margin="0,5,0,0" Content="Stop capture" Click="button_Stop_Click"/>
             </StackPanel>
         </Border>
     </Grid>

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ArnoldVinkCode;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using static ScreenCapture.CaptureImport;
 
 namespace ScreenCapture
 {
@@ -17,49 +19,68 @@ namespace ScreenCapture
             InitializeComponent();
         }
 
-        //Initialize Screen Capture
+        //Screen capture events
+        public static CaptureEvent CaptureEventDeviceChangeDetected = null;
+        public async void CaptureEventDeviceChangeDetectedVoid()
+        {
+            try
+            {
+                Debug.WriteLine("Device change event triggered, restarting capture.");
+                await InitializeScreenCapture(200);
+            }
+            catch { }
+        }
+
+        //Initialize screen capture
         private async Task<bool> InitializeScreenCapture(int delayTime)
         {
             try
             {
-                Debug.WriteLine("Initializing screen capture: " + DateTime.Now);
-
-                //Set capture settings
-                vCaptureSettings = new CaptureSettings
+                bool captureInitialized = false;
+                AVActions.DispatcherInvoke(delegate
                 {
-                    MonitorId = 0,
-                    MaxPixelDimension = 1000,
-                    MouseDrawCursor = true,
-                    HDRtoSDR = true,
-                    HDRPaperWhite = (float)slider_HDRPaperWhite.Value,
-                    HDRMaximumNits = (float)slider_HDRMaximumNits.Value,
-                    Saturation = (float)slider_Saturation.Value,
-                    RedChannel = (float)slider_RedChannel.Value,
-                    GreenChannel = (float)slider_GreenChannel.Value,
-                    BlueChannel = (float)slider_BlueChannel.Value,
-                    Brightness = (float)slider_Brightness.Value,
-                    Contrast = (float)slider_Contrast.Value,
-                    Gamma = (float)slider_Gamma.Value,
-                    Blur = (float)slider_Blur.Value
-                };
+                    //Register capture events
+                    CaptureEventDeviceChangeDetected = new CaptureEvent(CaptureEventDeviceChangeDetectedVoid);
+                    CaptureImport.CaptureEventDeviceChangeDetected(CaptureEventDeviceChangeDetected);
 
-                //Initialize screen capture
-                bool captureInitialized = CaptureImport.CaptureInitialize(vCaptureSettings, out vCaptureDetails, true);
+                    //Set capture settings
+                    vCaptureSettings = new CaptureSettings
+                    {
+                        MonitorId = 0,
+                        MaxPixelDimension = 1000,
+                        DrawMouseCursor = true,
+                        HDRtoSDR = true,
+                        HDRPaperWhite = (float)slider_HDRPaperWhite.Value,
+                        HDRMaximumNits = (float)slider_HDRMaximumNits.Value,
+                        Saturation = (float)slider_Saturation.Value,
+                        RedChannel = (float)slider_RedChannel.Value,
+                        GreenChannel = (float)slider_GreenChannel.Value,
+                        BlueChannel = (float)slider_BlueChannel.Value,
+                        Brightness = (float)slider_Brightness.Value,
+                        Contrast = (float)slider_Contrast.Value,
+                        Gamma = (float)slider_Gamma.Value,
+                        Blur = (float)slider_Blur.Value
+                    };
 
-                //Set capture details string
-                string captureDetails = "Width: " + vCaptureDetails.OutputWidth + " (" + vCaptureDetails.OriginalWidth + ")";
-                captureDetails += "\nHeight: " + vCaptureDetails.OutputHeight + " (" + vCaptureDetails.OriginalHeight + ")";
-                captureDetails += "\nRefreshRate: " + vCaptureDetails.RefreshRate;
-                captureDetails += "\nPixelByteSize: " + vCaptureDetails.PixelByteSize;
-                captureDetails += "\nWidthByteSize: " + vCaptureDetails.WidthByteSize;
-                captureDetails += "\nTotalByteSize: " + vCaptureDetails.TotalByteSize;
-                captureDetails += "\nHDREnabled: " + vCaptureDetails.HDREnabled;
-                captureDetails += "\nHDRtoSDR: " + vCaptureDetails.HDRtoSDR;
-                captureDetails += "\nSDR White Level: " + vCaptureDetails.SDRWhiteLevel;
+                    //Initialize screen capture
+                    captureInitialized = CaptureImport.CaptureInitialize(vCaptureSettings, out vCaptureDetails, true);
 
-                //Update interface details
-                Debug.WriteLine(captureDetails);
-                textblock_CaptureDetails.Text = captureDetails;
+                    //Set capture details string
+                    string captureDetails = "Width: " + vCaptureDetails.OutputWidth + " (" + vCaptureDetails.OriginalWidth + ")";
+                    captureDetails += "\nHeight: " + vCaptureDetails.OutputHeight + " (" + vCaptureDetails.OriginalHeight + ")";
+                    captureDetails += "\nRefreshRate: " + vCaptureDetails.RefreshRate;
+                    captureDetails += "\nPixelByteSize: " + vCaptureDetails.PixelByteSize;
+                    captureDetails += "\nWidthByteSize: " + vCaptureDetails.WidthByteSize;
+                    captureDetails += "\nTotalByteSize: " + vCaptureDetails.TotalByteSize;
+                    captureDetails += "\nHDREnabled: " + vCaptureDetails.HDREnabled;
+                    captureDetails += "\nHDRtoSDR: " + vCaptureDetails.HDRtoSDR;
+                    captureDetails += "\nSDR White Level: " + vCaptureDetails.SDRWhiteLevel;
+
+                    //Update interface details
+                    textblock_CaptureDetails.Text = captureDetails;
+                });
+
+                //Return result
                 return captureInitialized;
             }
             catch (Exception ex)
@@ -104,8 +125,6 @@ namespace ScreenCapture
                         //Check screen bytes
                         if (bitmapIntPtr == IntPtr.Zero)
                         {
-                            Debug.WriteLine("Screen bytes are corrupted, restarting capture.");
-                            await InitializeScreenCapture(200);
                             continue;
                         }
 
@@ -119,7 +138,7 @@ namespace ScreenCapture
                     finally
                     {
                         //Delay next screen capture
-                        await Task.Delay(100);
+                        await Task.Delay(50);
                     }
                 }
             }
@@ -147,7 +166,7 @@ namespace ScreenCapture
                 {
                     MonitorId = 0,
                     MaxPixelDimension = 1000,
-                    MouseDrawCursor = true,
+                    DrawMouseCursor = true,
                     HDRtoSDR = true,
                     HDRPaperWhite = (float)slider_HDRPaperWhite.Value,
                     HDRMaximumNits = (float)slider_HDRMaximumNits.Value,
@@ -163,6 +182,28 @@ namespace ScreenCapture
 
                 bool settingsUpdated = CaptureImport.CaptureUpdateSettings(vCaptureSettings);
                 Debug.WriteLine("Capture settings updated: " + settingsUpdated);
+            }
+            catch { }
+        }
+
+        private async void button_Restart_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //Initialize screen capture
+                bool captureResult = await InitializeScreenCapture(200);
+                Debug.WriteLine("Capture restart: " + captureResult);
+            }
+            catch { }
+        }
+
+        private void button_Stop_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //Reset screen capture
+                bool captureResult = CaptureImport.CaptureReset();
+                Debug.WriteLine("Capture stopped: " + captureResult);
             }
             catch { }
         }

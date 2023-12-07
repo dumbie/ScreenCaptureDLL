@@ -120,5 +120,11 @@
   <ItemGroup>
     <Resource Include="Assets\AppIcon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ArnoldVinkCode\Desktop\ArnoldVinkCode.csproj">
+      <Project>{478ED5D3-38AF-47FC-AE14-B67976AB952C}</Project>
+      <Name>ArnoldVinkCode</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
