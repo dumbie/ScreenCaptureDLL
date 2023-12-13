@@ -14,14 +14,14 @@ namespace ScreenCapture
         {
             try
             {
-                void TaskAction()
+                async void TaskAction()
                 {
                     try
                     {
                         Debug.WriteLine("Received pipe string: " + receivedString);
                         if (receivedString == "-videostop")
                         {
-                            AppClose.Application_Exit();
+                            await AppClose.Application_Exit();
                         }
                     }
                     catch { }
@@ -73,7 +73,7 @@ namespace ScreenCapture
                     }
                     else if (deserializedBytes == "CaptureVideo")
                     {
-                        await CaptureScreen.CaptureVideoProcess();
+                        await CaptureScreen.CaptureVideoProcess(0);
                     }
                 }
             }

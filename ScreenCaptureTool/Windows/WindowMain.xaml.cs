@@ -69,7 +69,7 @@ namespace ScreenCapture
         }
 
         //Show the application window
-        void Application_ShowWindow()
+        public void Application_ShowWindow()
         {
             try
             {
@@ -82,7 +82,7 @@ namespace ScreenCapture
         }
 
         //Hide the application window
-        void Application_HideWindow()
+        public void Application_HideWindow()
         {
             try
             {

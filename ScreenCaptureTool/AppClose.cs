@@ -20,14 +20,14 @@ namespace ScreenCapture
                 string messageResult = await new AVMessageBox().Popup(null, "Do you really want to close Screen Capture Tool?", "You will no longer be able to take screenshots using the set shortcuts.", messageAnswers);
                 if (messageResult == "Close application")
                 {
-                    Application_Exit();
+                    await Application_Exit();
                 }
             }
             catch { }
         }
 
         //Close the application
-        public static void Application_Exit()
+        public static async Task Application_Exit()
         {
             try
             {
@@ -42,6 +42,9 @@ namespace ScreenCapture
                 //Hide the visible tray icons
                 AppTrayMenuTool.TrayNotifyIcon.Visible = false;
                 AppTrayMenuNow.TrayNotifyIcon.Visible = false;
+
+                //Stop keyboard hotkeys
+                await AVInputOutputHotKey.Stop();
 
                 //Close the application
                 Environment.Exit(0);

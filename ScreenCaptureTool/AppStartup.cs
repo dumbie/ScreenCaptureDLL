@@ -60,7 +60,7 @@ namespace ScreenCapture
                     await CaptureScreen.CaptureImageToFile();
 
                     //Close application
-                    AppClose.Application_Exit();
+                    await AppClose.Application_Exit();
                 }
                 else if (launchAction == 2)
                 {
@@ -68,7 +68,7 @@ namespace ScreenCapture
                     if (processRunningVideo)
                     {
                         Debug.WriteLine("Application is already running, closing the process");
-                        AppClose.Application_Exit();
+                        await AppClose.Application_Exit();
                         return;
                     }
 
@@ -95,7 +95,7 @@ namespace ScreenCapture
                     else
                     {
                         //Close application
-                        AppClose.Application_Exit();
+                        await AppClose.Application_Exit();
                     }
                 }
                 else
@@ -104,7 +104,7 @@ namespace ScreenCapture
                     if (processRunningTool)
                     {
                         Debug.WriteLine("Application is already running, closing the process");
-                        AppClose.Application_Exit();
+                        await AppClose.Application_Exit();
                         return;
                     }
 
@@ -124,7 +124,7 @@ namespace ScreenCapture
                         vWindowMain.Application_ShowWindow();
                     }
 
-                    //Register keyboard hotkeys
+                    //Start keyboard hotkeys
                     AVInputOutputHotKey.Start();
                     AVInputOutputHotKey.EventHotKeyPressed += AppHotKey.EventHotKeyPressed;
 

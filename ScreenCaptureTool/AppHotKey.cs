@@ -40,7 +40,7 @@ namespace ScreenCapture
                 if (usedVideoKeys.Count > 0 && !usedVideoKeys.Where(x => x != KeysVirtual.None).Except(keysPressed).Any())
                 {
                     Debug.WriteLine("Button Global - Capture video");
-                    await CaptureScreen.CaptureVideoProcess();
+                    await CaptureScreen.CaptureVideoProcess(0);
                 }
             }
             catch { }

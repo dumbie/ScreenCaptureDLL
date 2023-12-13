@@ -35,11 +35,11 @@ namespace ScreenCapture
             catch { }
         }
 
-        private static void NotifyIcon_Stop(object sender, EventArgs args)
+        private static async void NotifyIcon_Stop(object sender, EventArgs args)
         {
             try
             {
-                AppClose.Application_Exit();
+                await AppClose.Application_Exit();
             }
             catch { }
         }
