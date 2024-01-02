@@ -33,6 +33,10 @@ namespace ScreenCapture
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void CaptureEventVideoCaptureStopped(CaptureEvent captureEvent);
+
+        [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void CaptureEventDeviceChangeDetected(CaptureEvent captureEvent);
+
         public delegate void CaptureEvent();
     }
 }
