@@ -34,7 +34,7 @@ namespace ScreenCapture
                 if (!SettingCheck(vConfiguration, "VideoSaveFormat")) { SettingSave(vConfiguration, "VideoSaveFormat", "1"); }
                 if (!SettingCheck(vConfiguration, "VideoFrameRate")) { SettingSave(vConfiguration, "VideoFrameRate", "60"); }
                 if (!SettingCheck(vConfiguration, "VideoRateControl")) { SettingSave(vConfiguration, "VideoRateControl", "0"); }
-                if (!SettingCheck(vConfiguration, "VideoBitRate")) { SettingSave(vConfiguration, "VideoBitRate", "25000"); }
+                if (!SettingCheck(vConfiguration, "VideoBitRate")) { SettingSave(vConfiguration, "VideoBitRate", "40000"); }
                 if (!SettingCheck(vConfiguration, "VideoMaxPixelDimension")) { SettingSave(vConfiguration, "VideoMaxPixelDimension", "1440"); }
                 if (!SettingCheck(vConfiguration, "AudioSaveFormat")) { SettingSave(vConfiguration, "AudioSaveFormat", "1"); }
                 if (!SettingCheck(vConfiguration, "AudioChannels")) { SettingSave(vConfiguration, "AudioChannels", "2"); }

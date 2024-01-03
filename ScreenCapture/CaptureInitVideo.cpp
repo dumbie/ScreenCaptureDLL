@@ -77,22 +77,21 @@ namespace
 			MFCreateAttributes(&imfAttributesEncoding, 0);
 
 			//Set video rate control
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonMeanBitRate, vMediaSettings.VideoBitRate * 1000);
 			if (vMediaSettings.VideoRateControl == CBR)
 			{
 				//Constant Rate Control
 				std::cout << "Set media control rate to constant: " << vMediaSettings.VideoBitRate << std::endl;
 				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_CBR);
-				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonMeanBitRate, vMediaSettings.VideoBitRate * 1000);
 			}
 			else if (vMediaSettings.VideoRateControl == VBR)
 			{
 				//Variable Rate Control
 				std::cout << "Set media control rate to variable: " << vMediaSettings.VideoBitRate << std::endl;
 				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_UnconstrainedVBR);
-				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonMeanBitRate, vMediaSettings.VideoBitRate * 1000 * 2);
 			}
 
-			//Settings
+			//Set encoding settings
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVLowLatencyMode, 1);
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRealTime, 1);
 
