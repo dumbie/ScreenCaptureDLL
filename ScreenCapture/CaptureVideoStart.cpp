@@ -11,16 +11,14 @@ namespace
 	{
 		try
 		{
+			//Check capture status
 			if (vMediaFoundationInstance.vMediaCapturing) { return false; }
+
+			//Update capture status
+			vMediaFoundationInstance.vMediaCapturing = true;
 
 			//Update media settings
 			vMediaSettings = mediaSettings;
-
-			//Start video capture loop
-			vMediaFoundationInstance.vMediaCapturing = true;
-			vMediaFoundationInstance.vMediaWriteLoopAllowed = true;
-			vMediaFoundationInstance.vMediaWriteLoopFinishedScreen = false;
-			vMediaFoundationInstance.vMediaWriteLoopFinishedAudio = false;
 
 			//Initialize DXGI device manager
 			bool initializeDXGI = InitializeDxgiDeviceManager();
@@ -45,6 +43,11 @@ namespace
 				MediaFoundationResetVariablesAll();
 				return false;
 			}
+
+			//Update media loop status
+			vMediaFoundationInstance.vMediaWriteLoopAllowed = true;
+			vMediaFoundationInstance.vMediaWriteLoopFinishedScreen = false;
+			vMediaFoundationInstance.vMediaWriteLoopFinishedAudio = false;
 
 			//Set media loop start time
 			LARGE_INTEGER qpcTimeCurrent;

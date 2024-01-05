@@ -52,9 +52,6 @@ namespace
 	{
 		try
 		{
-			//Status
-			vCaptureInstance.vInstanceInitialized = false;
-
 			//Stop capture status loop
 			CaptureStatusLoopStop();
 
@@ -65,6 +62,9 @@ namespace
 			vCaptureInstance.iD3D11Texture2D0CpuRead.Release();
 			vCaptureInstance.iD3D11Texture2D0Screen.Release();
 			vCaptureInstance.iD3D11Texture2D0RenderTargetView.Release();
+
+			//Status
+			vCaptureInstance.vInstanceInitialized = false;
 
 			std::cout << "Reset all Capture variables." << std::endl;
 			return true;
@@ -128,9 +128,6 @@ namespace
 	{
 		try
 		{
-			//Status
-			vMediaFoundationInstance.vMediaCapturing = false;
-
 			//Stop media capture loop
 			MediaFoundationLoopStop();
 
@@ -147,6 +144,9 @@ namespace
 			vMediaFoundationInstance.iAudioWaveFormatExCapture.Free();
 			vMediaFoundationInstance.iAudioWaveFormatExRender.Free();
 
+			//Status
+			vMediaFoundationInstance.vMediaCapturing = false;
+
 			std::cout << "Reset all Media Foundation variables." << std::endl;
 			return true;
 		}
@@ -160,9 +160,6 @@ namespace
 	{
 		try
 		{
-			//Status
-			vWgcInstance.vInstanceInitialized = false;
-
 			//Frame
 			vWgcInstance.vFrameSizeCurrent = { 0 ,0 };
 			vWgcInstance.vFramePixelFormat = winrt::Windows::Graphics::DirectX::DirectXPixelFormat::Unknown;
@@ -187,6 +184,9 @@ namespace
 			}
 			vWgcInstance.vGraphicsCaptureFramePool = NULL;
 
+			//Status
+			vWgcInstance.vInstanceInitialized = false;
+
 			std::cout << "Reset all Windows Graphics Capture variables." << std::endl;
 			return true;
 		}
@@ -200,9 +200,6 @@ namespace
 	{
 		try
 		{
-			//Status
-			vDirectXInstance.vInstanceInitialized = false;
-
 			//Devices
 			vDirectXInstance.iDxgiDevice4.Release();
 			vDirectXInstance.iDxgiAdapter4.Release();
@@ -227,6 +224,9 @@ namespace
 			vDirectXInstance.iD3DBlobShaderPixel0.Release();
 			vDirectXInstance.iD3D11ShaderVertex0.Release();
 			vDirectXInstance.iD3D11ShaderPixel0.Release();
+
+			//Status
+			vDirectXInstance.vInstanceInitialized = false;
 
 			std::cout << "Reset all DirectX variables." << std::endl;
 			return true;

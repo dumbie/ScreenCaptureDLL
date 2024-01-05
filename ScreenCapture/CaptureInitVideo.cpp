@@ -52,7 +52,7 @@ namespace
 					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_8);
 				}
 			}
-			else
+			else if (videoFormat == MFVideoFormat_H264)
 			{
 				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, videoFormat);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH264VLevel5);
@@ -81,13 +81,13 @@ namespace
 			if (vMediaSettings.VideoRateControl == CBR)
 			{
 				//Constant Rate Control
-				std::cout << "Set media control rate to constant: " << vMediaSettings.VideoBitRate << std::endl;
+				std::cout << "Set constant media control rate: " << vMediaSettings.VideoBitRate << std::endl;
 				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_CBR);
 			}
 			else if (vMediaSettings.VideoRateControl == VBR)
 			{
 				//Variable Rate Control
-				std::cout << "Set media control rate to variable: " << vMediaSettings.VideoBitRate << std::endl;
+				std::cout << "Set variable media control rate: " << vMediaSettings.VideoBitRate << std::endl;
 				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_UnconstrainedVBR);
 			}
 
