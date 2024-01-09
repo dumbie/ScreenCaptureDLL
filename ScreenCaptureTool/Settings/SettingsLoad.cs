@@ -68,10 +68,12 @@ namespace ScreenCapture
                 int AudioSampleRate = SettingLoad(vConfiguration, "AudioSampleRate", typeof(int));
                 combobox_AudioSampleRate.SelectedItem = combobox_AudioSampleRate.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == AudioSampleRate.ToString()).FirstOrDefault();
 
-                checkbox_VideoOverlayShow.IsChecked = SettingLoad(vConfiguration, "VideoOverlayShow", typeof(bool));
+                //Overlay
+                checkbox_OverlayShowScreenshot.IsChecked = SettingLoad(vConfiguration, "OverlayShowScreenshot", typeof(bool));
+                checkbox_OverlayShowRecording.IsChecked = SettingLoad(vConfiguration, "OverlayShowRecording", typeof(bool));
 
-                string VideoOverlayPosition = SettingLoad(vConfiguration, "VideoOverlayPosition", typeof(string));
-                combobox_VideoOverlayPosition.SelectedItem = combobox_VideoOverlayPosition.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == VideoOverlayPosition.ToString()).FirstOrDefault();
+                string OverlayPosition = SettingLoad(vConfiguration, "OverlayPosition", typeof(string));
+                combobox_OverlayPosition.SelectedItem = combobox_OverlayPosition.Items.Cast<ComboBoxItemValue>().Where(x => x.Value == OverlayPosition.ToString()).FirstOrDefault();
 
                 //Launch on Windows startup
                 checkbox_WindowsStartup.IsChecked = AVSettings.StartupShortcutCheck();

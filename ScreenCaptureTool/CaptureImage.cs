@@ -27,7 +27,7 @@ namespace ScreenCapture
             }
         }
 
-        public static async Task CaptureImageToFile()
+        public static async Task<bool> CaptureImageToFile()
         {
             try
             {
@@ -58,7 +58,7 @@ namespace ScreenCapture
                 if (!CaptureImport.CaptureInitialize(captureSettings, out CaptureDetails vCaptureDetails, false))
                 {
                     Debug.WriteLine("Failed to initialize screen capture.");
-                    return;
+                    return false;
                 }
                 else
                 {
@@ -135,10 +135,12 @@ namespace ScreenCapture
                     screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".jxr", ScreenshotSaveQuality, ScreenshotSaveFormat);
                     Debug.WriteLine("Screenshot JXR export succeeded: " + screenshotSaved);
                 }
+                return screenshotSaved;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Screen image capture failed: " + ex.Message);
+                return false;
             }
         }
     }

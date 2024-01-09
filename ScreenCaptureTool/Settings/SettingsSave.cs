@@ -114,15 +114,20 @@ namespace ScreenCapture
                 };
 
                 //Overlay
-                checkbox_VideoOverlayShow.Click += (sender, e) =>
+                checkbox_OverlayShowScreenshot.Click += (sender, e) =>
                 {
-                    SettingSave(vConfiguration, "VideoOverlayShow", checkbox_VideoOverlayShow.IsChecked);
+                    SettingSave(vConfiguration, "OverlayShowScreenshot", checkbox_OverlayShowScreenshot.IsChecked);
                 };
 
-                combobox_VideoOverlayPosition.SelectionChanged += (sender, e) =>
+                checkbox_OverlayShowRecording.Click += (sender, e) =>
                 {
-                    ComboBoxItemValue saveValue = (ComboBoxItemValue)combobox_VideoOverlayPosition.SelectedItem;
-                    SettingSave(vConfiguration, "VideoOverlayPosition", saveValue.Value);
+                    SettingSave(vConfiguration, "OverlayShowRecording", checkbox_OverlayShowRecording.IsChecked);
+                };
+
+                combobox_OverlayPosition.SelectionChanged += (sender, e) =>
+                {
+                    ComboBoxItemValue saveValue = (ComboBoxItemValue)combobox_OverlayPosition.SelectedItem;
+                    SettingSave(vConfiguration, "OverlayPosition", saveValue.Value);
                 };
 
                 //Launch on Windows startup

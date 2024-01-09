@@ -118,6 +118,7 @@
     <Compile Include="AppCheck.cs" />
     <Compile Include="AppClose.cs" />
     <Compile Include="AppTrayMenuNow.cs" />
+    <Compile Include="AppClasses.cs" />
     <Compile Include="CaptureVideo.cs" />
     <Compile Include="Settings\SettingsMenu.cs" />
     <Compile Include="Settings\SettingsComboBox.cs" />
@@ -186,6 +187,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Assets\Failed.png" />
     <EmbeddedResource Include="Assets\AppIconProcessing.ico" />
     <Content Include="Assets\Capture\CaptureScreenshot.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using static ArnoldVinkCode.AVProcess;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppCheck;
+using static ScreenCapture.AppClasses;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -29,7 +30,7 @@ namespace ScreenCapture
                 bool processRunningVideo = screenCaptureProcess.Count(x => x.Argument.ToLower() == "-video") > 1;
 
                 //Check launch arguments
-                int launchAction = 0;
+                CaptureTypes launchAction = CaptureTypes.None;
                 if (launchArgs != null && launchArgs.Any())
                 {
                     foreach (string launchArgument in launchArgs)
@@ -40,11 +41,11 @@ namespace ScreenCapture
                             string launchArgumentLower = launchArgument.ToLower();
                             if (launchArgumentLower.StartsWith("-image"))
                             {
-                                launchAction = 1;
+                                launchAction = CaptureTypes.Image;
                             }
                             else if (launchArgumentLower.StartsWith("-video"))
                             {
-                                launchAction = 2;
+                                launchAction = CaptureTypes.Video;
                             }
                         }
                         catch { }
@@ -52,17 +53,25 @@ namespace ScreenCapture
                 }
 
                 //Check launch action
-                if (launchAction == 1)
+                if (launchAction == CaptureTypes.Image)
                 {
                     Debug.WriteLine("Screen Capture Tool image.");
 
                     //Capture image to file
-                    await CaptureScreen.CaptureImageToFile();
+                    bool captureResult = await CaptureScreen.CaptureImageToFile();
+
+                    //Show capture overlay window
+                    if (SettingLoad(vConfiguration, "OverlayShowScreenshot", typeof(bool)))
+                    {
+                        vWindowOverlay.ShowOverlay(CaptureTypes.Image, captureResult);
+                        await Task.Delay(3000);
+                        vWindowOverlay.Hide();
+                    }
 
                     //Close application
                     await AppClose.Application_Exit();
                 }
-                else if (launchAction == 2)
+                else if (launchAction == CaptureTypes.Video)
                 {
                     //Check if application is already running
                     if (processRunningVideo)
@@ -81,9 +90,9 @@ namespace ScreenCapture
                     if (captureResult)
                     {
                         //Show capture overlay window
-                        if (SettingLoad(vConfiguration, "VideoOverlayShow", typeof(bool)))
+                        if (SettingLoad(vConfiguration, "OverlayShowRecording", typeof(bool)))
                         {
-                            vWindowOverlay.Show();
+                            vWindowOverlay.ShowOverlay(CaptureTypes.Video, captureResult);
                         }
 
                         //Create application tray menu

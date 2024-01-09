@@ -175,7 +175,7 @@ namespace ScreenCapture
                 combobox_AudioSampleRate.ItemsSource = itemsAudioSampleRate;
                 combobox_AudioSampleRate.DisplayMemberPath = "Text";
 
-                List<ComboBoxItemValue> itemsVideoOverlayPosition = new List<ComboBoxItemValue>
+                List<ComboBoxItemValue> itemsOverlayPosition = new List<ComboBoxItemValue>
                 {
                     new ComboBoxItemValue()
                     {
@@ -218,9 +218,9 @@ namespace ScreenCapture
                         Value = "LeftCenter"
                     }
                 };
-                combobox_VideoOverlayPosition.Items.Clear();
-                combobox_VideoOverlayPosition.ItemsSource = itemsVideoOverlayPosition;
-                combobox_VideoOverlayPosition.DisplayMemberPath = "Text";
+                combobox_OverlayPosition.Items.Clear();
+                combobox_OverlayPosition.ItemsSource = itemsOverlayPosition;
+                combobox_OverlayPosition.DisplayMemberPath = "Text";
 
                 List<ComboBoxItemValue> itemsVideoRateControl = new List<ComboBoxItemValue>
                 {

@@ -2,10 +2,12 @@
 using System;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static ArnoldVinkCode.AVInteropDll;
 using static ArnoldVinkCode.AVSettings;
 using static ArnoldVinkCode.AVWindowFunctions;
+using static ScreenCapture.AppClasses;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -16,11 +18,25 @@ namespace ScreenCapture
         private IntPtr vInteropWindowHandle = IntPtr.Zero;
         private DispatcherTimer vDispatcherTimerDelay = new DispatcherTimer();
         private int vRecordingTime = 0;
+        private bool vCaptureResult = false;
+        private CaptureTypes vCaptureType = CaptureTypes.None;
 
         //Window Initialize
         public WindowOverlay()
         {
             InitializeComponent();
+        }
+
+        //Window Show Overlay
+        public void ShowOverlay(CaptureTypes captureType, bool captureResult)
+        {
+            try
+            {
+                vCaptureType = captureType;
+                vCaptureResult = captureResult;
+                Show();
+            }
+            catch { }
         }
 
         //Window Initialized
@@ -48,12 +64,40 @@ namespace ScreenCapture
                 //Update window position
                 UpdateWindowPosition();
 
-                //Start timing update timer
-                vRecordingTime = 0;
-                AVFunctions.TimerRenew(ref vDispatcherTimerDelay);
-                vDispatcherTimerDelay.Interval = TimeSpan.FromMilliseconds(1000);
-                vDispatcherTimerDelay.Tick += VDispatcherTimerDelay_Tick;
-                vDispatcherTimerDelay.Start();
+                //Update overlay capture type
+                if (vCaptureType == CaptureTypes.Video)
+                {
+                    //Show video overlay
+                    border_Overlay_Image.Visibility = Visibility.Collapsed;
+                    border_Overlay_Video.Visibility = Visibility.Visible;
+
+                    //Check capture status
+                    if (vCaptureResult)
+                    {
+                        //Start timing update timer
+                        vRecordingTime = 0;
+                        AVFunctions.TimerRenew(ref vDispatcherTimerDelay);
+                        vDispatcherTimerDelay.Interval = TimeSpan.FromMilliseconds(1000);
+                        vDispatcherTimerDelay.Tick += VDispatcherTimerDelay_Tick;
+                        vDispatcherTimerDelay.Start();
+                    }
+                }
+                else
+                {
+                    //Show image overlay
+                    border_Overlay_Image.Visibility = Visibility.Visible;
+                    border_Overlay_Video.Visibility = Visibility.Collapsed;
+
+                    //Check capture status
+                    if (vCaptureResult)
+                    {
+                        image_Status.Source = new BitmapImage(new Uri("/Assets/Screenshot.png", UriKind.RelativeOrAbsolute));
+                    }
+                    else
+                    {
+                        image_Status.Source = new BitmapImage(new Uri("/Assets/Failed.png", UriKind.RelativeOrAbsolute));
+                    }
+                }
             }
             catch { }
         }
@@ -63,51 +107,51 @@ namespace ScreenCapture
         {
             try
             {
-                string videoOverlayPosition = SettingLoad(vConfiguration, "VideoOverlayPosition", typeof(string));
-                if (videoOverlayPosition == "TopLeft")
+                string overlayPosition = SettingLoad(vConfiguration, "OverlayPosition", typeof(string));
+                if (overlayPosition == "TopLeft")
                 {
-                    border_Overlay.VerticalAlignment = VerticalAlignment.Top;
-                    border_Overlay.HorizontalAlignment = HorizontalAlignment.Left;
+                    grid_Overlay.VerticalAlignment = VerticalAlignment.Top;
+                    grid_Overlay.HorizontalAlignment = HorizontalAlignment.Left;
                 }
-                else if (videoOverlayPosition == "TopLeft")
+                else if (overlayPosition == "TopLeft")
                 {
-                    border_Overlay.VerticalAlignment = VerticalAlignment.Top;
-                    border_Overlay.HorizontalAlignment = HorizontalAlignment.Left;
+                    grid_Overlay.VerticalAlignment = VerticalAlignment.Top;
+                    grid_Overlay.HorizontalAlignment = HorizontalAlignment.Left;
                 }
-                else if (videoOverlayPosition == "TopCenter")
+                else if (overlayPosition == "TopCenter")
                 {
-                    border_Overlay.VerticalAlignment = VerticalAlignment.Top;
-                    border_Overlay.HorizontalAlignment = HorizontalAlignment.Center;
+                    grid_Overlay.VerticalAlignment = VerticalAlignment.Top;
+                    grid_Overlay.HorizontalAlignment = HorizontalAlignment.Center;
                 }
-                else if (videoOverlayPosition == "TopRight")
+                else if (overlayPosition == "TopRight")
                 {
-                    border_Overlay.VerticalAlignment = VerticalAlignment.Top;
-                    border_Overlay.HorizontalAlignment = HorizontalAlignment.Right;
+                    grid_Overlay.VerticalAlignment = VerticalAlignment.Top;
+                    grid_Overlay.HorizontalAlignment = HorizontalAlignment.Right;
                 }
-                else if (videoOverlayPosition == "RightCenter")
+                else if (overlayPosition == "RightCenter")
                 {
-                    border_Overlay.VerticalAlignment = VerticalAlignment.Center;
-                    border_Overlay.HorizontalAlignment = HorizontalAlignment.Right;
+                    grid_Overlay.VerticalAlignment = VerticalAlignment.Center;
+                    grid_Overlay.HorizontalAlignment = HorizontalAlignment.Right;
                 }
-                else if (videoOverlayPosition == "BottomRight")
+                else if (overlayPosition == "BottomRight")
                 {
-                    border_Overlay.VerticalAlignment = VerticalAlignment.Bottom;
-                    border_Overlay.HorizontalAlignment = HorizontalAlignment.Right;
+                    grid_Overlay.VerticalAlignment = VerticalAlignment.Bottom;
+                    grid_Overlay.HorizontalAlignment = HorizontalAlignment.Right;
                 }
-                else if (videoOverlayPosition == "BottomCenter")
+                else if (overlayPosition == "BottomCenter")
                 {
-                    border_Overlay.VerticalAlignment = VerticalAlignment.Bottom;
-                    border_Overlay.HorizontalAlignment = HorizontalAlignment.Center;
+                    grid_Overlay.VerticalAlignment = VerticalAlignment.Bottom;
+                    grid_Overlay.HorizontalAlignment = HorizontalAlignment.Center;
                 }
-                else if (videoOverlayPosition == "BottomLeft")
+                else if (overlayPosition == "BottomLeft")
                 {
-                    border_Overlay.VerticalAlignment = VerticalAlignment.Bottom;
-                    border_Overlay.HorizontalAlignment = HorizontalAlignment.Left;
+                    grid_Overlay.VerticalAlignment = VerticalAlignment.Bottom;
+                    grid_Overlay.HorizontalAlignment = HorizontalAlignment.Left;
                 }
-                else if (videoOverlayPosition == "LeftCenter")
+                else if (overlayPosition == "LeftCenter")
                 {
-                    border_Overlay.VerticalAlignment = VerticalAlignment.Center;
-                    border_Overlay.HorizontalAlignment = HorizontalAlignment.Left;
+                    grid_Overlay.VerticalAlignment = VerticalAlignment.Center;
+                    grid_Overlay.HorizontalAlignment = HorizontalAlignment.Left;
                 }
             }
             catch { }
