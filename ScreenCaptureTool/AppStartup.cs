@@ -63,8 +63,8 @@ namespace ScreenCapture
                     //Show capture overlay window
                     if (SettingLoad(vConfiguration, "OverlayShowScreenshot", typeof(bool)))
                     {
-                        vWindowOverlay.ShowOverlay(CaptureTypes.Image, captureResult);
-                        await Task.Delay(3000);
+                        vWindowOverlay.ShowOverlay(captureResult ? CaptureTypes.Image : CaptureTypes.Failed);
+                        await Task.Delay(2500);
                         vWindowOverlay.Hide();
                     }
 
@@ -92,7 +92,7 @@ namespace ScreenCapture
                         //Show capture overlay window
                         if (SettingLoad(vConfiguration, "OverlayShowRecording", typeof(bool)))
                         {
-                            vWindowOverlay.ShowOverlay(CaptureTypes.Video, captureResult);
+                            vWindowOverlay.ShowOverlay(CaptureTypes.Video);
                         }
 
                         //Create application tray menu
@@ -103,6 +103,14 @@ namespace ScreenCapture
                     }
                     else
                     {
+                        //Show capture overlay window
+                        if (SettingLoad(vConfiguration, "OverlayShowRecording", typeof(bool)))
+                        {
+                            vWindowOverlay.ShowOverlay(CaptureTypes.Failed);
+                            await Task.Delay(2500);
+                            vWindowOverlay.Hide();
+                        }
+
                         //Close application
                         await AppClose.Application_Exit();
                     }

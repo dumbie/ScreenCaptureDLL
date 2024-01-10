@@ -42,7 +42,6 @@ namespace ScreenCapture
                     if (SelStackPanel.Name == "menuButtonGeneral") { ShowGridPage(grid_General); }
                     else if (SelStackPanel.Name == "menuButtonScreenshot") { ShowGridPage(grid_Screenshot); }
                     else if (SelStackPanel.Name == "menuButtonRecording") { ShowGridPage(grid_Recording); }
-                    else if (SelStackPanel.Name == "menuButtonOverlay") { ShowGridPage(grid_Overlay); }
                 }
             }
             catch { }
@@ -56,7 +55,6 @@ namespace ScreenCapture
                 grid_General.Visibility = Visibility.Collapsed;
                 grid_Screenshot.Visibility = Visibility.Collapsed;
                 grid_Recording.Visibility = Visibility.Collapsed;
-                grid_Overlay.Visibility = Visibility.Collapsed;
                 elementTarget.Visibility = Visibility.Visible;
             }
             catch { }

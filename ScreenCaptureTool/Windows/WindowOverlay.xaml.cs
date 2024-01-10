@@ -2,7 +2,6 @@
 using System;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static ArnoldVinkCode.AVInteropDll;
 using static ArnoldVinkCode.AVSettings;
@@ -17,9 +16,8 @@ namespace ScreenCapture
         //Window Variables
         private IntPtr vInteropWindowHandle = IntPtr.Zero;
         private DispatcherTimer vDispatcherTimerDelay = new DispatcherTimer();
-        private int vRecordingTime = 0;
-        private bool vCaptureResult = false;
         private CaptureTypes vCaptureType = CaptureTypes.None;
+        private int vRecordingTime = 0;
 
         //Window Initialize
         public WindowOverlay()
@@ -28,12 +26,11 @@ namespace ScreenCapture
         }
 
         //Window Show Overlay
-        public void ShowOverlay(CaptureTypes captureType, bool captureResult)
+        public void ShowOverlay(CaptureTypes captureType)
         {
             try
             {
                 vCaptureType = captureType;
-                vCaptureResult = captureResult;
                 Show();
             }
             catch { }
@@ -70,33 +67,28 @@ namespace ScreenCapture
                     //Show video overlay
                     border_Overlay_Image.Visibility = Visibility.Collapsed;
                     border_Overlay_Video.Visibility = Visibility.Visible;
+                    border_Overlay_Failed.Visibility = Visibility.Collapsed;
 
-                    //Check capture status
-                    if (vCaptureResult)
-                    {
-                        //Start timing update timer
-                        vRecordingTime = 0;
-                        AVFunctions.TimerRenew(ref vDispatcherTimerDelay);
-                        vDispatcherTimerDelay.Interval = TimeSpan.FromMilliseconds(1000);
-                        vDispatcherTimerDelay.Tick += VDispatcherTimerDelay_Tick;
-                        vDispatcherTimerDelay.Start();
-                    }
+                    //Start timing update timer
+                    vRecordingTime = 0;
+                    AVFunctions.TimerRenew(ref vDispatcherTimerDelay);
+                    vDispatcherTimerDelay.Interval = TimeSpan.FromMilliseconds(1000);
+                    vDispatcherTimerDelay.Tick += VDispatcherTimerDelay_Tick;
+                    vDispatcherTimerDelay.Start();
                 }
-                else
+                else if (vCaptureType == CaptureTypes.Image)
                 {
                     //Show image overlay
                     border_Overlay_Image.Visibility = Visibility.Visible;
                     border_Overlay_Video.Visibility = Visibility.Collapsed;
-
-                    //Check capture status
-                    if (vCaptureResult)
-                    {
-                        image_Status.Source = new BitmapImage(new Uri("/Assets/Screenshot.png", UriKind.RelativeOrAbsolute));
-                    }
-                    else
-                    {
-                        image_Status.Source = new BitmapImage(new Uri("/Assets/Failed.png", UriKind.RelativeOrAbsolute));
-                    }
+                    border_Overlay_Failed.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    //Show failed overlay
+                    border_Overlay_Image.Visibility = Visibility.Collapsed;
+                    border_Overlay_Video.Visibility = Visibility.Collapsed;
+                    border_Overlay_Failed.Visibility = Visibility.Visible;
                 }
             }
             catch { }

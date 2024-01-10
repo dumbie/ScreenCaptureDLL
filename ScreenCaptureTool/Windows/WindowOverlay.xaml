@@ -16,16 +16,24 @@
         ResizeMode="NoResize"
         Background="Transparent">
 
-    <Grid Name="grid_Overlay">
-        <Border Name="border_Overlay_Image" CornerRadius="10" Opacity="0.8" Margin="75,75,75,105" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+    <Grid Name="grid_Overlay" Margin="75">
+        <Border Name="border_Overlay_Failed" CornerRadius="10" Opacity="0.8" Margin="0,0,0,65" VerticalAlignment="Bottom" HorizontalAlignment="Center">
             <Border.Background>
                 <SolidColorBrush Color="{DynamicResource ApplicationBlackColor}"/>
             </Border.Background>
             <StackPanel Orientation="Horizontal">
-                <Image Name="image_Status" Margin="5" Width="20" Height="20"/>
+                <Image Name="image_Failed" Source="/Assets/Failed.png" Margin="5" Width="20" Height="20"/>
             </StackPanel>
         </Border>
-        <Border Name="border_Overlay_Video" CornerRadius="10" Opacity="0.8" Margin="75" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+        <Border Name="border_Overlay_Image" CornerRadius="10" Opacity="0.8" Margin="0,0,0,30" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+            <Border.Background>
+                <SolidColorBrush Color="{DynamicResource ApplicationBlackColor}"/>
+            </Border.Background>
+            <StackPanel Orientation="Horizontal">
+                <Image Name="image_Status" Source="/Assets/Screenshot.png" Margin="5" Width="20" Height="20"/>
+            </StackPanel>
+        </Border>
+        <Border Name="border_Overlay_Video" CornerRadius="10" Opacity="0.8" Margin="0" VerticalAlignment="Bottom" HorizontalAlignment="Center">
             <Border.Background>
                 <SolidColorBrush Color="{DynamicResource ApplicationBlackColor}"/>
             </Border.Background>

@@ -27,10 +27,6 @@
                     <Image Source="/Assets/Settings.png" Width="55" HorizontalAlignment="Center"/>
                     <TextBlock Text="General" Style="{StaticResource TextBlockWhite}" HorizontalAlignment="Center"/>
                 </StackPanel>
-                <StackPanel Name="menuButtonOverlay" Style="{StaticResource ListBoxMenuStackPanel}" ToolTipService.ToolTip="Show overlay settings">
-                    <Image Source="/Assets/Video.png" Width="55" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Overlay" Style="{StaticResource TextBlockWhite}" HorizontalAlignment="Center"/>
-                </StackPanel>
                 <StackPanel Name="menuButtonScreenshot" Style="{StaticResource ListBoxMenuStackPanel}" ToolTipService.ToolTip="Show screenshot settings">
                     <Image Source="/Assets/Screenshot.png" Width="55" HorizontalAlignment="Center"/>
                     <TextBlock Text="Screenshot" Style="{StaticResource TextBlockWhite}" HorizontalAlignment="Center"/>
@@ -78,6 +74,17 @@
                 <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Sound"/>
                 <CheckBox Name="checkbox_CaptureSoundEffect" Content="Play sound effect when capturing screen" Style="{StaticResource CheckBoxBlack}"/>
                 <TextBlock Text="Enabling this will play a sound when you capture your screen." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+
+                <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Overlay"/>
+                <CheckBox Name="checkbox_OverlayShowScreenshot" Content="Show screenshot overlay" Style="{StaticResource CheckBoxBlack}"/>
+                <TextBlock Text="Enabling this will show an overlay when taking a screenshot." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+
+                <CheckBox Name="checkbox_OverlayShowRecording" Margin="0,10,0,0" Content="Show recording overlay" Style="{StaticResource CheckBoxBlack}"/>
+                <TextBlock Text="Enabling this will show an overlay when recording with time and status." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+
+                <TextBlock Text="Overlay position" TextWrapping="Wrap" Margin="0,10,0,0" Style="{StaticResource TextBlockBlack}"/>
+                <TextBlock Text="Change the used overlay position on screen." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
+                <ComboBox Name="combobox_OverlayPosition" HorizontalAlignment="Left" Width="400" Style="{StaticResource ComboBoxBlack}"/>
 
                 <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Location"/>
                 <TextBlock Text="Capture save location" Style="{StaticResource TextBlockBlack}"/>
@@ -157,22 +164,6 @@
                 <TextBlock Margin="0,10,0,0" Text="*² MP3 and AAC maximum supported bit rate is 320 kbps." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
                 <TextBlock Margin="0,10,0,0" Text="*³ MP3 and AAC maximum supported bit depth is 16 bit." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
                 <TextBlock Margin="0,10,0,0" Text="*⁴ MP3 and AAC maximum supported sample rate is 48.000 Hz." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
-            </StackPanel>
-        </ScrollViewer>
-
-        <!-- Grid Overlay -->
-        <ScrollViewer Name="grid_Overlay" Grid.Column="1" Style="{StaticResource ScrollViewerVertical}" Visibility="Collapsed">
-            <StackPanel Margin="10">
-                <TextBlock Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Overlay"/>
-                <CheckBox Name="checkbox_OverlayShowScreenshot" Content="Show screenshot overlay" Style="{StaticResource CheckBoxBlack}"/>
-                <TextBlock Text="Enabling this will show an overlay when taking a screenshot." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
-
-                <CheckBox Name="checkbox_OverlayShowRecording" Margin="0,10,0,0" Content="Show recording overlay" Style="{StaticResource CheckBoxBlack}"/>
-                <TextBlock Text="Enabling this will show an overlay when recording with time and status." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
-
-                <TextBlock Text="Overlay position" TextWrapping="Wrap" Margin="0,10,0,0" Style="{StaticResource TextBlockBlack}"/>
-                <TextBlock Text="Change the used overlay position on screen." TextWrapping="Wrap" Style="{StaticResource TextBlockGray}"/>
-                <ComboBox Name="combobox_OverlayPosition" HorizontalAlignment="Left" Width="400" Style="{StaticResource ComboBoxBlack}"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>
