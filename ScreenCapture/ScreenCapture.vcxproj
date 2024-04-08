@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="CaptureIncludes.h" />
     <ClInclude Include="CaptureVariables.h" />
+    <ClInclude Include="CoutVisualStudioDebugOutput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CaptureAudio.cpp" />
