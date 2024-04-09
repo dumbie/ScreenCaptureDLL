@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArnoldVinkCode;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -11,7 +12,7 @@ namespace ScreenCapture
     {
         //Tray Menu Variables
         public static NotifyIcon TrayNotifyIcon = new NotifyIcon();
-        public static ContextMenu TrayContextMenu = new ContextMenu();
+        public static ContextMenuStrip TrayContextMenu = new ContextMenuStrip();
 
         //Create the application tray menu
         public static void Application_CreateTrayMenu()
@@ -21,13 +22,13 @@ namespace ScreenCapture
                 Debug.WriteLine("Creating application tray menu.");
 
                 //Create a context menu for system tray
-                TrayContextMenu.MenuItems.Add("Screen image capture", NotifyIcon_ImageCapture);
-                TrayContextMenu.MenuItems.Add("Start/stop video capture", NotifyIcon_StartVideoCapture);
-                TrayContextMenu.MenuItems.Add("Open capture location", NotifyIcon_OpenCapture);
-                TrayContextMenu.MenuItems.Add("-");
-                TrayContextMenu.MenuItems.Add("Settings", NotifyIcon_Settings);
-                TrayContextMenu.MenuItems.Add("Website", NotifyIcon_Website);
-                TrayContextMenu.MenuItems.Add("Exit", NotifyIcon_Exit);
+                TrayContextMenu.Items.Add("Screen image capture", null, NotifyIcon_ImageCapture);
+                TrayContextMenu.Items.Add("Start/stop video capture", null, NotifyIcon_StartVideoCapture);
+                TrayContextMenu.Items.Add("Open capture location", null, NotifyIcon_OpenCapture);
+                TrayContextMenu.Items.Add("-");
+                TrayContextMenu.Items.Add("Settings", null, NotifyIcon_Settings);
+                TrayContextMenu.Items.Add("Website", null, NotifyIcon_Website);
+                TrayContextMenu.Items.Add("Exit", null, NotifyIcon_Exit);
 
                 //Initialize the tray notify icon
                 TrayNotifyIcon.Text = "Screen Capture Tool";
@@ -37,7 +38,7 @@ namespace ScreenCapture
                 TrayNotifyIcon.DoubleClick += NotifyIcon_DoubleClick;
 
                 //Add menu to tray icon and show it
-                TrayNotifyIcon.ContextMenu = TrayContextMenu;
+                TrayNotifyIcon.ContextMenuStrip = TrayContextMenu;
                 TrayNotifyIcon.Visible = true;
             }
             catch { }
@@ -107,7 +108,7 @@ namespace ScreenCapture
         {
             try
             {
-                Process.Start("https://projects.arnoldvink.com");
+                AVFunctions.OpenWebsiteBrowser("https://projects.arnoldvink.com");
             }
             catch { }
         }

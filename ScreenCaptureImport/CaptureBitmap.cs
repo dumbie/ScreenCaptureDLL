@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace ScreenCapture
+namespace ScreenCaptureImport
 {
     public class CaptureBitmap
     {

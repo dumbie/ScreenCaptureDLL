@@ -1,4 +1,4 @@
-﻿namespace ScreenCapture
+﻿namespace ScreenCaptureImport
 {
     //Enumerators
     public enum ImageFormats : int

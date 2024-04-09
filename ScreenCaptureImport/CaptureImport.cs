@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace ScreenCapture
+namespace ScreenCaptureImport
 {
     [SuppressUnmanagedCodeSecurity]
     public class CaptureImport

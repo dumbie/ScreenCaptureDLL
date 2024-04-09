@@ -1,9 +1,10 @@
 ﻿using ArnoldVinkCode;
+using ScreenCaptureImport;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
-using static ScreenCapture.CaptureImport;
+using static ScreenCaptureImport.CaptureImport;
 
 namespace ScreenCapture
 {

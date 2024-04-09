@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using static ArnoldVinkCode.AVFirewall;
+using static ArnoldVinkCode.AVFunctions;
 
 namespace ScreenCapture
 {
@@ -13,22 +11,8 @@ namespace ScreenCapture
             {
                 Debug.WriteLine("Checking application status.");
 
-                //Get path to application executable file
-                string appFilePath = Assembly.GetEntryAssembly().Location;
-
                 //Set the working directory to executable directory
-                try
-                {
-                    Directory.SetCurrentDirectory(Path.GetDirectoryName(appFilePath));
-                }
-                catch { }
-
-                //Allow application in firewall
-                try
-                {
-                    Firewall_ExecutableAllow("Screen Capture Tool", appFilePath, true);
-                }
-                catch { }
+                ApplicationUpdateWorkingPath();
             }
             catch { }
         }

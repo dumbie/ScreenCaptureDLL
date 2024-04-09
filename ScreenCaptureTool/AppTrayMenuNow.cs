@@ -12,7 +12,7 @@ namespace ScreenCapture
     {
         //Tray Menu Variables
         public static NotifyIcon TrayNotifyIcon = new NotifyIcon();
-        public static ContextMenu TrayContextMenu = new ContextMenu();
+        public static ContextMenuStrip TrayContextMenu = new ContextMenuStrip();
 
         //Create the application tray menu
         public static void Application_CreateTrayMenu()
@@ -22,14 +22,14 @@ namespace ScreenCapture
                 Debug.WriteLine("Creating application tray menu.");
 
                 //Create a context menu for system tray
-                TrayContextMenu.MenuItems.Add("Stop screen capture", NotifyIcon_Stop);
+                TrayContextMenu.Items.Add("Stop screen capture", null, NotifyIcon_Stop);
 
                 //Initialize the tray notify icon
                 TrayNotifyIcon.Text = AVFunctions.StringCut("Capturing " + vCaptureFileName, 59, "...");
                 TrayNotifyIcon.Icon = new Icon(Assembly.GetEntryAssembly().GetManifestResourceStream("ScreenCaptureTool.Assets.AppIconRecording.ico"));
 
                 //Add menu to tray icon and show it
-                TrayNotifyIcon.ContextMenu = TrayContextMenu;
+                TrayNotifyIcon.ContextMenuStrip = TrayContextMenu;
                 TrayNotifyIcon.Visible = true;
             }
             catch { }
