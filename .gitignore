@@ -8,3 +8,5 @@ packages
 *.aps
 *.pfx
 *.vs
+PixelShader.h
+VertexShader.h

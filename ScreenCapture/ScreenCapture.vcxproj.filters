@@ -85,13 +85,19 @@
     <ClInclude Include="CoutVisualStudioDebugOutput.h">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders\PixelShader.h">
+      <Filter>Shader files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\VertexShader.h">
+      <Filter>Shader files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="Shaders\PixelShader.hlsl">
+    <FxCompile Include="Shaders\VertexShader.hlsl">
       <Filter>Shader files</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="Shaders\VertexShader.hlsl">
+    </FxCompile>
+    <FxCompile Include="Shaders\PixelShader.hlsl">
       <Filter>Shader files</Filter>
-    </CopyFileToFolders>
+    </FxCompile>
   </ItemGroup>
 </Project>

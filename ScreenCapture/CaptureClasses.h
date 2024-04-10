@@ -148,8 +148,6 @@ namespace
 		//Shaders
 		CComPtr<ID3D11Buffer> iD3D11BufferVertex0;
 		CComPtr<ID3D11Buffer> iD3D11BufferPixel0;
-		CComPtr<ID3DBlob> iD3DBlobShaderVertex0;
-		CComPtr<ID3DBlob> iD3DBlobShaderPixel0;
 		CComPtr<ID3D11VertexShader> iD3D11ShaderVertex0;
 		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0;
 	};

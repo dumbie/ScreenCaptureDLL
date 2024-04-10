@@ -4,6 +4,8 @@
 #include "CaptureDetails.cpp"
 #include "CaptureLoop.cpp"
 #include "PlayAudio.cpp"
+#include "Shaders\PixelShader.h"
+#include "Shaders\VertexShader.h"
 
 namespace
 {
@@ -264,32 +266,22 @@ namespace
 	{
 		try
 		{
-			//Load shaders from file
-			hResult = D3DCompileFromFile(L"Resources\\VertexShader.hlsl", 0, 0, "main", "vs_5_0", 0, 0, &vDirectXInstance.iD3DBlobShaderVertex0, 0);
+			//Load shaders from bytes
+			hResult = vDirectXInstance.iD3D11Device5->CreateVertexShader(VertexShaderBytesVar, sizeof(VertexShaderBytesVar), NULL, &vDirectXInstance.iD3D11ShaderVertex0);
 			if (FAILED(hResult))
 			{
+				std::cout << "CreateVertexShader failed: " << hResult << std::endl;
 				return false;
 			}
-			hResult = D3DCompileFromFile(L"Resources\\PixelShader.hlsl", 0, 0, "main", "ps_5_0", 0, 0, &vDirectXInstance.iD3DBlobShaderPixel0, 0);
+			hResult = vDirectXInstance.iD3D11Device5->CreatePixelShader(PixelShaderBytesVar, sizeof(PixelShaderBytesVar), NULL, &vDirectXInstance.iD3D11ShaderPixel0);
 			if (FAILED(hResult))
 			{
-				return false;
-			}
-
-			//Create shaders from blob
-			hResult = vDirectXInstance.iD3D11Device5->CreateVertexShader(vDirectXInstance.iD3DBlobShaderVertex0->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderVertex0->GetBufferSize(), NULL, &vDirectXInstance.iD3D11ShaderVertex0);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-			hResult = vDirectXInstance.iD3D11Device5->CreatePixelShader(vDirectXInstance.iD3DBlobShaderPixel0->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderPixel0->GetBufferSize(), NULL, &vDirectXInstance.iD3D11ShaderPixel0);
-			if (FAILED(hResult))
-			{
+				std::cout << "CreatePixelShader failed: " << hResult << std::endl;
 				return false;
 			}
 
 			//Create and set input layout
-			hResult = vDirectXInstance.iD3D11Device5->CreateInputLayout(InputElementsArray, InputElementsCount, vDirectXInstance.iD3DBlobShaderVertex0->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderVertex0->GetBufferSize(), &vDirectXInstance.iD3D11InputLayout0);
+			hResult = vDirectXInstance.iD3D11Device5->CreateInputLayout(InputElementsArray, InputElementsCount, VertexShaderBytesVar, sizeof(VertexShaderBytesVar), &vDirectXInstance.iD3D11InputLayout0);
 			if (FAILED(hResult))
 			{
 				return false;

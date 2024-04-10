@@ -220,8 +220,6 @@ namespace
 			//Shaders
 			vDirectXInstance.iD3D11BufferVertex0.Release();
 			vDirectXInstance.iD3D11BufferPixel0.Release();
-			vDirectXInstance.iD3DBlobShaderVertex0.Release();
-			vDirectXInstance.iD3DBlobShaderPixel0.Release();
 			vDirectXInstance.iD3D11ShaderVertex0.Release();
 			vDirectXInstance.iD3D11ShaderPixel0.Release();
 
