@@ -7,6 +7,7 @@ public:
 	virtual int sync()
 	{
 		OutputDebugStringA(str().c_str());
+		str(std::string());
 		return 0;
 	}
 };
