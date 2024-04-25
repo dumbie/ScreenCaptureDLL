@@ -52,11 +52,17 @@ namespace ScreenCapture
                     {
                         Directory.CreateDirectory("Captures");
                     }
-                    Process.Start("Captures");
+                    Process process = new Process();
+                    process.StartInfo.FileName = "Captures";
+                    process.StartInfo.UseShellExecute = true;
+                    process.Start();
                 }
                 else
                 {
-                    Process.Start(screenshotSaveFolder);
+                    Process process = new Process();
+                    process.StartInfo.FileName = screenshotSaveFolder;
+                    process.StartInfo.UseShellExecute = true;
+                    process.Start();
                 }
             }
             catch { }

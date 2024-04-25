@@ -53,7 +53,8 @@
       <ShaderType>Pixel</ShaderType>
       <VariableName>PixelShaderBytesVar</VariableName>
       <HeaderFileOutput>Shaders\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>5.0</ShaderModel>
       <AdditionalOptions>/Qstrip_reflect /Qstrip_debug %(AdditionalOptions)</AdditionalOptions>
     </FxCompile>
@@ -61,7 +62,8 @@
       <ShaderType>Vertex</ShaderType>
       <VariableName>VertexShaderBytesVar</VariableName>
       <HeaderFileOutput>Shaders\%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput></ObjectFileOutput>
+      <ObjectFileOutput>
+      </ObjectFileOutput>
       <ShaderModel>5.0</ShaderModel>
       <AdditionalOptions>/Qstrip_reflect /Qstrip_debug %(AdditionalOptions)</AdditionalOptions>
     </FxCompile>
@@ -71,6 +73,7 @@
     <ProjectGuid>{D41825DF-7633-4BD6-A5C5-119494CF050B}</ProjectGuid>
     <RootNamespace>ScreenCapture</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>ScreenCaptureDll</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -110,18 +113,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)Build\x86\$(Configuration)\Resources\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\Resources\</OutDir>
+    <TargetName>ScreenCapture</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)Build\x86\$(Configuration)\Resources\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\Resources\</OutDir>
+    <TargetName>ScreenCapture</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)Build\x64\$(Configuration)\Resources\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\Resources\</OutDir>
+    <TargetName>ScreenCapture</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)Build\x64\$(Configuration)\Resources\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\Resources\</OutDir>
+    <TargetName>ScreenCapture</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

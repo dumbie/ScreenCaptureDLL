@@ -2,7 +2,6 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Reflection;
 using System.Windows.Forms;
 using static ScreenCapture.AppVariables;
 
@@ -26,7 +25,7 @@ namespace ScreenCapture
 
                 //Initialize the tray notify icon
                 TrayNotifyIcon.Text = AVFunctions.StringCut("Capturing " + vCaptureFileName, 59, "...");
-                TrayNotifyIcon.Icon = new Icon(Assembly.GetEntryAssembly().GetManifestResourceStream("ScreenCaptureTool.Assets.AppIconRecording.ico"));
+                TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCaptureTool.Assets.AppIconRecording.ico"));
 
                 //Add menu to tray icon and show it
                 TrayNotifyIcon.ContextMenuStrip = TrayContextMenu;

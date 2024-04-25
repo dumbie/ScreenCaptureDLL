@@ -37,13 +37,13 @@ namespace ScreenCapture
         {
             try
             {
-                if (!SettingCheck(vConfiguration, "ShortcutCaptureImageKey0")) { SettingSave(vConfiguration, "ShortcutCaptureImageKey0", (byte)KeysVirtual.ControlLeft); }
+                if (!SettingCheck(vConfiguration, "ShortcutCaptureImageKey0")) { SettingSave(vConfiguration, "ShortcutCaptureImageKey0", (byte)KeysVirtual.AltLeft); }
                 if (!SettingCheck(vConfiguration, "ShortcutCaptureImageKey1")) { SettingSave(vConfiguration, "ShortcutCaptureImageKey1", (byte)KeysVirtual.None); }
                 if (!SettingCheck(vConfiguration, "ShortcutCaptureImageKey2")) { SettingSave(vConfiguration, "ShortcutCaptureImageKey2", (byte)KeysVirtual.F12); }
 
                 if (!SettingCheck(vConfiguration, "ShortcutCaptureVideoKey0")) { SettingSave(vConfiguration, "ShortcutCaptureVideoKey0", (byte)KeysVirtual.AltLeft); }
                 if (!SettingCheck(vConfiguration, "ShortcutCaptureVideoKey1")) { SettingSave(vConfiguration, "ShortcutCaptureVideoKey1", (byte)KeysVirtual.None); }
-                if (!SettingCheck(vConfiguration, "ShortcutCaptureVideoKey2")) { SettingSave(vConfiguration, "ShortcutCaptureVideoKey2", (byte)KeysVirtual.F12); }
+                if (!SettingCheck(vConfiguration, "ShortcutCaptureVideoKey2")) { SettingSave(vConfiguration, "ShortcutCaptureVideoKey2", (byte)KeysVirtual.F11); }
             }
             catch { }
         }

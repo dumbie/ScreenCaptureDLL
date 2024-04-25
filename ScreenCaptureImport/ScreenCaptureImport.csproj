@@ -1,10 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0-windows</TargetFramework>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-		<UseWindowsForms>True</UseWindowsForms>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<NoWarn>CA1416</NoWarn>
+		<OutputType>Library</OutputType>
+	</PropertyGroup>
+	<PropertyGroup>
 		<UseWPF>True</UseWPF>
+		<UseWindowsForms>True</UseWindowsForms>
+		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>False</AppendRuntimeIdentifierToOutputPath>
+		<OutputPath>$(SolutionDir)Build\$(Configuration)\</OutputPath>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<Optimize>True</Optimize>

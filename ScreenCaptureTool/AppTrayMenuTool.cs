@@ -2,7 +2,6 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Reflection;
 using System.Windows.Forms;
 using static ScreenCapture.AppVariables;
 
@@ -32,7 +31,7 @@ namespace ScreenCapture
 
                 //Initialize the tray notify icon
                 TrayNotifyIcon.Text = "Screen Capture Tool";
-                TrayNotifyIcon.Icon = new Icon(Assembly.GetEntryAssembly().GetManifestResourceStream("ScreenCaptureTool.Assets.AppIcon.ico"));
+                TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCaptureTool.Assets.AppIcon.ico"));
 
                 //Handle Double Click event
                 TrayNotifyIcon.DoubleClick += NotifyIcon_DoubleClick;
@@ -54,7 +53,7 @@ namespace ScreenCapture
                     iconName = "AppIcon";
                 }
 
-                TrayNotifyIcon.Icon = new Icon(Assembly.GetEntryAssembly().GetManifestResourceStream("ScreenCaptureTool.Assets." + iconName + ".ico"));
+                TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCaptureTool.Assets." + iconName + ".ico"));
             }
             catch { }
         }

@@ -1,16 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0-windows10.0.19041</TargetFramework>
+		<TargetFramework>net8.0-windows10.0.19041</TargetFramework>
+		<NoWarn>CA1416</NoWarn>
 		<OutputType>WinExe</OutputType>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<UseWindowsForms>True</UseWindowsForms>
-		<UseWPF>True</UseWPF>
-	</PropertyGroup>
-	<PropertyGroup>
 		<ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
 		<ApplicationManifest>Properties\App.manifest</ApplicationManifest>
-		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<StartupObject>ScreenCapture.App</StartupObject>
+	</PropertyGroup>
+	<PropertyGroup>
+		<UseWPF>True</UseWPF>
+		<UseWindowsForms>True</UseWindowsForms>
+		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>False</AppendRuntimeIdentifierToOutputPath>
+		<OutputPath>$(SolutionDir)Build\$(Configuration)\</OutputPath>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<Optimize>True</Optimize>
