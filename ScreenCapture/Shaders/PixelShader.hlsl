@@ -220,11 +220,11 @@ float4 main(PS_INPUT input) : SV_TARGET
 	float colorAlpha = color.a;
 
 	//Get texture size
-	float2 textureSize = (0.0F, 0.0F);
+	float2 textureSize = float2(0.0F, 0.0F);
 	_texture2D.GetDimensions(textureSize.x, textureSize.y);
 
 	//Get texture ddxy
-	float2 textureDdxy = (ddx(input.TexCoord.x), ddy(input.TexCoord.y));
+	float2 textureDdxy = float2(ddx(input.TexCoord.x), ddy(input.TexCoord.y));
 
 	//Adjust texture filter
 	color = AdjustTextureFilter(color, input.TexCoord, textureDdxy);
