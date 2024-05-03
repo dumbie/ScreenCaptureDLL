@@ -1,6 +1,7 @@
 bin
 obj
 debug
+publish
 release
 packages
 *.suo
