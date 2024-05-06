@@ -54,7 +54,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "Failed to get monitor path info." << std::endl;
+			AVDebugWriteLine("Failed to get monitor path info.");
 		}
 		return false;
 	}
@@ -82,7 +82,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "Failed to get monitor resolution." << std::endl;
+			AVDebugWriteLine("Failed to get monitor resolution.");
 		}
 	}
 
@@ -108,7 +108,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "Failed to get monitor refresh rate." << std::endl;
+			AVDebugWriteLine("Failed to get monitor refresh rate.");
 			return 0;
 		}
 	}
@@ -121,7 +121,7 @@ namespace
 			DISPLAYCONFIG_PATH_INFO pathInfo;
 			if (!GetMonitorPathInfo(hMonitor, &pathInfo))
 			{
-				std::cout << "Failed to get monitor sdr white level." << std::endl;
+				AVDebugWriteLine("Failed to get monitor sdr white level.");
 				return 240.0F;
 			}
 
@@ -134,7 +134,7 @@ namespace
 			hResult = DisplayConfigGetDeviceInfo(&sdrWhiteLevel.header);
 			if (FAILED(hResult))
 			{
-				std::cout << "Failed to get monitor sdr white level." << std::endl;
+				AVDebugWriteLine("Failed to get monitor sdr white level.");
 				return 240.0F;
 			}
 			else
@@ -144,7 +144,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "Failed to get monitor sdr white level." << std::endl;
+			AVDebugWriteLine("Failed to get monitor sdr white level.");
 			return 240.0F;
 		}
 	}
@@ -213,7 +213,7 @@ namespace
 				vCaptureDetails.OutputWidth = vCaptureDetails.OriginalWidth;
 				vCaptureDetails.OutputHeight = vCaptureDetails.OriginalHeight;
 			}
-			std::cout << "Screen capture output, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight << std::endl;
+			AVDebugWriteLine("Screen capture output, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight);
 			vCaptureDetails.WidthByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.PixelByteSize;
 			vCaptureDetails.TotalByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.OutputHeight * vCaptureDetails.PixelByteSize;
 			vCaptureInstance.vCaptureTextureMipLevels = 1 + log2(max(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight));
@@ -222,7 +222,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "SetCaptureDetails failed: " << hResult << std::endl;
+			AVDebugWriteLine("SetCaptureDetails failed: " << hResult);
 			return false;
 		}
 	}

@@ -38,7 +38,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "RenderUpdateVertex failed." << std::endl;
+			AVDebugWriteLine("RenderUpdateVertex failed.");
 			return false;
 		}
 	}
@@ -64,7 +64,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "RenderDrawTexture2D failed." << std::endl;
+			AVDebugWriteLine("RenderDrawTexture2D failed.");
 			return false;
 		}
 	}

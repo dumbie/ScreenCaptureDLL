@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="CaptureIncludes.h" />
     <ClInclude Include="CaptureVariables.h" />
-    <ClInclude Include="CoutVisualStudioDebugOutput.h" />
     <ClInclude Include="Shaders\PixelShader.h" />
     <ClInclude Include="Shaders\VertexShader.h" />
   </ItemGroup>

@@ -14,7 +14,7 @@ namespace
 			//Views
 			vDirectXInstance.iD3D11ShaderResourceView0.Release();
 
-			//std::cout << "Reset loop Texture variables." << std::endl;
+			//AVDebugWriteLine("Reset loop Texture variables.");
 			return true;
 		}
 		catch (...)
@@ -35,8 +35,8 @@ namespace
 				//Wait for loop to finish
 				while (!vCaptureInstance.vCaptureStatusLoopFinished)
 				{
-					std::cout << "Waiting for capture status loop to stop..." << std::endl;
-					Sleep(100);
+					AVDebugWriteLine("Waiting for capture status loop to stop...");
+					AVHighResDelay(100);
 				}
 			}
 
@@ -66,7 +66,7 @@ namespace
 			//Status
 			vCaptureInstance.vInstanceInitialized = false;
 
-			std::cout << "Reset all Capture variables." << std::endl;
+			AVDebugWriteLine("Reset all Capture variables.");
 			return true;
 		}
 		catch (...)
@@ -90,7 +90,7 @@ namespace
 			vBitmapImageInstance.iWICFormatConverter.Release();
 			vBitmapImageInstance.iWICBitmap.Release();
 
-			std::cout << "Reset all Bitmap Image variables." << std::endl;
+			AVDebugWriteLine("Reset all Bitmap Image variables.");
 			return true;
 		}
 		catch (...)
@@ -111,8 +111,8 @@ namespace
 				//Wait for loop to finish
 				while (!vMediaFoundationInstance.vMediaWriteLoopFinishedScreen && !vMediaFoundationInstance.vMediaWriteLoopFinishedAudio)
 				{
-					std::cout << "Waiting for media capture loop to stop..." << std::endl;
-					Sleep(100);
+					AVDebugWriteLine("Waiting for media capture loop to stop...");
+					AVHighResDelay(100);
 				}
 			}
 
@@ -147,7 +147,7 @@ namespace
 			//Status
 			vMediaFoundationInstance.vMediaCapturing = false;
 
-			std::cout << "Reset all Media Foundation variables." << std::endl;
+			AVDebugWriteLine("Reset all Media Foundation variables.");
 			return true;
 		}
 		catch (...)
@@ -187,7 +187,7 @@ namespace
 			//Status
 			vWgcInstance.vInstanceInitialized = false;
 
-			std::cout << "Reset all Windows Graphics Capture variables." << std::endl;
+			AVDebugWriteLine("Reset all Windows Graphics Capture variables.");
 			return true;
 		}
 		catch (...)
@@ -226,7 +226,7 @@ namespace
 			//Status
 			vDirectXInstance.vInstanceInitialized = false;
 
-			std::cout << "Reset all DirectX variables." << std::endl;
+			AVDebugWriteLine("Reset all DirectX variables.");
 			return true;
 		}
 		catch (...)

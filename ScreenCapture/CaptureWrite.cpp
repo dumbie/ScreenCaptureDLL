@@ -78,12 +78,12 @@ namespace
 			hResult = vMediaFoundationInstance.imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
 			if (FAILED(hResult))
 			{
-				std::cout << "Write texture sample failed: " << hResult << std::endl;
+				AVDebugWriteLine("Write texture sample failed: " << hResult);
 				return false;
 			}
 
 			//Console debug output
-			//std::cout << "Written media texture sample: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " index: " << mediaIndex << std::endl;
+			//AVDebugWriteLine("Written media texture sample: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " index: " << mediaIndex);
 
 			//Release resources
 			imfMediaSample.Release();
@@ -94,7 +94,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "WriteMediaTexture2D failed." << std::endl;
+			AVDebugWriteLine("WriteMediaTexture2D failed.");
 			return false;
 		}
 	}
@@ -181,12 +181,12 @@ namespace
 			hResult = vMediaFoundationInstance.imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
 			if (FAILED(hResult))
 			{
-				std::cout << "Write bytes sample failed: " << hResult << std::endl;
+				AVDebugWriteLine("Write bytes sample failed: " << hResult);
 				return false;
 			}
 
 			//Console debug output
-			//std::cout << "Written media bytes sample: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << mediaBytes.Size << " index: " << mediaIndex << std::endl;
+			//AVDebugWriteLine("Written media bytes sample: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " size: " << mediaBytes.Size << " index: " << mediaIndex);
 
 			//Clear media bytes
 			if (releaseBytes)
@@ -203,7 +203,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "WriteMediaDataBytes failed." << std::endl;
+			AVDebugWriteLine("WriteMediaDataBytes failed.");
 			return false;
 		}
 	}

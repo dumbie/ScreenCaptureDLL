@@ -27,11 +27,11 @@ namespace
 						}
 
 						//Note: triggers on resolution change, hdr switch and driver resets.
-						std::cout << "Capture device has changed, reset recommended." << std::endl;
+						AVDebugWriteLine("Capture device has changed, reset recommended.");
 					}
 
 					//Delay status update
-					Sleep(1000);
+					AVHighResDelay(1000);
 				}
 				catch (...) {}
 			}
@@ -77,7 +77,7 @@ namespace
 					}
 
 					//Delay screen capture
-					Sleep(mediaTimeDuration / vReferenceTimeToMilliseconds);
+					AVHighResDelay(mediaTimeDuration / vReferenceTimeToMilliseconds);
 				}
 				catch (...) {}
 			}
@@ -125,8 +125,8 @@ namespace
 					else
 					{
 						//Delay audio capture
-						//std::cout << "Empty media audio, delaying capture." << std::endl;
-						Sleep(1);
+						//AVDebugWriteLine("Empty media audio, delaying capture.");
+						AVHighResDelay(1);
 					}
 				}
 				catch (...) {}

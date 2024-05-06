@@ -112,7 +112,7 @@ namespace
 				return false;
 			}
 
-			std::cout << "Bitmap frame size, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight << std::endl;
+			AVDebugWriteLine("Bitmap frame size, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight);
 
 			//Bitmap frame set resolution
 			hResult = vBitmapImageInstance.iWICBitmapFrameEncode->SetResolution(96, 96);
@@ -221,7 +221,7 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				std::cout << "Screen capture image bytes are empty." << std::endl;
+				AVDebugWriteLine("Screen capture image bytes are empty.");
 				return false;
 			}
 

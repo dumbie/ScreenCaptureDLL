@@ -16,7 +16,7 @@ namespace
 			hResult = vMediaFoundationInstance.imfSinkWriter->Finalize();
 			if (FAILED(hResult))
 			{
-				std::cout << "Failed to finalize media capture..." << std::endl;
+				AVDebugWriteLine("Failed to finalize media capture...");
 			}
 
 			//Shutdown media foundation
@@ -36,7 +36,7 @@ namespace
 				threadEvent.detach();
 			}
 
-			std::cout << "Stopped media capture..." << std::endl;
+			AVDebugWriteLine("Stopped media capture...");
 			return true;
 		}
 		catch (...)

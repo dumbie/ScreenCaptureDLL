@@ -82,9 +82,6 @@
     <ClInclude Include="CaptureIncludes.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="CoutVisualStudioDebugOutput.h">
-      <Filter>Header files</Filter>
-    </ClInclude>
     <ClInclude Include="Shaders\PixelShader.h">
       <Filter>Shader files</Filter>
     </ClInclude>

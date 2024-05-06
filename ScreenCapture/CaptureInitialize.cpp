@@ -16,7 +16,7 @@ namespace
 			//Check instance status
 			if (vDirectXInstance.vInstanceInitialized)
 			{
-				std::cout << "DirectX is already initialized for monitor: " << monitorId << std::endl;
+				AVDebugWriteLine("DirectX is already initialized for monitor: " << monitorId);
 				return true;
 			}
 
@@ -80,13 +80,13 @@ namespace
 
 			//Update instance status
 			vDirectXInstance.vInstanceInitialized = true;
-			std::cout << "DirectX initialized for monitor: " << monitorId << std::endl;
+			AVDebugWriteLine("DirectX initialized for monitor: " << monitorId);
 
 			return true;
 		}
 		catch (...)
 		{
-			std::cout << "InitializeDirectX for monitor " << monitorId << " failed: " << hResult << std::endl;
+			AVDebugWriteLine("InitializeDirectX for monitor " << monitorId << " failed: " << hResult);
 			return false;
 		}
 	}
@@ -125,7 +125,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "InitializeSamplerState failed: " << hResult << std::endl;
+			AVDebugWriteLine("InitializeSamplerState failed: " << hResult);
 			return false;
 		}
 	}
@@ -139,7 +139,7 @@ namespace
 			hResult = CreateDirect3D11DeviceFromDXGIDevice(vDirectXInstance.iDxgiDevice4, inspectable.put());
 			if (FAILED(hResult))
 			{
-				std::cout << "CreateDirect3D11DeviceFromDXGIDevice failed." << std::endl;
+				AVDebugWriteLine("CreateDirect3D11DeviceFromDXGIDevice failed.");
 				return false;
 			}
 			vWgcInstance.vGraphicsD3D11Device = inspectable.as<winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice>();
@@ -166,7 +166,7 @@ namespace
 			//hResult = interop_factory->CreateForWindow(GetForegroundWindow(), interop_uuid, (void**)&vWgcInstance.vGraphicsCaptureItem);
 			//if (FAILED(hResult))
 			//{
-			//	std::cout << "CreateForWindow failed." << std::endl;
+			//	AVDebugWriteLine("CreateForWindow failed.");
 			//	return false;
 			//}
 
@@ -174,7 +174,7 @@ namespace
 			hResult = interop_factory->CreateForMonitor(vDirectXInstance.iDxgiOutputDescription1.Monitor, interop_uuid, (void**)&vWgcInstance.vGraphicsCaptureItem);
 			if (FAILED(hResult))
 			{
-				std::cout << "CreateForMonitor failed." << std::endl;
+				AVDebugWriteLine("CreateForMonitor failed.");
 				return false;
 			}
 
@@ -192,7 +192,7 @@ namespace
 			}
 			catch (...)
 			{
-				std::cout << "Failed to show or hide capture border, not supported?" << std::endl;
+				AVDebugWriteLine("Failed to show or hide capture border, not supported?");
 			}
 
 			//Start capture session
@@ -200,13 +200,13 @@ namespace
 
 			//Update instance status
 			vWgcInstance.vInstanceInitialized = true;
-			std::cout << "Windows Graphics Capture initialized." << std::endl;
+			AVDebugWriteLine("Windows Graphics Capture initialized.");
 
 			return true;
 		}
 		catch (...)
 		{
-			std::cout << "InitializeWgc failed: " << hResult << std::endl;
+			AVDebugWriteLine("InitializeWgc failed: " << hResult);
 			return false;
 		}
 	}
@@ -249,7 +249,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "InitializeRenderTargetView failed: " << hResult << std::endl;
+			AVDebugWriteLine("InitializeRenderTargetView failed: " << hResult);
 			return false;
 		}
 	}
@@ -268,7 +268,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "InitializeViewPort failed: " << hResult << std::endl;
+			AVDebugWriteLine("InitializeViewPort failed: " << hResult);
 			return false;
 		}
 	}
@@ -281,13 +281,13 @@ namespace
 			hResult = vDirectXInstance.iD3D11Device5->CreateVertexShader(VertexShaderBytesVar, sizeof(VertexShaderBytesVar), NULL, &vDirectXInstance.iD3D11ShaderVertex0);
 			if (FAILED(hResult))
 			{
-				std::cout << "CreateVertexShader failed: " << hResult << std::endl;
+				AVDebugWriteLine("CreateVertexShader failed: " << hResult);
 				return false;
 			}
 			hResult = vDirectXInstance.iD3D11Device5->CreatePixelShader(PixelShaderBytesVar, sizeof(PixelShaderBytesVar), NULL, &vDirectXInstance.iD3D11ShaderPixel0);
 			if (FAILED(hResult))
 			{
-				std::cout << "CreatePixelShader failed: " << hResult << std::endl;
+				AVDebugWriteLine("CreatePixelShader failed: " << hResult);
 				return false;
 			}
 
@@ -307,7 +307,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "InitializeShaders failed: " << hResult << std::endl;
+			AVDebugWriteLine("InitializeShaders failed: " << hResult);
 			return false;
 		}
 	}
@@ -359,7 +359,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "SetShaderVariables failed: " << hResult << std::endl;
+			AVDebugWriteLine("SetShaderVariables failed: " << hResult);
 			return false;
 		}
 	}
@@ -375,11 +375,11 @@ namespace
 				captureDetails = vCaptureDetails;
 
 				//Return result
-				std::cout << "Capture is already initialized." << std::endl;
+				AVDebugWriteLine("Capture is already initialized.");
 				return true;
 			}
 
-			std::cout << "Initializing capture..." << std::endl;
+			AVDebugWriteLine("Initializing capture...");
 
 			//Disable assert reporting
 			_CrtSetReportMode(_CRT_ASSERT, 0);
@@ -516,12 +516,12 @@ namespace
 			captureDetails = vCaptureDetails;
 
 			//Return result
-			std::cout << "Capture initialized successfully." << std::endl;
+			AVDebugWriteLine("Capture initialized successfully.");
 			return true;
 		}
 		catch (...)
 		{
-			std::cout << "InitializeCapture failed: " << hResult << std::endl;
+			AVDebugWriteLine("InitializeCapture failed: " << hResult);
 
 			//Reset all used variables
 			ResetVariablesAll();

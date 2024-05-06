@@ -30,7 +30,7 @@ namespace
 			hResult = iGraphBuilder->RenderFile(audioFile, NULL);
 			if (FAILED(hResult))
 			{
-				std::wcout << "Render audio file failed: " << audioFile << std::endl;
+				AVDebugWriteLine("Render audio file failed: " << audioFile);
 				return;
 			}
 
@@ -38,7 +38,7 @@ namespace
 			hResult = iMediaControl->Run();
 			if (FAILED(hResult))
 			{
-				std::wcout << "Run audio file failed: " << audioFile << std::endl;
+				AVDebugWriteLine("Run audio file failed: " << audioFile);
 				return;
 			}
 
@@ -57,7 +57,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::wcout << L"Failed to play audio file: " << audioFile << std::endl;
+			AVDebugWriteLine("Failed to play audio file: " << audioFile);
 		}
 		//Release resources
 		iGraphBuilder.Release();

@@ -61,12 +61,12 @@ namespace
 			}
 
 			//Return result
-			std::cout << "Audio render device started." << std::endl;
+			AVDebugWriteLine("Audio render device started.");
 			return true;
 		}
 		catch (...)
 		{
-			std::cout << "SetAudioDeviceRender failed." << std::endl;
+			AVDebugWriteLine("SetAudioDeviceRender failed.");
 			return false;
 		}
 	}
@@ -138,12 +138,12 @@ namespace
 			}
 
 			//Return result
-			std::cout << "Audio capture device started." << std::endl;
+			AVDebugWriteLine("Audio capture device started.");
 			return true;
 		}
 		catch (...)
 		{
-			std::cout << "SetAudioDeviceCapture failed." << std::endl;
+			AVDebugWriteLine("SetAudioDeviceCapture failed.");
 			return false;
 		}
 	}
@@ -157,7 +157,7 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeAudioOut);
 			if (FAILED(hResult))
 			{
-				std::cout << "MFCreateMediaType audio out failed." << std::endl;
+				AVDebugWriteLine("MFCreateMediaType audio out failed.");
 				return false;
 			}
 
@@ -188,7 +188,7 @@ namespace
 			hResult = vMediaFoundationInstance.imfSinkWriter->AddStream(imfMediaTypeAudioOut, &vMediaFoundationInstance.vOutAudioStreamIndex);
 			if (FAILED(hResult))
 			{
-				std::cout << "AddStream audio failed." << std::endl;
+				AVDebugWriteLine("AddStream audio failed.");
 				return false;
 			}
 
@@ -197,7 +197,7 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeAudioIn);
 			if (FAILED(hResult))
 			{
-				std::cout << "MFCreateMediaType audio in failed." << std::endl;
+				AVDebugWriteLine("MFCreateMediaType audio in failed.");
 				return false;
 			}
 
@@ -211,7 +211,7 @@ namespace
 			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutAudioStreamIndex, imfMediaTypeAudioIn, NULL);
 			if (FAILED(hResult))
 			{
-				std::cout << "SetInputMediaType audio failed." << std::endl;
+				AVDebugWriteLine("SetInputMediaType audio failed.");
 				return false;
 			}
 
@@ -219,7 +219,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "SetAudioMediaType failed." << std::endl;
+			AVDebugWriteLine("SetAudioMediaType failed.");
 			return false;
 		}
 	}

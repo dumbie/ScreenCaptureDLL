@@ -11,6 +11,10 @@
 #pragma comment(lib, "strmiids.lib")
 #pragma comment(lib, "avrt.lib")
 
+//Arnold Vink Code
+#include "..\..\ArnoldVinkCode\CPP\AVDebug.h"
+#include "..\..\ArnoldVinkCode\CPP\AVHighResDelay.h"
+
 //General
 #include <atlbase.h>
 #include <shellscalingapi.h>

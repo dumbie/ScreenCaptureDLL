@@ -17,7 +17,7 @@ namespace
 			//Check if screen capture failed
 			if (frame == NULL)
 			{
-				//std::cout << "Frame is empty skipping convert." << std::endl;
+				//AVDebugWriteLine("Frame is empty skipping convert.");
 				TextureResetVariablesLoop();
 				return false;
 			}
@@ -46,7 +46,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "UpdateScreenTexture failed." << std::endl;
+			AVDebugWriteLine("UpdateScreenTexture failed.");
 			TextureResetVariablesLoop();
 			return false;
 		}
@@ -88,7 +88,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "GetScreenBytes failed." << std::endl;
+			AVDebugWriteLine("GetScreenBytes failed.");
 			TextureResetVariablesLoop();
 			return {};
 		}

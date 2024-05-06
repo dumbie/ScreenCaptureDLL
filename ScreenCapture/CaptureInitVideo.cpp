@@ -12,7 +12,7 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeVideoOut);
 			if (FAILED(hResult))
 			{
-				std::cout << "MFCreateMediaType video out failed." << std::endl;
+				AVDebugWriteLine("MFCreateMediaType video out failed.");
 				return false;
 			}
 
@@ -64,7 +64,7 @@ namespace
 			if (targetVideoFrameRate > vCaptureDetails.RefreshRate)
 			{
 				targetVideoFrameRate = vCaptureDetails.RefreshRate;
-				std::cout << "Monitor refresh rate lower, changed video fps to: " << targetVideoFrameRate << std::endl;
+				AVDebugWriteLine("Monitor refresh rate lower, changed video fps to: " << targetVideoFrameRate);
 			}
 			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_FRAME_RATE, targetVideoFrameRate, 1);
 
@@ -76,7 +76,7 @@ namespace
 			hResult = vMediaFoundationInstance.imfSinkWriter->AddStream(imfMediaTypeVideoOut, &vMediaFoundationInstance.vOutVideoStreamIndex);
 			if (FAILED(hResult))
 			{
-				std::cout << "AddStream video failed." << std::endl;
+				AVDebugWriteLine("AddStream video failed.");
 				return false;
 			}
 
@@ -89,13 +89,13 @@ namespace
 			if (vMediaSettings.VideoRateControl == CBR)
 			{
 				//Constant Rate Control
-				std::cout << "Set constant media control rate: " << vMediaSettings.VideoBitRate << std::endl;
+				AVDebugWriteLine("Set constant media control rate: " << vMediaSettings.VideoBitRate);
 				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_CBR);
 			}
 			else if (vMediaSettings.VideoRateControl == VBR)
 			{
 				//Variable Rate Control
-				std::cout << "Set variable media control rate: " << vMediaSettings.VideoBitRate << std::endl;
+				AVDebugWriteLine("Set variable media control rate: " << vMediaSettings.VideoBitRate);
 				imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRateControlMode, eAVEncCommonRateControlMode_UnconstrainedVBR);
 			}
 
@@ -108,7 +108,7 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeVideoIn);
 			if (FAILED(hResult))
 			{
-				std::cout << "MFCreateMediaType video in failed." << std::endl;
+				AVDebugWriteLine("MFCreateMediaType video in failed.");
 				return false;
 			}
 
@@ -120,18 +120,18 @@ namespace
 			//HDR and SDR settings
 			if (hdrEnabled)
 			{
-				std::cout << "Set media type format to HDR." << std::endl;
+				AVDebugWriteLine("Set media type format to HDR.");
 				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_A16B16G16R16F);
 			}
 			else
 			{
-				std::cout << "Set media type format to SDR." << std::endl;
+				AVDebugWriteLine("Set media type format to SDR.");
 				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_ARGB32);
 			}
 			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
 			if (FAILED(hResult))
 			{
-				std::cout << "SetInputMediaType video failed: " << hResult << std::endl;
+				AVDebugWriteLine("SetInputMediaType video failed: " << hResult);
 				return false;
 			}
 
@@ -139,7 +139,7 @@ namespace
 		}
 		catch (...)
 		{
-			std::cout << "SetVideoMediaType failed." << std::endl;
+			AVDebugWriteLine("SetVideoMediaType failed.");
 			return false;
 		}
 	}

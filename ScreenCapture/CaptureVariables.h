@@ -1,12 +1,10 @@
 #pragma once
 #include "CaptureClasses.h"
-#include "CoutVisualStudioDebugOutput.h"
 
 namespace
 {
 	//Results
 	HRESULT hResult;
-	CoutVisualStudioDebugOutput coutvs;
 
 	//Events
 	typedef void(*CaptureEvent)();

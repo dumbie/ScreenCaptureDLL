@@ -30,7 +30,7 @@ namespace
 			BOOL silenceAudioBuffer = false;
 			if (mediaFlags & AUDCLNT_BUFFERFLAGS_SILENT)
 			{
-				//std::cout << "AUDCLNT_BUFFERFLAGS_SILENT" << std::endl;
+				//AVDebugWriteLine("AUDCLNT_BUFFERFLAGS_SILENT");
 				silenceAudioBuffer = true;
 			}
 
@@ -40,7 +40,7 @@ namespace
 			//Check media frames read
 			if (mediaFramesRead == mediaFramesTarget)
 			{
-				//std::cout << "Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags << std::endl;
+				//AVDebugWriteLine("Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags);
 
 				//Calculate media size
 				UINT audioBytesSize = mediaFramesRead * vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
@@ -56,7 +56,7 @@ namespace
 			}
 			else if (silenceAudioBuffer)
 			{
-				//std::cout << "Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags << std::endl;
+				//AVDebugWriteLine("Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags);
 
 				//Calculate media size
 				UINT audioBytesSize = mediaFramesTarget * vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
@@ -72,13 +72,13 @@ namespace
 			}
 			else
 			{
-				//std::cout << "No audio bytes read." << std::endl;
+				//AVDebugWriteLine("No audio bytes read.");
 				return {};
 			}
 		}
 		catch (...)
 		{
-			std::cout << "GetAudioBytes failed." << std::endl;
+			AVDebugWriteLine("GetAudioBytes failed.");
 			return {};
 		}
 	}

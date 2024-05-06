@@ -25,12 +25,12 @@ namespace
 			}
 
 			//Return result
-			std::cout << "DXGI device manager initialized." << std::endl;
+			AVDebugWriteLine("DXGI device manager initialized.");
 			return true;
 		}
 		catch (...)
 		{
-			std::cout << "InitializeDxgiDeviceManager failed." << std::endl;
+			AVDebugWriteLine("InitializeDxgiDeviceManager failed.");
 			return false;
 		}
 	}
@@ -89,12 +89,12 @@ namespace
 			if (!SetAudioMediaType()) { return false; }
 
 			//Return result
-			std::cout << "Media foundation initialized." << std::endl;
+			AVDebugWriteLine("Media foundation initialized.");
 			return true;
 		}
 		catch (...)
 		{
-			std::cout << "InitializeMediaFoundation failed." << std::endl;
+			AVDebugWriteLine("InitializeMediaFoundation failed.");
 			return false;
 		}
 	}
