@@ -11,48 +11,29 @@ namespace
 	{
 		try
 		{
-			//Loop variables
-			HWND vPreviousForegroundWindow = NULL;
-			LONG vPreviousForegroundStyle = NULL;
-
 			//Check capture status while allowed
 			while (vCaptureInstance.vCaptureStatusLoopAllowed)
 			{
-				//Get foreground window
-				HWND currentForegroundWindow = GetForegroundWindow();
-				LONG currentForegroundStyle = GetWindowLongA(currentForegroundWindow, GWL_STYLE);
-
-				//Check foreground window change
-				if (vPreviousForegroundStyle != currentForegroundStyle || vPreviousForegroundWindow != currentForegroundWindow)
+				try
 				{
-					if (!vCaptureSettings.DrawBorder)
+					//Check capture device change
+					if (!vDirectXInstance.iDxgiFactory7->IsCurrent())
 					{
-						std::cout << "Foreground window or style has changed, hiding capture border: " << vWgcInstance.vGraphicsCaptureSession.IsBorderRequired() << std::endl;
-						vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(true);
-						vWgcInstance.vGraphicsCaptureSession.IsBorderRequired(false);
-					}
-				}
+						//Trigger capture event
+						if (vCaptureEventDeviceChangeDetected)
+						{
+							std::thread threadEvent(vCaptureEventDeviceChangeDetected);
+							threadEvent.detach();
+						}
 
-				//Update previous variables
-				vPreviousForegroundStyle = currentForegroundStyle;
-				vPreviousForegroundWindow = currentForegroundWindow;
-
-				//Check capture device change
-				if (!vDirectXInstance.iDxgiFactory7->IsCurrent())
-				{
-					//Trigger capture event
-					if (vCaptureEventDeviceChangeDetected)
-					{
-						std::thread threadEvent(vCaptureEventDeviceChangeDetected);
-						threadEvent.detach();
+						//Note: triggers on resolution change, hdr switch and driver resets.
+						std::cout << "Capture device has changed, reset recommended." << std::endl;
 					}
 
-					//Note: triggers on resolution change, hdr switch and driver resets.
-					std::cout << "Capture device has changed, reset recommended." << std::endl;
+					//Delay status update
+					Sleep(1000);
 				}
-
-				//Wait for foreground change
-				Sleep(1000);
+				catch (...) {}
 			}
 		}
 		catch (...) {}
@@ -80,21 +61,25 @@ namespace
 			//Write media in loop while allowed
 			while (vMediaFoundationInstance.vMediaWriteLoopAllowed)
 			{
-				//Get media frame start time
-				LARGE_INTEGER qpcTimeCurrent;
-				QueryPerformanceCounter(&qpcTimeCurrent);
-				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaFoundationInstance.vMediaTimeStartLoop;
-
-				//Update screen texture
-				if (UpdateScreenTexture())
+				try
 				{
-					//Write media bytes to sink
-					std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureDetails.TotalByteSize, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
-					threadWriteSample.detach();
-				}
+					//Get media frame start time
+					LARGE_INTEGER qpcTimeCurrent;
+					QueryPerformanceCounter(&qpcTimeCurrent);
+					ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaFoundationInstance.vMediaTimeStartLoop;
 
-				//Delay screen capture
-				Sleep(mediaTimeDuration / vReferenceTimeToMilliseconds);
+					//Update screen texture
+					if (UpdateScreenTexture())
+					{
+						//Write media bytes to sink
+						std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureDetails.TotalByteSize, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
+						threadWriteSample.detach();
+					}
+
+					//Delay screen capture
+					Sleep(mediaTimeDuration / vReferenceTimeToMilliseconds);
+				}
+				catch (...) {}
 			}
 		}
 		catch (...) {}
@@ -121,26 +106,30 @@ namespace
 			//Write media in loop while allowed
 			while (vMediaFoundationInstance.vMediaWriteLoopAllowed)
 			{
-				//Get media frame start time
-				LARGE_INTEGER qpcTimeCurrent;
-				QueryPerformanceCounter(&qpcTimeCurrent);
-				ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaFoundationInstance.vMediaTimeStartLoop;
-
-				//Get audio bytes
-				std::vector<BYTE> audioBytes = GetAudioBytes();
-
-				//Check audio bytes
-				if (!audioBytes.empty())
+				try
 				{
-					//Write media bytes to sink
-					WriteMediaDataBytes(audioBytes, true, false, vMediaFoundationInstance.vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
+					//Get media frame start time
+					LARGE_INTEGER qpcTimeCurrent;
+					QueryPerformanceCounter(&qpcTimeCurrent);
+					ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaFoundationInstance.vMediaTimeStartLoop;
+
+					//Get audio bytes
+					std::vector<BYTE> audioBytes = GetAudioBytes();
+
+					//Check audio bytes
+					if (!audioBytes.empty())
+					{
+						//Write media bytes to sink
+						WriteMediaDataBytes(audioBytes, true, false, vMediaFoundationInstance.vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
+					}
+					else
+					{
+						//Delay audio capture
+						//std::cout << "Empty media audio, delaying capture." << std::endl;
+						Sleep(1);
+					}
 				}
-				else
-				{
-					//Delay audio capture
-					//std::cout << "Empty media audio, delaying capture." << std::endl;
-					Sleep(1);
-				}
+				catch (...) {}
 			}
 		}
 		catch (...) {}
