@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0-windows10.0.19041</TargetFramework>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<NoWarn>CA1416</NoWarn>
 		<OutputType>WinExe</OutputType>
 		<ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
@@ -30,5 +30,10 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Resource Include="Assets\AppIcon.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="$(SolutionDir)Build\$(Configuration)\Resources\ScreenCapture.dll" Link="Resources\ScreenCapture.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 </Project>
