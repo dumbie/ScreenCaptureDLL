@@ -387,13 +387,16 @@ namespace
 			vCaptureSettings = captureSettings;
 
 			//Initialize DirectX
-			if (!InitializeDirectX(captureSettings.MonitorId))
+			if (!InitializeDirectX(vCaptureSettings.MonitorId))
 			{
 				//Reset all used variables
 				ResetVariablesAll();
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+
+				//Update instance status
+				vCaptureInstance.vInstanceInitializing = false;
 
 				//Return result
 				AVDebugWriteLine("Capture InitializeDirectX failed.");
@@ -409,6 +412,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
+				//Update instance status
+				vCaptureInstance.vInstanceInitializing = false;
+
 				//Return result
 				AVDebugWriteLine("Capture SetCaptureDetails failed.");
 				return CaptureStatus::Failed;
@@ -422,6 +428,9 @@ namespace
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+
+				//Update instance status
+				vCaptureInstance.vInstanceInitializing = false;
 
 				//Return result
 				AVDebugWriteLine("Capture InitializeSamplerState failed.");
@@ -437,6 +446,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
+				//Update instance status
+				vCaptureInstance.vInstanceInitializing = false;
+
 				//Return result
 				AVDebugWriteLine("Capture InitializeWgc failed.");
 				return CaptureStatus::Failed;
@@ -450,6 +462,9 @@ namespace
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+
+				//Update instance status
+				vCaptureInstance.vInstanceInitializing = false;
 
 				//Return result
 				AVDebugWriteLine("Capture InitializeShaders failed.");
@@ -465,6 +480,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
+				//Update instance status
+				vCaptureInstance.vInstanceInitializing = false;
+
 				//Return result
 				AVDebugWriteLine("Capture InitializeRenderTargetView failed.");
 				return CaptureStatus::Failed;
@@ -478,6 +496,9 @@ namespace
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+
+				//Update instance status
+				vCaptureInstance.vInstanceInitializing = false;
 
 				//Return result
 				AVDebugWriteLine("Capture InitializeViewPort failed.");
@@ -493,6 +514,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
+				//Update instance status
+				vCaptureInstance.vInstanceInitializing = false;
+
 				//Return result
 				AVDebugWriteLine("Capture SetShaderVariables failed.");
 				return CaptureStatus::Failed;
@@ -506,6 +530,9 @@ namespace
 
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+
+				//Update instance status
+				vCaptureInstance.vInstanceInitializing = false;
 
 				//Return result
 				AVDebugWriteLine("Capture RenderUpdateVertex failed.");
@@ -533,11 +560,11 @@ namespace
 			//Reset all used variables
 			ResetVariablesAll();
 
-			//Update instance status
-			vCaptureInstance.vInstanceInitializing = false;
-
 			//Play audio effect
 			PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+
+			//Update instance status
+			vCaptureInstance.vInstanceInitializing = false;
 
 			//Return result
 			AVDebugWriteLine("Capture initialize failed.");
