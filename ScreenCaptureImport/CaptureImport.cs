@@ -8,7 +8,13 @@ namespace ScreenCaptureImport
     public class CaptureImport
     {
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureInitialize(CaptureSettings captureSettings, out CaptureDetails captureDetails, bool forceInitialize);
+        public static extern CaptureStatus CaptureInitialize(CaptureSettings captureSettings, bool forceInitialize);
+
+        [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern CaptureDetails CaptureGetDetails();
+
+        [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern CaptureSettings CaptureGetSettings();
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CaptureUpdateSettings(CaptureSettings captureSettings);

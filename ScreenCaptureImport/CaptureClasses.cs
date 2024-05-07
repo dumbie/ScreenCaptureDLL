@@ -1,6 +1,13 @@
 ﻿namespace ScreenCaptureImport
 {
     //Enumerators
+    public enum CaptureStatus : int
+    {
+        Initialized = 0,
+        Failed = 1,
+        Busy = 2
+    }
+
     public enum ImageFormats : int
     {
         JXR = 0,

@@ -9,16 +9,26 @@ namespace
 {
 	extern "C"
 	{
-		__declspec(dllexport) CaptureStatus CaptureInitialize(CaptureSettings captureSettings, CaptureDetails& captureDetails, BOOL forceInitialize)
+		__declspec(dllexport) CaptureStatus CaptureInitialize(CaptureSettings captureSettings, BOOL forceInitialize)
 		{
 			try
 			{
-				return CaptureInitializeCode(captureSettings, captureDetails, forceInitialize);
+				return CaptureInitializeCode(captureSettings, forceInitialize);
 			}
 			catch (...)
 			{
 				return CaptureStatus::Failed;
 			}
+		}
+
+		__declspec(dllexport) CaptureDetails CaptureGetDetails()
+		{
+			return vCaptureDetails;
+		}
+
+		__declspec(dllexport) CaptureSettings CaptureGetSettings()
+		{
+			return vCaptureSettings;
 		}
 
 		__declspec(dllexport) BOOL CaptureUpdateSettings(CaptureSettings captureSettings)

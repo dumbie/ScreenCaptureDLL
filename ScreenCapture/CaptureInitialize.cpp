@@ -351,7 +351,7 @@ namespace
 		}
 	}
 
-	CaptureStatus CaptureInitializeCode(CaptureSettings captureSettings, CaptureDetails& captureDetails, BOOL forceInitialize)
+	CaptureStatus CaptureInitializeCode(CaptureSettings captureSettings, BOOL forceInitialize)
 	{
 		try
 		{
@@ -364,9 +364,6 @@ namespace
 			}
 			else if (!forceInitialize && vCaptureInstance.vInstanceInitialized)
 			{
-				//Return capture details
-				captureDetails = vCaptureDetails;
-
 				//Return result
 				AVDebugWriteLine("Capture is already initialized.");
 				return CaptureStatus::Initialized;
@@ -526,9 +523,6 @@ namespace
 			//Update instance status
 			vCaptureInstance.vInstanceInitialized = true;
 			vCaptureInstance.vInstanceInitializing = false;
-
-			//Return capture details
-			captureDetails = vCaptureDetails;
 
 			//Return result
 			AVDebugWriteLine("Capture initialized successfully.");
