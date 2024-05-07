@@ -547,6 +547,9 @@ namespace
 			std::thread threadLoopCaptureStatus(LoopCaptureStatus);
 			threadLoopCaptureStatus.detach();
 
+			//Wait for capture initialization
+			AVHighResDelay(100);
+
 			//Update instance status
 			vCaptureInstance.vInstanceInitialized = true;
 			vCaptureInstance.vInstanceInitializing = false;
