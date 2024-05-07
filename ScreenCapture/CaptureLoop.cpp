@@ -19,15 +19,12 @@ namespace
 					//Check capture device change
 					if (!vDirectXInstance.iDxgiFactory7->IsCurrent())
 					{
-						//Note: triggers before monitor finishes initializing failing Dxgi EnumOutputs. *1
+						//Note: triggers before monitor finishes powering on failing DxgiAdapter EnumOutputs.
 						//Note: triggers on resolution change, monitor power on, hdr switch and driver resets.
 						AVDebugWriteLine("Capture device has changed, reset recommended.");
 
 						if (vCaptureEventDeviceChangeDetected)
 						{
-							//Delay capture event *1
-							AVHighResDelay(4000);
-
 							//Trigger capture event
 							std::thread threadEvent(vCaptureEventDeviceChangeDetected);
 							threadEvent.detach();

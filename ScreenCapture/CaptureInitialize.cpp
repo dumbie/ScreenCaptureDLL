@@ -9,13 +9,13 @@
 
 namespace
 {
-	BOOL InitializeDirectX(UINT monitorId)
+	BOOL InitializeDirectXCreate(UINT monitorId)
 	{
 		try
 		{
 			//Create D3D11 Device
 			D3D_FEATURE_LEVEL iD3DFeatureLevel;
-			UINT iD3DCreateFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
+			UINT iD3DCreateFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 			hResult = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, iD3DCreateFlags, D3DFeatureLevelsArray, D3DFeatureLevelsCount, D3D11_SDK_VERSION, (ID3D11Device**)&vDirectXInstance.iD3D11Device5, &iD3DFeatureLevel, (ID3D11DeviceContext**)&vDirectXInstance.iD3D11DeviceContext4);
 			if (FAILED(hResult))
 			{
@@ -79,6 +79,27 @@ namespace
 			AVDebugWriteLine("InitializeDirectX for monitor " << monitorId << " failed: " << hResult);
 			return false;
 		}
+	}
+
+	BOOL InitializeDirectXLoop(UINT monitorId)
+	{
+		try
+		{
+			for (int retryCount = 0; retryCount < 6; retryCount++)
+			{
+				if (InitializeDirectXCreate(monitorId))
+				{
+					return true;
+				}
+				else
+				{
+					AVDebugWriteLine("Failed to initialize DirectX retrying: " << retryCount << "x");
+					AVHighResDelay(1000);
+				}
+			}
+		}
+		catch (...) {}
+		return false;
 	}
 
 	BOOL InitializeSamplerState()
@@ -387,7 +408,7 @@ namespace
 			vCaptureSettings = captureSettings;
 
 			//Initialize DirectX
-			if (!InitializeDirectX(vCaptureSettings.MonitorId))
+			if (!InitializeDirectXLoop(vCaptureSettings.MonitorId))
 			{
 				//Reset all used variables
 				ResetVariablesAll();
