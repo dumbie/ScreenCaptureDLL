@@ -184,9 +184,6 @@ namespace
 			}
 			vWgcInstance.vGraphicsCaptureFramePool = NULL;
 
-			//Status
-			vWgcInstance.vInstanceInitialized = false;
-
 			AVDebugWriteLine("Reset all Windows Graphics Capture variables.");
 			return true;
 		}
@@ -222,9 +219,6 @@ namespace
 			vDirectXInstance.iD3D11BufferPixel0.Release();
 			vDirectXInstance.iD3D11ShaderVertex0.Release();
 			vDirectXInstance.iD3D11ShaderPixel0.Release();
-
-			//Status
-			vDirectXInstance.vInstanceInitialized = false;
 
 			AVDebugWriteLine("Reset all DirectX variables.");
 			return true;

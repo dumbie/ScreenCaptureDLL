@@ -13,13 +13,6 @@ namespace
 	{
 		try
 		{
-			//Check instance status
-			if (vDirectXInstance.vInstanceInitialized)
-			{
-				AVDebugWriteLine("DirectX is already initialized for monitor: " << monitorId);
-				return true;
-			}
-
 			//Create D3D11 Device
 			D3D_FEATURE_LEVEL iD3DFeatureLevel;
 			UINT iD3DCreateFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
@@ -78,10 +71,7 @@ namespace
 				return false;
 			}
 
-			//Update instance status
-			vDirectXInstance.vInstanceInitialized = true;
 			AVDebugWriteLine("DirectX initialized for monitor: " << monitorId);
-
 			return true;
 		}
 		catch (...)
@@ -198,10 +188,7 @@ namespace
 			//Start capture session
 			vWgcInstance.vGraphicsCaptureSession.StartCapture();
 
-			//Update instance status
-			vWgcInstance.vInstanceInitialized = true;
 			AVDebugWriteLine("Windows Graphics Capture initialized.");
-
 			return true;
 		}
 		catch (...)
@@ -364,20 +351,29 @@ namespace
 		}
 	}
 
-	BOOL CaptureInitializeCode(CaptureSettings captureSettings, CaptureDetails& captureDetails, BOOL forceInitialize)
+	CaptureStatus CaptureInitializeCode(CaptureSettings captureSettings, CaptureDetails& captureDetails, BOOL forceInitialize)
 	{
 		try
 		{
-			//Check capture initialized
-			if (!forceInitialize && vCaptureInstance.vInstanceInitialized)
+			//Check instance status
+			if (vCaptureInstance.vInstanceInitializing)
+			{
+				//Return result
+				AVDebugWriteLine("Capture is currently initializing.");
+				return CaptureStatus::Busy;
+			}
+			else if (!forceInitialize && vCaptureInstance.vInstanceInitialized)
 			{
 				//Return capture details
 				captureDetails = vCaptureDetails;
 
 				//Return result
 				AVDebugWriteLine("Capture is already initialized.");
-				return true;
+				return CaptureStatus::Initialized;
 			}
+
+			//Update instance status
+			vCaptureInstance.vInstanceInitializing = true;
 
 			AVDebugWriteLine("Initializing capture...");
 
@@ -402,7 +398,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				return false;
+				//Return result
+				AVDebugWriteLine("Capture InitializeDirectX failed.");
+				return CaptureStatus::Failed;
 			}
 
 			//Set capture details
@@ -414,7 +412,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				return false;
+				//Return result
+				AVDebugWriteLine("Capture SetCaptureDetails failed.");
+				return CaptureStatus::Failed;
 			}
 
 			//Initialize sampler state
@@ -426,7 +426,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				return false;
+				//Return result
+				AVDebugWriteLine("Capture InitializeSamplerState failed.");
+				return CaptureStatus::Failed;
 			}
 
 			//Initialize Windows Graphics Capture
@@ -438,7 +440,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				return false;
+				//Return result
+				AVDebugWriteLine("Capture InitializeWgc failed.");
+				return CaptureStatus::Failed;
 			}
 
 			//Initialize shaders
@@ -450,7 +454,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				return false;
+				//Return result
+				AVDebugWriteLine("Capture InitializeShaders failed.");
+				return CaptureStatus::Failed;
 			}
 
 			//Initialize render target view
@@ -462,7 +468,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				return false;
+				//Return result
+				AVDebugWriteLine("Capture InitializeRenderTargetView failed.");
+				return CaptureStatus::Failed;
 			}
 
 			//Initialize view port
@@ -474,7 +482,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				return false;
+				//Return result
+				AVDebugWriteLine("Capture InitializeViewPort failed.");
+				return CaptureStatus::Failed;
 			}
 
 			//Set shader variables
@@ -486,7 +496,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				return false;
+				//Return result
+				AVDebugWriteLine("Capture SetShaderVariables failed.");
+				return CaptureStatus::Failed;
 			}
 
 			//Update vertex vertices
@@ -498,7 +510,9 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				return false;
+				//Return result
+				AVDebugWriteLine("Capture RenderUpdateVertex failed.");
+				return CaptureStatus::Failed;
 			}
 
 			//Update thread variables
@@ -509,27 +523,31 @@ namespace
 			std::thread threadLoopCaptureStatus(LoopCaptureStatus);
 			threadLoopCaptureStatus.detach();
 
-			//Update variables
+			//Update instance status
 			vCaptureInstance.vInstanceInitialized = true;
+			vCaptureInstance.vInstanceInitializing = false;
 
 			//Return capture details
 			captureDetails = vCaptureDetails;
 
 			//Return result
 			AVDebugWriteLine("Capture initialized successfully.");
-			return true;
+			return CaptureStatus::Initialized;
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("InitializeCapture failed: " << hResult);
-
 			//Reset all used variables
 			ResetVariablesAll();
+
+			//Update instance status
+			vCaptureInstance.vInstanceInitializing = false;
 
 			//Play audio effect
 			PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-			return false;
+			//Return result
+			AVDebugWriteLine("Capture initialize failed.");
+			return CaptureStatus::Failed;
 		}
 	}
 }

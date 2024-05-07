@@ -9,7 +9,7 @@ namespace
 {
 	extern "C"
 	{
-		__declspec(dllexport) BOOL CaptureInitialize(CaptureSettings captureSettings, CaptureDetails& captureDetails, BOOL forceInitialize)
+		__declspec(dllexport) CaptureStatus CaptureInitialize(CaptureSettings captureSettings, CaptureDetails& captureDetails, BOOL forceInitialize)
 		{
 			try
 			{
@@ -17,7 +17,7 @@ namespace
 			}
 			catch (...)
 			{
-				return false;
+				return CaptureStatus::Failed;
 			}
 		}
 

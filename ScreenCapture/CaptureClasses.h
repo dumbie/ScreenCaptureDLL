@@ -4,6 +4,13 @@
 namespace
 {
 	//Enumerators
+	enum CaptureStatus
+	{
+		Initialized = 0,
+		Failed = 1,
+		Busy = 2
+	};
+
 	enum ImageFormats
 	{
 		JXR = 0,
@@ -36,13 +43,13 @@ namespace
 	//Structures
 	struct MediaSettings
 	{
-		AudioFormats AudioFormat = AAC;
+		AudioFormats AudioFormat = AudioFormats::AAC;
 		UINT AudioChannels = 2;
 		UINT AudioBitRate = 256;
 		UINT AudioBitDepth = 16;
 		UINT AudioSampleRate = 48000;
-		VideoFormats VideoFormat = HEVC;
-		VideoRateControls VideoRateControl = VBR;
+		VideoFormats VideoFormat = VideoFormats::HEVC;
+		VideoRateControls VideoRateControl = VideoRateControls::VBR;
 		UINT VideoBitRate = 25000;
 		UINT VideoFrameRate = 60;
 	};
@@ -104,9 +111,6 @@ namespace
 
 	struct WgcInstance
 	{
-		//Status
-		BOOL vInstanceInitialized;
-
 		//Frame
 		winrt::Windows::Graphics::SizeInt32 vFrameSizeCurrent = { 0 ,0 };
 		winrt::Windows::Graphics::DirectX::DirectXPixelFormat vFramePixelFormat = winrt::Windows::Graphics::DirectX::DirectXPixelFormat::Unknown;
@@ -122,9 +126,6 @@ namespace
 
 	struct DirectXInstance
 	{
-		//Status
-		BOOL vInstanceInitialized;
-
 		//Information
 		DXGI_OUTPUT_DESC1 iDxgiOutputDescription1;
 
@@ -194,6 +195,7 @@ namespace
 	{
 		//Status
 		BOOL vInstanceInitialized;
+		BOOL vInstanceInitializing;
 		BOOL vCaptureStatusLoopAllowed;
 		BOOL vCaptureStatusLoopFinished;
 		BOOL vCaptureTextureResizing;
