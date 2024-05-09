@@ -39,7 +39,7 @@ namespace
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_NOMINAL_RANGE, MFNominalRange_16_235);
 			if (videoFormat == MFVideoFormat_HEVC)
 			{
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH265VLevel5);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH265VLevel6_2);
 				//HDR and SDR settings
 				if (hdrEnabled)
 				{
@@ -59,7 +59,7 @@ namespace
 			}
 			else if (videoFormat == MFVideoFormat_H264)
 			{
-				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH264VLevel5);
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH264VLevel5_2);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH264VProfile_Main);
 			}
 
