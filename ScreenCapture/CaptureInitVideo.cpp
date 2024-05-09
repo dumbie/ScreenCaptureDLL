@@ -35,17 +35,22 @@ namespace
 			}
 
 			//Set encoder settings
+			imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, videoFormat);
+			imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_NOMINAL_RANGE, MFNominalRange_16_235);
 			if (videoFormat == MFVideoFormat_HEVC)
 			{
-				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, videoFormat);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH265VLevel5);
 				//HDR and SDR settings
 				if (hdrEnabled)
 				{
 					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_10);
-					//imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT2020);
-					//imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_2084); //PQ
-					//imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT2020_10);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PRIMARIES, MFVideoPrimaries_BT2020);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_YUV_MATRIX, MFVideoTransferMatrix_BT2020_10);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_TRANSFER_FUNCTION, MFVideoTransFunc_2084); //PQ
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_MIN_MASTERING_LUMINANCE, 0);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_MAX_MASTERING_LUMINANCE, vCaptureSettings.HDRMaximumNits);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_MAX_LUMINANCE_LEVEL, vCaptureSettings.HDRMaximumNits);
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_MAX_FRAME_AVERAGE_LUMINANCE_LEVEL, vCaptureSettings.HDRMaximumNits);
 				}
 				else
 				{
@@ -54,7 +59,6 @@ namespace
 			}
 			else if (videoFormat == MFVideoFormat_H264)
 			{
-				imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, videoFormat);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH264VLevel5);
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH264VProfile_Main);
 			}
@@ -126,7 +130,7 @@ namespace
 			else
 			{
 				AVDebugWriteLine("Set media type format to SDR.");
-				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_ARGB32);
+				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_NV12);
 			}
 			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
 			if (FAILED(hResult))
