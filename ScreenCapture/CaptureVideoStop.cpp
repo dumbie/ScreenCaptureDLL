@@ -12,7 +12,14 @@ namespace
 			//Stop media capture loop
 			MediaFoundationLoopStop();
 
-			//Finalize media write
+			//Flush media capture
+			hResult = vMediaFoundationInstance.imfSinkWriter->Flush(vMediaFoundationInstance.vImfSinkWriterIndex);
+			if (FAILED(hResult))
+			{
+				AVDebugWriteLine("Failed to flush media capture...");
+			}
+
+			//Finalize media capture
 			hResult = vMediaFoundationInstance.imfSinkWriter->Finalize();
 			if (FAILED(hResult))
 			{
@@ -36,7 +43,7 @@ namespace
 				threadEvent.detach();
 			}
 
-			AVDebugWriteLine("Stopped media capture...");
+			AVDebugWriteLine("Stopped media capture successfully.");
 			return true;
 		}
 		catch (...)
@@ -45,6 +52,7 @@ namespace
 			TextureResetVariablesLoop();
 			MediaFoundationResetVariablesAll();
 
+			AVDebugWriteLine("Failed stopping media capture.");
 			return false;
 		}
 	}

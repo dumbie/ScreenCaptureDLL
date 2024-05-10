@@ -130,7 +130,7 @@ namespace
 			else
 			{
 				AVDebugWriteLine("Set media type format to SDR.");
-				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_NV12);
+				imfMediaTypeVideoIn->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_ARGB32);
 			}
 			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
 			if (FAILED(hResult))

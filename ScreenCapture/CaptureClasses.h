@@ -177,6 +177,7 @@ namespace
 		BOOL vMediaWriteLoopAllowed;
 		BOOL vMediaWriteLoopFinishedScreen;
 		BOOL vMediaWriteLoopFinishedAudio;
+		DWORD vImfSinkWriterIndex = 0;
 		DWORD vOutVideoStreamIndex = 0;
 		DWORD vOutAudioStreamIndex = 0;
 		ULONGLONG vMediaTimeStartLoop = 0;

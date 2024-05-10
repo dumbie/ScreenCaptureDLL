@@ -38,6 +38,8 @@ namespace
 					AVDebugWriteLine("Waiting for capture status loop to stop...");
 					AVHighResDelay(100);
 				}
+
+				AVDebugWriteLine("Capture status loop has stopped.");
 			}
 
 			return true;
@@ -111,9 +113,11 @@ namespace
 				//Wait for loop to finish
 				while (!vMediaFoundationInstance.vMediaWriteLoopFinishedScreen && !vMediaFoundationInstance.vMediaWriteLoopFinishedAudio)
 				{
-					AVDebugWriteLine("Waiting for media capture loop to stop...");
+					AVDebugWriteLine("Waiting for capture media loop to stop...");
 					AVHighResDelay(100);
 				}
+
+				AVDebugWriteLine("Capture media loop has stopped.");
 			}
 
 			return true;

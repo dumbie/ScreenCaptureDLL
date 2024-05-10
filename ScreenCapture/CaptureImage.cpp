@@ -77,7 +77,8 @@ namespace
 			}
 
 			//Bitmap frame set metadata
-			if (SUCCEEDED(vBitmapImageInstance.iWICBitmapFrameEncode->GetMetadataQueryWriter(&vBitmapImageInstance.iWICMetadataQueryWriter)))
+			hResult = vBitmapImageInstance.iWICBitmapFrameEncode->GetMetadataQueryWriter(&vBitmapImageInstance.iWICMetadataQueryWriter);
+			if (SUCCEEDED(hResult))
 			{
 				//Set application name
 				PROPVARIANT propVariantAppName{};
