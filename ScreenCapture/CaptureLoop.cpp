@@ -34,7 +34,7 @@ namespace
 				catch (...) {}
 
 				//Delay status update
-				AVHighResDelay(1000);
+				AVHighResDelay(1000.0F);
 			}
 		}
 		catch (...) {}
@@ -75,10 +75,16 @@ namespace
 						//Write media bytes to sink
 						std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureDetails.TotalByteSize, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);
 						threadWriteSample.detach();
-					}
 
-					//Delay screen capture
-					AVHighResDelay(mediaTimeDuration / vReferenceTimeToMilliseconds);
+						//Delay screen capture
+						AVHighResDelay(mediaTimeDuration / vReferenceTimeToMilliseconds);
+					}
+					else
+					{
+						//Delay screen capture
+						//AVDebugWriteLine("Empty screen capture, delaying capture.");
+						AVHighResDelay(0.1F);
+					}
 				}
 				catch (...) {}
 			}
@@ -121,13 +127,14 @@ namespace
 					if (!audioBytes.empty())
 					{
 						//Write media bytes to sink
-						WriteMediaDataBytes(audioBytes, true, false, vMediaFoundationInstance.vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
+						std::thread threadWriteSample(WriteMediaDataBytes, audioBytes, true, false, vMediaFoundationInstance.vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
+						threadWriteSample.detach();
 					}
 					else
 					{
 						//Delay audio capture
 						//AVDebugWriteLine("Empty media audio, delaying capture.");
-						AVHighResDelay(1);
+						AVHighResDelay(0.1F);
 					}
 				}
 				catch (...) {}
