@@ -22,22 +22,22 @@ namespace ScreenCapture
 
         //Screen capture events
         public static CaptureEvent CaptureEventDeviceChangeDetected = null;
-        public async void CaptureEventDeviceChangeDetectedVoid()
+        public void CaptureEventDeviceChangeDetectedVoid()
         {
             try
             {
                 Debug.WriteLine("Device change event triggered, restarting capture.");
-                await InitializeScreenCapture(200);
+                InitializeScreenCapture();
             }
             catch { }
         }
 
         //Initialize screen capture
-        private async Task<bool> InitializeScreenCapture(int delayTime)
+        private CaptureStatus InitializeScreenCapture()
         {
+            CaptureStatus captureInitialized = CaptureStatus.Failed;
             try
             {
-                bool captureInitialized = false;
                 AVActions.DispatcherInvoke(delegate
                 {
                     //Register capture events
@@ -64,21 +64,36 @@ namespace ScreenCapture
                     };
 
                     //Initialize screen capture
-                    captureInitialized = CaptureImport.CaptureInitialize(vCaptureSettings, out vCaptureDetails, true);
+                    captureInitialized = CaptureImport.CaptureInitialize(vCaptureSettings, true);
+                    if (captureInitialized == CaptureStatus.Initialized)
+                    {
+                        //Get capture details
+                        vCaptureDetails = CaptureImport.CaptureGetDetails();
 
-                    //Set capture details string
-                    string captureDetails = "Width: " + vCaptureDetails.OutputWidth + " (" + vCaptureDetails.OriginalWidth + ")";
-                    captureDetails += "\nHeight: " + vCaptureDetails.OutputHeight + " (" + vCaptureDetails.OriginalHeight + ")";
-                    captureDetails += "\nRefreshRate: " + vCaptureDetails.RefreshRate;
-                    captureDetails += "\nPixelByteSize: " + vCaptureDetails.PixelByteSize;
-                    captureDetails += "\nWidthByteSize: " + vCaptureDetails.WidthByteSize;
-                    captureDetails += "\nTotalByteSize: " + vCaptureDetails.TotalByteSize;
-                    captureDetails += "\nHDREnabled: " + vCaptureDetails.HDREnabled;
-                    captureDetails += "\nHDRtoSDR: " + vCaptureDetails.HDRtoSDR;
-                    captureDetails += "\nSDR White Level: " + vCaptureDetails.SDRWhiteLevel;
+                        //Set capture details string
+                        string captureDetailsString = "Width: " + vCaptureDetails.OutputWidth + " (" + vCaptureDetails.OriginalWidth + ")";
+                        captureDetailsString += "\nHeight: " + vCaptureDetails.OutputHeight + " (" + vCaptureDetails.OriginalHeight + ")";
+                        captureDetailsString += "\nRefreshRate: " + vCaptureDetails.RefreshRate;
+                        captureDetailsString += "\nPixelByteSize: " + vCaptureDetails.PixelByteSize;
+                        captureDetailsString += "\nWidthByteSize: " + vCaptureDetails.WidthByteSize;
+                        captureDetailsString += "\nTotalByteSize: " + vCaptureDetails.TotalByteSize;
+                        captureDetailsString += "\nHDREnabled: " + vCaptureDetails.HDREnabled;
+                        captureDetailsString += "\nHDRtoSDR: " + vCaptureDetails.HDRtoSDR;
+                        captureDetailsString += "\nSDRWhiteLevel: " + vCaptureDetails.SDRWhiteLevel;
 
-                    //Update interface details
-                    textblock_CaptureDetails.Text = captureDetails;
+                        //Update interface details
+                        textblock_CaptureDetails.Text = captureDetailsString;
+                    }
+                    else if (captureInitialized == CaptureStatus.Busy)
+                    {
+                        //Update interface details
+                        textblock_CaptureDetails.Text = "Already initializing capture.";
+                    }
+                    else
+                    {
+                        //Update interface details
+                        textblock_CaptureDetails.Text = "Failed to initialize capture.";
+                    }
                 });
 
                 //Return result
@@ -87,11 +102,7 @@ namespace ScreenCapture
             catch (Exception ex)
             {
                 Debug.WriteLine("Failed to initialize screen capture: " + ex.Message);
-                return false;
-            }
-            finally
-            {
-                await Task.Delay(delayTime);
+                return captureInitialized;
             }
         }
 
@@ -101,7 +112,7 @@ namespace ScreenCapture
             try
             {
                 //Initialize screen capture
-                await InitializeScreenCapture(200);
+                InitializeScreenCapture();
 
                 //Loop and capture screen
                 while (true)
@@ -187,12 +198,12 @@ namespace ScreenCapture
             catch { }
         }
 
-        private async void button_Restart_Click(object sender, RoutedEventArgs e)
+        private void button_Restart_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 //Initialize screen capture
-                bool captureResult = await InitializeScreenCapture(200);
+                CaptureStatus captureResult = InitializeScreenCapture();
                 Debug.WriteLine("Capture restart: " + captureResult);
             }
             catch { }
