@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using static ArnoldVinkCode.AVInputOutputClass;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
@@ -47,19 +46,6 @@ namespace ScreenCapture
                 if (!SettingCheck(vConfiguration, "OverlayShowScreenshot")) { SettingSave(vConfiguration, "OverlayShowScreenshot", "True"); }
                 if (!SettingCheck(vConfiguration, "OverlayShowRecording")) { SettingSave(vConfiguration, "OverlayShowRecording", "True"); }
                 if (!SettingCheck(vConfiguration, "OverlayPosition")) { SettingSave(vConfiguration, "OverlayPosition", "BottomCenter"); }
-
-                //Check hotkey settings
-                if (!SettingCheck(vConfiguration, "Hotkey0CaptureImage")) { SettingSave(vConfiguration, "Hotkey0CaptureImage", (byte)KeysVirtual.AltLeft); }
-                if (!SettingCheck(vConfiguration, "Hotkey1CaptureImage")) { SettingSave(vConfiguration, "Hotkey1CaptureImage", (byte)KeysVirtual.None); }
-                if (!SettingCheck(vConfiguration, "Hotkey2CaptureImage")) { SettingSave(vConfiguration, "Hotkey2CaptureImage", (byte)KeysVirtual.F12); }
-
-                if (!SettingCheck(vConfiguration, "Hotkey0CaptureVideo")) { SettingSave(vConfiguration, "Hotkey0CaptureVideo", (byte)KeysVirtual.AltLeft); }
-                if (!SettingCheck(vConfiguration, "Hotkey1CaptureVideo")) { SettingSave(vConfiguration, "Hotkey1CaptureVideo", (byte)KeysVirtual.None); }
-                if (!SettingCheck(vConfiguration, "Hotkey2CaptureVideo")) { SettingSave(vConfiguration, "Hotkey2CaptureVideo", (byte)KeysVirtual.F11); }
-
-                //Set hotkey settings
-                hotkey_CaptureImage.Configuration = vConfiguration;
-                hotkey_CaptureVideo.Configuration = vConfiguration;
             }
             catch (Exception ex)
             {

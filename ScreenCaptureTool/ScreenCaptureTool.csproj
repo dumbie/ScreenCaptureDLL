@@ -43,6 +43,9 @@
 		<Content Include="Assets\Capture\CaptureVideoStop.mp3">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+		<Content Include="Profiles\ShortcutKeyboard.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 		<ProjectReference Include="..\..\ArnoldVinkCode\Desktop\ArnoldVinkCode.csproj" />
 		<ProjectReference Include="..\ScreenCaptureImport\ScreenCaptureImport.csproj" />
 		<Resource Include="Assets\Screenshot.png" />

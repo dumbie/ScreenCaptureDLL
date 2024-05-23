@@ -1,6 +1,9 @@
 ﻿using ArnoldVinkCode;
 using ScreenCaptureImport;
+using System.Collections.Generic;
 using System.Configuration;
+using static ArnoldVinkCode.AVClasses;
+using static ArnoldVinkCode.AVJsonFunctions;
 using static ArnoldVinkCode.AVSettings;
 
 namespace ScreenCapture
@@ -26,5 +29,8 @@ namespace ScreenCapture
         //Application Windows
         public static WindowMain vWindowMain = new WindowMain();
         public static WindowOverlay vWindowOverlay = new WindowOverlay();
+
+        //Application Lists
+        public static List<ShortcutTriggerKeyboard> vShortcutTriggers = JsonLoadFile<List<ShortcutTriggerKeyboard>>(@"Profiles\ShortcutKeyboard.json");
     }
 }

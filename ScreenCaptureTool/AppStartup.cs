@@ -23,7 +23,7 @@ namespace ScreenCapture
                 //Setup application defaults
                 AVStartup.SetupDefaults(ProcessPriority.High, false);
 
-                //Application settings checks
+                //Application initialize settings
                 vWindowMain.Settings_Check();
 
                 //Check if capture process is running
@@ -129,9 +129,14 @@ namespace ScreenCapture
 
                     Debug.WriteLine("Screen Capture Tool launch.");
 
-                    //Initialize Settings
+                    //Application initialize settings
                     vWindowMain.Settings_Load();
                     vWindowMain.Settings_Save();
+
+                    //Application initialize shortcuts
+                    vWindowMain.Shortcuts_Check();
+                    vWindowMain.Shortcuts_Load();
+                    vWindowMain.Shortcuts_Save();
 
                     //Create application tray menu
                     AppTrayMenuTool.Application_CreateTrayMenu();

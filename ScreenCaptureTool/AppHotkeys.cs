@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using static ArnoldVinkCode.AVClasses;
 using static ArnoldVinkCode.AVInputOutputClass;
 using static ArnoldVinkCode.AVInputOutputHotkey;
-using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -13,30 +14,26 @@ namespace ScreenCapture
         {
             try
             {
-                //Check hotkeys
-                List<KeysVirtual> usedKeysCaptureImage = new List<KeysVirtual>
+                ShortcutTriggerKeyboard shortcutTrigger = vShortcutTriggers.Where(x => x.Name == "CaptureImage").FirstOrDefault();
+                if (shortcutTrigger != null)
                 {
-                    (KeysVirtual)SettingLoad(vConfiguration, "Hotkey0CaptureImage", typeof(byte)),
-                    (KeysVirtual)SettingLoad(vConfiguration, "Hotkey1CaptureImage", typeof(byte)),
-                    (KeysVirtual)SettingLoad(vConfiguration, "Hotkey2CaptureImage", typeof(byte))
-                };
-                List<KeysVirtual> usedKeysCaptureVideo = new List<KeysVirtual>
-                {
-                    (KeysVirtual)SettingLoad(vConfiguration, "Hotkey0CaptureVideo", typeof(byte)),
-                    (KeysVirtual)SettingLoad(vConfiguration, "Hotkey1CaptureVideo", typeof(byte)),
-                    (KeysVirtual)SettingLoad(vConfiguration, "Hotkey2CaptureVideo", typeof(byte))
-                };
-
-                //Check presses
-                if (CheckHotkeyPress(keysPressed, usedKeysCaptureImage))
-                {
-                    Debug.WriteLine("Button Global - Capture image");
-                    await CaptureScreen.CaptureImageProcess(0);
+                    if (CheckHotkeyPress(keysPressed, shortcutTrigger.Trigger))
+                    {
+                        Debug.WriteLine("Button Global - Capture image");
+                        await CaptureScreen.CaptureImageProcess(0);
+                        return;
+                    }
                 }
-                else if (CheckHotkeyPress(keysPressed, usedKeysCaptureVideo))
+
+                shortcutTrigger = vShortcutTriggers.Where(x => x.Name == "CaptureVideo").FirstOrDefault();
+                if (shortcutTrigger != null)
                 {
-                    Debug.WriteLine("Button Global - Capture video");
-                    await CaptureScreen.CaptureVideoProcess(0);
+                    if (CheckHotkeyPress(keysPressed, shortcutTrigger.Trigger))
+                    {
+                        Debug.WriteLine("Button Global - Capture video");
+                        await CaptureScreen.CaptureVideoProcess(0);
+                        return;
+                    }
                 }
             }
             catch { }

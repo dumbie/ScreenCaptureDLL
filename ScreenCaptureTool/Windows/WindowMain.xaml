@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:AVHotkeyPicker="clr-namespace:ArnoldVinkHotkeyPicker;assembly=ArnoldVinkCode"
+        xmlns:AVStyles="clr-namespace:ArnoldVinkCode.Styles;assembly=ArnoldVinkCode"
         xmlns:local="clr-namespace:ScreenCapture"
         mc:Ignorable="d"
         Background="{DynamicResource ApplicationWhiteBrush}"
@@ -48,10 +48,10 @@
 
                 <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Shortcuts"/>
                 <TextBlock Text="Capture image by pressing:" TextWrapping="Wrap" Style="{StaticResource TextBlockBlack}"/>
-                <AVHotkeyPicker:HotkeyPicker Name="hotkey_CaptureImage" HotkeyName="CaptureImage"/>
+                <AVStyles:KeyboardPicker Name="hotkey_CaptureImage"/>
 
                 <TextBlock Text="Capture video by pressing:" TextWrapping="Wrap" Style="{StaticResource TextBlockBlack}"/>
-                <AVHotkeyPicker:HotkeyPicker Name="hotkey_CaptureVideo" HotkeyName="CaptureVideo"/>
+                <AVStyles:KeyboardPicker Name="hotkey_CaptureVideo"/>
 
                 <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Capture"/>
                 <CheckBox Name="checkbox_CaptureDrawMouseCursor" Content="Show mouse cursor" Style="{StaticResource CheckBoxBlack}"/>
