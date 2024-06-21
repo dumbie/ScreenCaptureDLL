@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using static ArnoldVinkCode.AVInteropDll;
 using static ArnoldVinkCode.AVProcess;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppClasses;
@@ -19,9 +18,6 @@ namespace ScreenCapture
             try
             {
                 Debug.WriteLine("Welcome to application.");
-
-                //Setup application defaults
-                AVStartup.SetupDefaults(ProcessPriority.High, false);
 
                 //Application initialize settings
                 vWindowMain.Settings_Check();
