@@ -48,10 +48,10 @@
 
                 <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Shortcuts"/>
                 <TextBlock Text="Capture image by pressing:" TextWrapping="Wrap" Style="{StaticResource TextBlockBlack}"/>
-                <AVStyles:KeyboardPicker Name="hotkey_CaptureImage"/>
+                <AVStyles:ShortcutKeyboard Name="keyboard_CaptureImage" TriggerName="CaptureImage"/>
 
                 <TextBlock Text="Capture video by pressing:" TextWrapping="Wrap" Style="{StaticResource TextBlockBlack}"/>
-                <AVStyles:KeyboardPicker Name="hotkey_CaptureVideo"/>
+                <AVStyles:ShortcutKeyboard Name="keyboard_CaptureVideo" TriggerName="CaptureVideo"/>
 
                 <TextBlock Margin="0,10,0,0" Style="{StaticResource TextBlockAccentLight}" FontSize="{DynamicResource TextSizeHuge}" Text="Capture"/>
                 <CheckBox Name="checkbox_CaptureDrawMouseCursor" Content="Show mouse cursor" Style="{StaticResource CheckBoxBlack}"/>

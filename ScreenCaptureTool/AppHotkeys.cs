@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using static ArnoldVinkCode.AVClasses;
 using static ArnoldVinkCode.AVInputOutputClass;
 using static ArnoldVinkCode.AVInputOutputHotkey;
@@ -14,25 +13,25 @@ namespace ScreenCapture
         {
             try
             {
-                ShortcutTriggerKeyboard shortcutTrigger = vShortcutTriggers.Where(x => x.Name == "CaptureImage").FirstOrDefault();
-                if (shortcutTrigger != null)
+                foreach (ShortcutTriggerKeyboard shortcutTrigger in vShortcutTriggers)
                 {
-                    if (CheckHotkeyPress(keysPressed, shortcutTrigger.Trigger))
+                    if (shortcutTrigger.Name == "CaptureImage")
                     {
-                        Debug.WriteLine("Button Global - Capture image");
-                        await CaptureScreen.CaptureImageProcess(0);
-                        return;
+                        if (CheckHotkeyPress(keysPressed, shortcutTrigger.Trigger))
+                        {
+                            Debug.WriteLine("Button Global - Capture image");
+                            await CaptureScreen.CaptureImageProcess(0);
+                            return;
+                        }
                     }
-                }
-
-                shortcutTrigger = vShortcutTriggers.Where(x => x.Name == "CaptureVideo").FirstOrDefault();
-                if (shortcutTrigger != null)
-                {
-                    if (CheckHotkeyPress(keysPressed, shortcutTrigger.Trigger))
+                    else if (shortcutTrigger.Name == "CaptureVideo")
                     {
-                        Debug.WriteLine("Button Global - Capture video");
-                        await CaptureScreen.CaptureVideoProcess(0);
-                        return;
+                        if (CheckHotkeyPress(keysPressed, shortcutTrigger.Trigger))
+                        {
+                            Debug.WriteLine("Button Global - Capture video");
+                            await CaptureScreen.CaptureVideoProcess(0);
+                            return;
+                        }
                     }
                 }
             }

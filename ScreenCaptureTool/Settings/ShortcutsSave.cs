@@ -1,8 +1,8 @@
 ﻿using ArnoldVinkCode;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using static ArnoldVinkCode.AVClasses;
+using static ArnoldVinkCode.AVJsonFunctions;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -14,29 +14,25 @@ namespace ScreenCapture
         {
             try
             {
-                hotkey_CaptureImage.TriggerChanged += (triggers) =>
-                {
-                    ShortcutTriggerKeyboard shortcutTrigger = vShortcutTriggers.Where(x => x.Name == "CaptureImage").FirstOrDefault();
-                    if (shortcutTrigger != null)
-                    {
-                        shortcutTrigger.Trigger = triggers;
-                        AVJsonFunctions.JsonSaveObject(vShortcutTriggers, @"Profiles\ShortcutKeyboard.json");
-                    }
-                };
-                hotkey_CaptureVideo.TriggerChanged += (triggers) =>
-                {
-                    ShortcutTriggerKeyboard shortcutTrigger = vShortcutTriggers.Where(x => x.Name == "CaptureVideo").FirstOrDefault();
-                    if (shortcutTrigger != null)
-                    {
-                        shortcutTrigger.Trigger = triggers;
-                        AVJsonFunctions.JsonSaveObject(vShortcutTriggers, @"Profiles\ShortcutKeyboard.json");
-                    }
-                };
+                keyboard_CaptureImage.TriggerChanged += Shortcut_Keyboard_TriggerChanged;
+                keyboard_CaptureVideo.TriggerChanged += Shortcut_Keyboard_TriggerChanged;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Failed to save the application shortcuts: " + ex.Message);
             }
+        }
+
+        void Shortcut_Keyboard_TriggerChanged(ShortcutTriggerKeyboard triggers)
+        {
+            try
+            {
+                if (vShortcutTriggers.ListReplaceFirstItem(x => x.Name == triggers.Name, triggers))
+                {
+                    JsonSaveObject(vShortcutTriggers, @"Profiles\ShortcutKeyboard.json");
+                }
+            }
+            catch { }
         }
     }
 }

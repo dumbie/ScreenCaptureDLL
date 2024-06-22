@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using static ArnoldVinkCode.AVClasses;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
@@ -13,16 +12,8 @@ namespace ScreenCapture
         {
             try
             {
-                ShortcutTriggerKeyboard shortcutTrigger = vShortcutTriggers.Where(x => x.Name == "CaptureImage").FirstOrDefault();
-                if (shortcutTrigger != null)
-                {
-                    hotkey_CaptureImage.Set(shortcutTrigger.Trigger);
-                }
-                shortcutTrigger = vShortcutTriggers.Where(x => x.Name == "CaptureVideo").FirstOrDefault();
-                if (shortcutTrigger != null)
-                {
-                    hotkey_CaptureVideo.Set(shortcutTrigger.Trigger);
-                }
+                keyboard_CaptureImage.Set(vShortcutTriggers.FirstOrDefault(x => x.Name == keyboard_CaptureImage.TriggerName));
+                keyboard_CaptureVideo.Set(vShortcutTriggers.FirstOrDefault(x => x.Name == keyboard_CaptureVideo.TriggerName));
             }
             catch (Exception ex)
             {
