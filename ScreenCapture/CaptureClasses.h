@@ -30,7 +30,8 @@ namespace
 	enum VideoFormats
 	{
 		H264 = 0,
-		HEVC = 1
+		HEVC = 1,
+		AV1 = 2
 	};
 
 	enum AudioFormats

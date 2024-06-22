@@ -49,6 +49,10 @@ namespace ScreenCapture
                     new ComboBoxItemValue()
                     {
                         Text = "HEVC",
+                    },
+                    new ComboBoxItemValue()
+                    {
+                        Text = "AV1",
                     }
                 };
                 combobox_VideoSaveFormat.Items.Clear();

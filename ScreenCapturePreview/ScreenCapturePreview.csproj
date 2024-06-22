@@ -31,9 +31,4 @@
 	<ItemGroup>
 		<Resource Include="Assets\AppIcon.ico" />
 	</ItemGroup>
-	<ItemGroup>
-		<Content Include="$(SolutionDir)Build\$(Configuration)\Resources\ScreenCapture.dll" Link="Resources\ScreenCapture.dll">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
 </Project>

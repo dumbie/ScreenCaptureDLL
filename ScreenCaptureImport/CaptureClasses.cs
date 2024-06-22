@@ -27,7 +27,8 @@
     public enum VideoFormats : int
     {
         H264 = 0,
-        HEVC = 1
+        HEVC = 1,
+        AV1 = 2
     }
 
     public enum AudioFormats : int

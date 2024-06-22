@@ -21,18 +21,21 @@ namespace
 			if (vMediaSettings.VideoFormat == H264)
 			{
 				videoFormat = MFVideoFormat_H264;
+				AVDebugWriteLine("Set video output format to H264.");
 			}
 			else if (vMediaSettings.VideoFormat == HEVC)
 			{
 				videoFormat = MFVideoFormat_HEVC;
+				AVDebugWriteLine("Set video output format to HEVC.");
+			}
+			else if (vMediaSettings.VideoFormat == AV1)
+			{
+				videoFormat = MFVideoFormat_AV1;
+				AVDebugWriteLine("Set video output format to AV1.");
 			}
 
 			//Check if HDR is enabled
 			BOOL hdrEnabled = vCaptureDetails.HDREnabled && !vCaptureDetails.HDRtoSDR;
-			if (hdrEnabled)
-			{
-				videoFormat = MFVideoFormat_HEVC;
-			}
 
 			//Set encoder settings
 			imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, videoFormat);
@@ -55,6 +58,19 @@ namespace
 				else
 				{
 					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncH265VProfile_Main_420_8);
+				}
+			}
+			else if (videoFormat == MFVideoFormat_AV1)
+			{
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncAV1VLevel6_3);
+				//HDR and SDR settings
+				if (hdrEnabled)
+				{
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncAV1VProfile_Main_420_10);
+				}
+				else
+				{
+					imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_PROFILE, eAVEncAV1VProfile_Main_420_8);
 				}
 			}
 			else if (videoFormat == MFVideoFormat_H264)
