@@ -1,9 +1,11 @@
 ﻿using ArnoldVinkCode;
 using ScreenCaptureImport;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using static ArnoldVinkCode.AVActions;
 using static ScreenCaptureImport.CaptureImport;
 
 namespace ScreenCapture
@@ -13,6 +15,7 @@ namespace ScreenCapture
         //Screen Capture Variables
         public static CaptureDetails vCaptureDetails;
         public static CaptureSettings vCaptureSettings;
+        public static AVTaskDetails vTask_CaptureScreen = new AVTaskDetails("vTask_CaptureScreen");
 
         //Initialize window
         public MainWindow()
@@ -107,25 +110,28 @@ namespace ScreenCapture
         }
 
         //Handle window initialized event
-        protected override async void OnSourceInitialized(EventArgs e)
+        protected override void OnSourceInitialized(EventArgs e)
         {
             try
             {
                 //Initialize screen capture
                 InitializeScreenCapture();
 
-                //Loop and capture screen
-                while (true)
+                //Start screen capture loop
+                AVActions.TaskStartLoop(ScreenCaptureLoop, vTask_CaptureScreen);
+            }
+            catch { }
+        }
+
+        //Loop and capture screen
+        private async Task ScreenCaptureLoop()
+        {
+            try
+            {
+                while (await AVActions.TaskCheckLoop(vTask_CaptureScreen, 50))
                 {
                     try
                     {
-                        //Check window state
-                        if (this.WindowState == WindowState.Minimized)
-                        {
-                            Debug.WriteLine("Minimized skipping preview update.");
-                            continue;
-                        }
-
                         //Capture screen bytes
                         IntPtr bitmapIntPtr = IntPtr.Zero;
                         try
@@ -141,18 +147,36 @@ namespace ScreenCapture
                         }
 
                         //Update screen capture preview
-                        image_DebugPreview.Source = CaptureBitmap.BitmapIntPtrToBitmapSource(bitmapIntPtr, vCaptureDetails);
+                        AVActions.DispatcherInvoke(delegate
+                        {
+                            image_DebugPreview.Source = CaptureBitmap.BitmapIntPtrToBitmapSource(bitmapIntPtr, vCaptureDetails);
+                        });
                     }
                     catch (Exception ex)
                     {
                         Debug.WriteLine("Screen capture loop failed: " + ex.Message);
                     }
-                    finally
-                    {
-                        //Delay next screen capture
-                        await Task.Delay(50);
-                    }
                 }
+            }
+            catch { }
+        }
+
+        //Handle application closing
+        protected override async void OnClosing(CancelEventArgs e)
+        {
+            try
+            {
+                //Cancel closing
+                e.Cancel = true;
+
+                //Stop capture task
+                await TaskStopLoop(vTask_CaptureScreen, 5000);
+
+                //Reset screen capture
+                CaptureImport.CaptureReset();
+
+                //Exit the application
+                Environment.Exit(0);
             }
             catch { }
         }
