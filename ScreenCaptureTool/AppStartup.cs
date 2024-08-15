@@ -146,7 +146,7 @@ namespace ScreenCapture
 
                     //Start keyboard hotkeys
                     AVInputOutputHotkey.Start();
-                    AVInputOutputHotkey.EventHotkeyPressed += AppHotkeys.EventHotkeyPressed;
+                    AVInputOutputHotkey.EventHotkeyPressedList += AppHotkeys.EventHotkeyPressed;
 
                     //Enable socket server
                     await SocketServer.EnableSocketServer();
