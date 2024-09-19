@@ -53,7 +53,7 @@ namespace ScreenCapture
                 WindowUpdateVisibility(vInteropWindowHandle, true);
 
                 //Update window style
-                WindowUpdateStyle(vInteropWindowHandle, true, true, true);
+                WindowUpdateStyle(vInteropWindowHandle, true, true, true, true);
 
                 //Set window display affinity
                 SetWindowDisplayAffinity(vInteropWindowHandle, DisplayAffinityFlags.WDA_EXCLUDEFROMCAPTURE);
