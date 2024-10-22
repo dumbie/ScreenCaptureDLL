@@ -36,13 +36,6 @@ namespace
 				return false;
 			}
 
-			//Set multithread protected
-			hResult = vDirectXInstance.iD3D11Multithread0->SetMultithreadProtected(true);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
 			//Get DXGI Adapter
 			hResult = vDirectXInstance.iDxgiDevice4->GetParent(IID_PPV_ARGS(&vDirectXInstance.iDxgiAdapter4));
 			if (FAILED(hResult))
@@ -77,6 +70,48 @@ namespace
 		catch (...)
 		{
 			AVDebugWriteLine("InitializeDirectX for monitor " << monitorId << " failed: " << hResult);
+			return false;
+		}
+	}
+
+	BOOL InitializeDirectXTweaks()
+	{
+		try
+		{
+			//Set process scheduler priority
+			ntStatus = D3DKMTSetProcessSchedulingPriorityClass(GetCurrentProcess(), D3DKMT_SCHEDULINGPRIORITYCLASS_REALTIME);
+			if (NT_ERROR(ntStatus))
+			{
+				return false;
+			}
+
+			//Set maximum queue back buffer frames
+			hResult = vDirectXInstance.iDxgiDevice4->SetMaximumFrameLatency(16);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Set gpu thread scheduler priority
+			hResult = vDirectXInstance.iDxgiDevice4->SetGPUThreadPriority(0);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			//Set multithread protection
+			hResult = vDirectXInstance.iD3D11Multithread0->SetMultithreadProtected(true);
+			if (FAILED(hResult))
+			{
+				return false;
+			}
+
+			AVDebugWriteLine("DirectX performance tweaks applied.");
+			return true;
+		}
+		catch (...)
+		{
+			AVDebugWriteLine("InitializeDirectXTweaks failed: " << hResult);
 			return false;
 		}
 	}
@@ -421,6 +456,23 @@ namespace
 
 				//Return result
 				AVDebugWriteLine("Capture InitializeDirectX failed.");
+				return CaptureStatus::Failed;
+			}
+
+			//Apply DirectX performance tweaks
+			if (!InitializeDirectXTweaks())
+			{
+				//Reset all used variables
+				ResetVariablesAll();
+
+				//Play audio effect
+				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
+
+				//Update instance status
+				vCaptureInstance.vInstanceInitializing = false;
+
+				//Return result
+				AVDebugWriteLine("Capture InitializeDirectXTweaks failed.");
 				return CaptureStatus::Failed;
 			}
 

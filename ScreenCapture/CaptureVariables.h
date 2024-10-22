@@ -5,6 +5,7 @@ namespace
 {
 	//Results
 	HRESULT hResult;
+	NTSTATUS ntStatus;
 
 	//Events
 	typedef void(*CaptureEvent)();
