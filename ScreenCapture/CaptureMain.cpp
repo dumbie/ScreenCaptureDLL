@@ -35,6 +35,12 @@ namespace
 		{
 			try
 			{
+				//Check if initialized
+				if (!vCaptureInstance.vInstanceInitialized)
+				{
+					return false;
+				}
+
 				//Update capture settings
 				vCaptureSettings = captureSettings;
 
@@ -69,7 +75,7 @@ namespace
 				//Update screen bytes cache
 				vCaptureInstance.vScreenBytesCache = GetScreenBytes(false);
 
-				//Return result
+				//Return screen bytes
 				return vCaptureInstance.vScreenBytesCache.data();
 			}
 			catch (...)
