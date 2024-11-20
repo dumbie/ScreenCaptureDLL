@@ -6,12 +6,11 @@
         xmlns:local="clr-namespace:ScreenCapture"
         mc:Ignorable="d"
         Title="Screen Capture Preview"
-        MinHeight="750"
         Height="750"
-        Width="1280"
-        Topmost="False">
-    <Grid>
+        Width="1280">
+    <Grid Background="#444">
         <Image Name="image_DebugPreview"/>
+        <TextBlock Name="textblock_FrameCount" Margin="5" Foreground="White" FontSize="20"/>
         <Border Margin="10" MinWidth="180" CornerRadius="8" VerticalAlignment="Top" HorizontalAlignment="Right">
             <Border.Background>
                 <SolidColorBrush Color="Black" Opacity="0.60"/>
@@ -49,7 +48,12 @@
                 <TextBlock x:Name="text_Blur" Text="Blur: 0,0000" Tag="Blur:" Foreground="White" Margin="0,5,0,0"/>
                 <Slider x:Name="slider_Blur" Value="0.00" Minimum="0.00" Maximum="80.00" ValueChanged="slider_ValueChanged"/>
 
-                <Button x:Name="button_Reset" Margin="0,5,0,0" Content="Restart capture" Click="button_Restart_Click"/>
+                <TextBlock x:Name="text_UpdateRate" Text="Update rate: 40ms" Tag="Update rate:" Foreground="White" Margin="0,5,0,0"/>
+                <Slider x:Name="slider_UpdateRate" Value="40" Minimum="0" Maximum="250" ValueChanged="slider_ValueChanged"/>
+
+                <CheckBox x:Name="checkbox_Topmost" Content="Show window on top" Foreground="White" Margin="0,10,0,0" Click="checkbox_Topmost_Checked"/>
+
+                <Button x:Name="button_Reset" Margin="0,10,0,0" Content="Restart capture" Click="button_Restart_Click"/>
                 <Button x:Name="button_Stop" Margin="0,5,0,0" Content="Stop capture" Click="button_Stop_Click"/>
             </StackPanel>
         </Border>
