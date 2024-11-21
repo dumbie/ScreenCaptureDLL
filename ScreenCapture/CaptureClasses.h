@@ -215,6 +215,35 @@ namespace
 		CComPtr<ID3D11Texture2D> iD3D11Texture2D0RenderTargetView;
 	};
 
+	struct CaptureResult
+	{
+		//Status
+		CaptureStatus Status;
+
+		//Message
+		std::string Message;
+	};
+
+	struct CaptureDataScreen
+	{
+		//Status
+		BOOL Cached;
+
+		//Bytes
+		std::vector<BYTE> ScreenBytes;
+	};
+
+	struct CaptureDataAudio
+	{
+		//Status
+		BOOL Silent;
+		BOOL TimestampError;
+		BOOL DataDiscontinuity;
+
+		//Bytes
+		std::vector<BYTE> AudioBytes;
+	};
+
 	struct VertexVertice
 	{
 		DirectX::XMFLOAT3 Position;

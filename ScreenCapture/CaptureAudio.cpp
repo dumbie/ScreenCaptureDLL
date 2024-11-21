@@ -3,8 +3,9 @@
 
 namespace
 {
-	std::vector<BYTE> GetAudioBytes()
+	CaptureDataAudio GetAudioData()
 	{
+		CaptureDataAudio dataAudio{};
 		try
 		{
 			//Get audio buffer
@@ -16,70 +17,83 @@ namespace
 			hResult = vMediaFoundationInstance.iAudioClientCapture->GetBuffer(&mediaBuffer, &mediaFramesRead, &mediaFlags, &devicePosition, &qpcPosition);
 			if (FAILED(hResult))
 			{
-				return {};
+				return dataAudio;
 			}
 
 			//Release audio buffer
 			hResult = vMediaFoundationInstance.iAudioClientCapture->ReleaseBuffer(mediaFramesRead);
 			if (FAILED(hResult))
 			{
-				return {};
+				return dataAudio;
 			}
 
 			//Check if audio needs to be silenced
-			BOOL silenceAudioBuffer = false;
 			if (mediaFlags & AUDCLNT_BUFFERFLAGS_SILENT)
 			{
 				//AVDebugWriteLine("AUDCLNT_BUFFERFLAGS_SILENT");
-				silenceAudioBuffer = true;
+				dataAudio.Silent = true;
+			}
+
+			//Check for audio data discontinuity
+			if (mediaFlags & AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY)
+			{
+				//AVDebugWriteLine("AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY");
+				dataAudio.DataDiscontinuity = true;
+			}
+
+			//Check for audio timestamp error
+			if (mediaFlags & AUDCLNT_BUFFERFLAGS_TIMESTAMP_ERROR)
+			{
+				//AVDebugWriteLine("AUDCLNT_BUFFERFLAGS_TIMESTAMP_ERROR");
+				dataAudio.TimestampError = true;
 			}
 
 			//Calculate target frames read
-			UINT32 mediaFramesTarget = vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec / 100;
+			UINT32 mediaFramesTarget = vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nSamplesPerSec / 100;
 
 			//Check media frames read
-			if (mediaFramesRead == mediaFramesTarget)
+			if (mediaFramesRead >= mediaFramesTarget)
 			{
 				//AVDebugWriteLine("Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags);
 
 				//Calculate media size
-				UINT audioBytesSize = mediaFramesRead * vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
+				UINT audioBytesSize = mediaFramesRead * vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nBlockAlign;
 
-				//Create bytes array
-				std::vector<BYTE> audioBytes(audioBytesSize);
+				//Resize bytes array
+				dataAudio.AudioBytes.resize(audioBytesSize);
 
 				//Copy buffer to bytes cache
-				memcpy(audioBytes.data(), mediaBuffer, audioBytesSize);
+				memcpy(dataAudio.AudioBytes.data(), mediaBuffer, audioBytesSize);
 
 				//Return result
-				return audioBytes;
+				return dataAudio;
 			}
-			else if (silenceAudioBuffer)
+			else if (dataAudio.Silent)
 			{
 				//AVDebugWriteLine("Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags);
 
 				//Calculate media size
-				UINT audioBytesSize = mediaFramesTarget * vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
+				UINT audioBytesSize = mediaFramesRead * vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nBlockAlign;
 
-				//Create bytes array
-				std::vector<BYTE> audioBytes(audioBytesSize);
+				//Resize bytes array
+				dataAudio.AudioBytes.resize(audioBytesSize);
 
 				//Fill bytes cache with silence
-				memset(audioBytes.data(), 0, audioBytesSize);
+				memset(dataAudio.AudioBytes.data(), 0, audioBytesSize);
 
 				//Return result
-				return audioBytes;
+				return dataAudio;
 			}
 			else
 			{
 				//AVDebugWriteLine("No audio bytes read.");
-				return {};
+				return dataAudio;
 			}
 		}
 		catch (...)
 		{
 			AVDebugWriteLine("GetAudioBytes failed.");
-			return {};
+			return dataAudio;
 		}
 	}
 }

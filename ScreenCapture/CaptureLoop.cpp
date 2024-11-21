@@ -100,7 +100,8 @@ namespace
 		try
 		{
 			//Get media frame duration time
-			ULONGLONG mediaTimeDuration = vReferenceTimeFrameDuration;
+			ULONGLONG mediaTimeDuration;
+			MFFrameRateToAverageTimePerFrame(vMediaSettings.VideoFrameRate, 1, &mediaTimeDuration);
 
 			//Set thread characteristics
 			DWORD taskIndex = 0;
@@ -120,14 +121,14 @@ namespace
 					QueryPerformanceCounter(&qpcTimeCurrent);
 					ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaFoundationInstance.vMediaTimeStartLoop;
 
-					//Get audio bytes
-					std::vector<BYTE> audioBytes = GetAudioBytes();
+					//Get audio data
+					CaptureDataAudio dataAudio = GetAudioData();
 
 					//Check audio bytes
-					if (!audioBytes.empty())
+					if (!dataAudio.AudioBytes.empty())
 					{
 						//Write media bytes to sink
-						std::thread threadWriteSample(WriteMediaDataBytes, audioBytes, true, false, vMediaFoundationInstance.vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
+						std::thread threadWriteSample(WriteMediaDataBytes, dataAudio.AudioBytes, true, dataAudio.DataDiscontinuity || dataAudio.TimestampError, vMediaFoundationInstance.vOutAudioStreamIndex, mediaTimeStart, mediaTimeDuration);
 						threadWriteSample.detach();
 					}
 					else
