@@ -85,8 +85,11 @@ namespace
 			//Set audio device render (fills buffer)
 			if (!SetAudioDeviceRender()) { return false; }
 
-			//Set audio media type
-			if (!SetAudioMediaType()) { return false; }
+			//Set audio out media type
+			if (!SetAudioMediaTypeOut()) { return false; }
+
+			//Set audio in media type
+			if (!SetAudioMediaTypeIn()) { return false; }
 
 			//Return result
 			AVDebugWriteLine("Media foundation initialized.");

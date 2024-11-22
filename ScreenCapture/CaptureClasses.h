@@ -189,7 +189,7 @@ namespace
 		CComPtr<IAudioClient3> iAudioDeviceRender;
 		CComPtr<IAudioCaptureClient> iAudioClientCapture;
 		CComPtr<IAudioRenderClient> iAudioClientRender;
-		CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatExCapture;
+		WAVEFORMATEXTENSIBLE iAudioWaveFormatExCapture;
 		CComHeapPtr<WAVEFORMATEXTENSIBLE> iAudioWaveFormatExRender;
 	};
 

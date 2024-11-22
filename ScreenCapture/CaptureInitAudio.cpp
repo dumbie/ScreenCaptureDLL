@@ -97,27 +97,25 @@ namespace
 				return false;
 			}
 
-			//Get audio wave format information
-			hResult = vMediaFoundationInstance.iAudioDeviceCapture->GetMixFormat((WAVEFORMATEX**)&vMediaFoundationInstance.iAudioWaveFormatExCapture);
-			if (FAILED(hResult))
-			{
-				return false;
-			}
-
 			//Set audio wave format information
-			vMediaFoundationInstance.iAudioWaveFormatExCapture->SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-			vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample = vMediaSettings.AudioBitDepth;
-			vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec = vMediaSettings.AudioSampleRate;
-			vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nChannels = vMediaSettings.AudioChannels;
-			vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nBlockAlign = vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nChannels * vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample / 8;
-			vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nAvgBytesPerSec = vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec * vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nBlockAlign;
-			vMediaFoundationInstance.iAudioWaveFormatExCapture->Samples.wValidBitsPerSample = vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.dwChannelMask = SPEAKER_ALL;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample = vMediaSettings.AudioBitDepth;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nSamplesPerSec = vMediaSettings.AudioSampleRate;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nChannels = vMediaSettings.AudioChannels;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nBlockAlign = vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nChannels * vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample / 8;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nAvgBytesPerSec = vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nSamplesPerSec * vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nBlockAlign;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Samples.wValidBitsPerSample = vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Samples.wSamplesPerBlock = vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample;
+			vMediaFoundationInstance.iAudioWaveFormatExCapture.Samples.wReserved = vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample;
 
 			//Initialize default audio device
 			UINT initPeriodicity = 0;
 			UINT initBufferDuration = 0;
 			DWORD initFlags = AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
-			hResult = vMediaFoundationInstance.iAudioDeviceCapture->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)vMediaFoundationInstance.iAudioWaveFormatExCapture.m_pData, 0);
+			hResult = vMediaFoundationInstance.iAudioDeviceCapture->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, &vMediaFoundationInstance.iAudioWaveFormatExCapture.Format, 0);
 			if (FAILED(hResult))
 			{
 				return false;
@@ -148,7 +146,7 @@ namespace
 		}
 	}
 
-	BOOL SetAudioMediaType()
+	BOOL SetAudioMediaTypeOut()
 	{
 		try
 		{
@@ -171,19 +169,19 @@ namespace
 			if (vMediaSettings.AudioFormat == AAC)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_AAC);
-				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample);
+				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample);
 			}
 
 			//FLAC
 			if (vMediaSettings.AudioFormat == FLAC)
 			{
 				imfMediaTypeAudioOut->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_FLAC);
-				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample);
+				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample);
 			}
 
 			imfMediaTypeAudioOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nChannels);
-			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec);
+			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nChannels);
+			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nSamplesPerSec);
 			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, vMediaSettings.AudioBitRate * 1000 / 8);
 			hResult = vMediaFoundationInstance.imfSinkWriter->AddStream(imfMediaTypeAudioOut, &vMediaFoundationInstance.vOutAudioStreamIndex);
 			if (FAILED(hResult))
@@ -192,6 +190,19 @@ namespace
 				return false;
 			}
 
+			return true;
+		}
+		catch (...)
+		{
+			AVDebugWriteLine("SetAudioMediaTypeOut failed.");
+			return false;
+		}
+	}
+
+	BOOL SetAudioMediaTypeIn()
+	{
+		try
+		{
 			//Create audio in media type
 			CComPtr<IMFMediaType> imfMediaTypeAudioIn;
 			hResult = MFCreateMediaType(&imfMediaTypeAudioIn);
@@ -201,13 +212,13 @@ namespace
 				return false;
 			}
 
-			imfMediaTypeAudioIn->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-			imfMediaTypeAudioIn->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.wBitsPerSample);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nChannels);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nSamplesPerSec);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nAvgBytesPerSec);
-			imfMediaTypeAudioIn->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, vMediaFoundationInstance.iAudioWaveFormatExCapture->Format.nBlockAlign);
+			hResult = MFInitMediaTypeFromWaveFormatEx(imfMediaTypeAudioIn, &vMediaFoundationInstance.iAudioWaveFormatExCapture.Format, sizeof(vMediaFoundationInstance.iAudioWaveFormatExCapture));
+			if (FAILED(hResult))
+			{
+				AVDebugWriteLine("MFInitMediaTypeFromWaveFormatEx audio failed.");
+				return false;
+			}
+
 			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutAudioStreamIndex, imfMediaTypeAudioIn, NULL);
 			if (FAILED(hResult))
 			{
@@ -219,7 +230,7 @@ namespace
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("SetAudioMediaType failed.");
+			AVDebugWriteLine("SetAudioMediaTypeIn failed.");
 			return false;
 		}
 	}
