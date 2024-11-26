@@ -1,5 +1,6 @@
 #pragma once
 #include "CaptureVariables.h"
+#include "CaptureMonitorInfo.cpp"
 
 namespace
 {
@@ -120,8 +121,10 @@ namespace
 			}
 
 			//Set encoding settings
-			imfAttributesEncoding->SetUINT32(CODECAPI_AVLowLatencyMode, 1);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonLowLatency, 1);
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRealTime, 1);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncMPVGOPSize, targetVideoFrameRate * 2);
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncMPVDefaultBPictureCount, 0);
 
 			//Create video in media type
 			CComPtr<IMFMediaType> imfMediaTypeVideoIn;
