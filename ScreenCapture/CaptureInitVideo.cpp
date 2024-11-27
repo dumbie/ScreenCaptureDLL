@@ -40,7 +40,17 @@ namespace
 
 			//Set encoder settings
 			imfMediaTypeVideoOut->SetGUID(MF_MT_SUBTYPE, videoFormat);
-			imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_NOMINAL_RANGE, MFNominalRange_16_235);
+			if (GetMonitorIsLimitedColorRange())
+			{
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_NOMINAL_RANGE, MFNominalRange_16_235);
+				AVDebugWriteLine("Set video nominal range to limited (16-235)");
+			}
+			else
+			{
+				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_NOMINAL_RANGE, MFNominalRange_0_255);
+				AVDebugWriteLine("Set video nominal range to full (0-255)");
+			}
+
 			if (videoFormat == MFVideoFormat_HEVC)
 			{
 				imfMediaTypeVideoOut->SetUINT32(MF_MT_VIDEO_LEVEL, eAVEncH265VLevel6_2);
