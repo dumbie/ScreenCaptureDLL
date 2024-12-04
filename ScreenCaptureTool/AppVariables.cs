@@ -11,7 +11,8 @@ namespace ScreenCapture
     public partial class AppVariables
     {
         //Application Variables
-        public static Configuration vConfiguration = SettingLoadConfig("ScreenCaptureTool.exe.csettings");
+        public static Configuration vConfigurationScreenCaptureTool = SettingLoadConfig("ScreenCaptureTool.exe.csettings");
+        public static Configuration vConfigurationCtrlUI = SettingLoadConfig("CtrlUI.exe.csettings");
 
         //Setting Variables
         public static bool vComboboxSaveEnabled = true;
@@ -31,6 +32,6 @@ namespace ScreenCapture
         public static WindowOverlay vWindowOverlay = new WindowOverlay();
 
         //Application Lists
-        public static List<ShortcutTriggerKeyboard> vShortcutTriggers = JsonLoadFile<List<ShortcutTriggerKeyboard>>(@"Profiles\ShortcutKeyboard.json");
+        public static List<ShortcutTriggerKeyboard> vShortcutTriggers = JsonLoadFile<List<ShortcutTriggerKeyboard>>(@"Profiles\User\CaptureShortcutKeyboard.json");
     }
 }

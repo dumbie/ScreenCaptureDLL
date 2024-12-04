@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
+using static ArnoldVinkCode.AVActions;
 using static ArnoldVinkCode.AVClasses;
-using static ArnoldVinkCode.AVInputOutputClass;
-using static ArnoldVinkCode.AVInputOutputHotkey;
+using static ArnoldVinkCode.AVInputOutputHotkeyHook;
 using static ScreenCapture.AppVariables;
 
 namespace ScreenCapture
 {
     public partial class AppHotkeys
     {
-        public static async void EventHotkeyPressed(List<KeysVirtual> keysPressed)
+        public static void EventHotkeyPressed(bool[] keysPressed)
         {
             try
             {
@@ -17,19 +17,27 @@ namespace ScreenCapture
                 {
                     if (shortcutTrigger.Name == "CaptureImage")
                     {
-                        if (CheckHotkeyPress(keysPressed, shortcutTrigger.Trigger))
+                        if (CheckHotkeyPressed(keysPressed, shortcutTrigger.Trigger))
                         {
                             Debug.WriteLine("Button Global - Capture image");
-                            await CaptureScreen.CaptureImageProcess(0);
+                            async Task TaskAction()
+                            {
+                                await CaptureScreen.CaptureImageProcess(0);
+                            }
+                            TaskStartBackground(TaskAction);
                             return;
                         }
                     }
                     else if (shortcutTrigger.Name == "CaptureVideo")
                     {
-                        if (CheckHotkeyPress(keysPressed, shortcutTrigger.Trigger))
+                        if (CheckHotkeyPressed(keysPressed, shortcutTrigger.Trigger))
                         {
                             Debug.WriteLine("Button Global - Capture video");
-                            await CaptureScreen.CaptureVideoProcess(0);
+                            async Task TaskAction()
+                            {
+                                await CaptureScreen.CaptureVideoProcess(0);
+                            }
+                            TaskStartBackground(TaskAction);
                             return;
                         }
                     }
