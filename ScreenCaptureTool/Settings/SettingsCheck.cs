@@ -13,39 +13,39 @@ namespace ScreenCapture
             try
             {
                 //First Launch
-                if (!SettingCheck(vConfiguration, "AppFirstLaunch")) { SettingSave(vConfiguration, "AppFirstLaunch", "True"); }
-
-                //Socket
-                if (!SettingCheck(vConfiguration, "ServerPort")) { SettingSave(vConfiguration, "ServerPort", "1040"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "AppFirstLaunch")) { SettingSave(vConfigurationScreenCaptureTool, "AppFirstLaunch", "True"); }
 
                 //General
-                if (!SettingCheck(vConfiguration, "CaptureSoundEffect")) { SettingSave(vConfiguration, "CaptureSoundEffect", "True"); }
-                if (!SettingCheck(vConfiguration, "CaptureMonitorId")) { SettingSave(vConfiguration, "CaptureMonitorId", "1"); }
-                if (!SettingCheck(vConfiguration, "CaptureDrawBorder")) { SettingSave(vConfiguration, "CaptureDrawBorder", "False"); }
-                if (!SettingCheck(vConfiguration, "CaptureDrawMouseCursor")) { SettingSave(vConfiguration, "CaptureDrawMouseCursor", "True"); }
-                if (!SettingCheck(vConfiguration, "CaptureLocation")) { SettingSave(vConfiguration, "CaptureLocation", "Captures"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "CaptureSoundEffect")) { SettingSave(vConfigurationScreenCaptureTool, "CaptureSoundEffect", "True"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "CaptureMonitorId")) { SettingSave(vConfigurationScreenCaptureTool, "CaptureMonitorId", "1"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "CaptureDrawBorder")) { SettingSave(vConfigurationScreenCaptureTool, "CaptureDrawBorder", "False"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "CaptureDrawMouseCursor")) { SettingSave(vConfigurationScreenCaptureTool, "CaptureDrawMouseCursor", "True"); }
+
+                //Saving
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "SaveWindowTitle")) { SettingSave(vConfigurationScreenCaptureTool, "SaveWindowTitle", "True"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "CaptureLocation")) { SettingSave(vConfigurationScreenCaptureTool, "CaptureLocation", "Captures"); }
 
                 //Screenshot
-                if (!SettingCheck(vConfiguration, "ScreenshotSaveFormat")) { SettingSave(vConfiguration, "ScreenshotSaveFormat", "0"); }
-                if (!SettingCheck(vConfiguration, "ScreenshotSaveQuality")) { SettingSave(vConfiguration, "ScreenshotSaveQuality", "80"); }
-                if (!SettingCheck(vConfiguration, "ScreenshotMaxPixelDimension")) { SettingSave(vConfiguration, "ScreenshotMaxPixelDimension", "4320"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "ScreenshotSaveFormat")) { SettingSave(vConfigurationScreenCaptureTool, "ScreenshotSaveFormat", "0"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "ScreenshotSaveQuality")) { SettingSave(vConfigurationScreenCaptureTool, "ScreenshotSaveQuality", "80"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "ScreenshotMaxPixelDimension")) { SettingSave(vConfigurationScreenCaptureTool, "ScreenshotMaxPixelDimension", "4320"); }
 
                 //Recording
-                if (!SettingCheck(vConfiguration, "VideoSaveFormat")) { SettingSave(vConfiguration, "VideoSaveFormat", "1"); }
-                if (!SettingCheck(vConfiguration, "VideoFrameRate")) { SettingSave(vConfiguration, "VideoFrameRate", "60"); }
-                if (!SettingCheck(vConfiguration, "VideoRateControl")) { SettingSave(vConfiguration, "VideoRateControl", "0"); }
-                if (!SettingCheck(vConfiguration, "VideoBitRate")) { SettingSave(vConfiguration, "VideoBitRate", "40000"); }
-                if (!SettingCheck(vConfiguration, "VideoMaxPixelDimension")) { SettingSave(vConfiguration, "VideoMaxPixelDimension", "1440"); }
-                if (!SettingCheck(vConfiguration, "AudioSaveFormat")) { SettingSave(vConfiguration, "AudioSaveFormat", "1"); }
-                if (!SettingCheck(vConfiguration, "AudioChannels")) { SettingSave(vConfiguration, "AudioChannels", "2"); }
-                if (!SettingCheck(vConfiguration, "AudioBitRate")) { SettingSave(vConfiguration, "AudioBitRate", "256"); }
-                if (!SettingCheck(vConfiguration, "AudioBitDepth")) { SettingSave(vConfiguration, "AudioBitDepth", "16"); }
-                if (!SettingCheck(vConfiguration, "AudioSampleRate")) { SettingSave(vConfiguration, "AudioSampleRate", "48000"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "VideoSaveFormat")) { SettingSave(vConfigurationScreenCaptureTool, "VideoSaveFormat", "0"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "VideoFrameRate")) { SettingSave(vConfigurationScreenCaptureTool, "VideoFrameRate", "60"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "VideoRateControl")) { SettingSave(vConfigurationScreenCaptureTool, "VideoRateControl", "0"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "VideoBitRate")) { SettingSave(vConfigurationScreenCaptureTool, "VideoBitRate", "35000"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "VideoMaxPixelDimension")) { SettingSave(vConfigurationScreenCaptureTool, "VideoMaxPixelDimension", "1440"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "AudioSaveFormat")) { SettingSave(vConfigurationScreenCaptureTool, "AudioSaveFormat", "1"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "AudioChannels")) { SettingSave(vConfigurationScreenCaptureTool, "AudioChannels", "2"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "AudioBitRate")) { SettingSave(vConfigurationScreenCaptureTool, "AudioBitRate", "192"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "AudioBitDepth")) { SettingSave(vConfigurationScreenCaptureTool, "AudioBitDepth", "16"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "AudioSampleRate")) { SettingSave(vConfigurationScreenCaptureTool, "AudioSampleRate", "48000"); }
 
                 //Overlay
-                if (!SettingCheck(vConfiguration, "OverlayShowScreenshot")) { SettingSave(vConfiguration, "OverlayShowScreenshot", "True"); }
-                if (!SettingCheck(vConfiguration, "OverlayShowRecording")) { SettingSave(vConfiguration, "OverlayShowRecording", "True"); }
-                if (!SettingCheck(vConfiguration, "OverlayPosition")) { SettingSave(vConfiguration, "OverlayPosition", "BottomCenter"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "OverlayShowScreenshot")) { SettingSave(vConfigurationScreenCaptureTool, "OverlayShowScreenshot", "True"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "OverlayShowRecording")) { SettingSave(vConfigurationScreenCaptureTool, "OverlayShowRecording", "True"); }
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "OverlayPosition")) { SettingSave(vConfigurationScreenCaptureTool, "OverlayPosition", "BottomCenter"); }
             }
             catch (Exception ex)
             {

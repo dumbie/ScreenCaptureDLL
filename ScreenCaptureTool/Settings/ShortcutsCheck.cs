@@ -20,7 +20,7 @@ namespace ScreenCapture
                     shortcutTrigger.Name = "CaptureImage";
                     shortcutTrigger.Trigger = [KeysVirtual.AltLeft, KeysVirtual.None, KeysVirtual.F12];
                     vShortcutTriggers.Add(shortcutTrigger);
-                    AVJsonFunctions.JsonSaveObject(vShortcutTriggers, @"Profiles\ShortcutKeyboard.json");
+                    AVJsonFunctions.JsonSaveObject(vShortcutTriggers, @"Profiles\User\CaptureShortcutKeyboard.json");
                 }
                 if (!vShortcutTriggers.Any(x => x.Name == "CaptureVideo"))
                 {
@@ -28,7 +28,7 @@ namespace ScreenCapture
                     shortcutTrigger.Name = "CaptureVideo";
                     shortcutTrigger.Trigger = [KeysVirtual.AltLeft, KeysVirtual.None, KeysVirtual.F11];
                     vShortcutTriggers.Add(shortcutTrigger);
-                    AVJsonFunctions.JsonSaveObject(vShortcutTriggers, @"Profiles\ShortcutKeyboard.json");
+                    AVJsonFunctions.JsonSaveObject(vShortcutTriggers, @"Profiles\User\CaptureShortcutKeyboard.json");
                 }
             }
             catch (Exception ex)

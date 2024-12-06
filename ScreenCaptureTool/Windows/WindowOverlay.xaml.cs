@@ -99,7 +99,7 @@ namespace ScreenCapture
         {
             try
             {
-                string overlayPosition = SettingLoad(vConfiguration, "OverlayPosition", typeof(string));
+                string overlayPosition = SettingLoad(vConfigurationScreenCaptureTool, "OverlayPosition", typeof(string));
                 if (overlayPosition == "TopLeft")
                 {
                     grid_Overlay.VerticalAlignment = VerticalAlignment.Top;

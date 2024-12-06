@@ -29,7 +29,7 @@ namespace ScreenCapture
             {
                 if (vShortcutTriggers.ListReplaceFirstItem(x => x.Name == triggers.Name, triggers))
                 {
-                    JsonSaveObject(vShortcutTriggers, @"Profiles\ShortcutKeyboard.json");
+                    JsonSaveObject(vShortcutTriggers, @"Profiles\User\CaptureShortcutKeyboard.json");
                 }
             }
             catch { }

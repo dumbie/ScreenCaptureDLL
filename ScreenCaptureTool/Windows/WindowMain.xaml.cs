@@ -18,7 +18,7 @@ namespace ScreenCapture
             try
             {
                 //Update first launch setting
-                SettingSave(vConfiguration, "AppFirstLaunch", "False");
+                SettingSave(vConfigurationScreenCaptureTool, "AppFirstLaunch", "False");
 
                 //Make sure the correct window style is set
                 StateChanged += CheckWindowStateAndStyle;

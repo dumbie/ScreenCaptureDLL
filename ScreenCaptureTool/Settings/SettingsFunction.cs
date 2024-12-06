@@ -20,7 +20,7 @@ namespace ScreenCapture
                     if (!string.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
                     {
                         Debug.WriteLine("Screenshot location selected: " + folderBrowserDialog.SelectedPath);
-                        SettingSave(vConfiguration, "CaptureLocation", folderBrowserDialog.SelectedPath);
+                        SettingSave(vConfigurationScreenCaptureTool, "CaptureLocation", folderBrowserDialog.SelectedPath);
                         textblock_CaptureLocation.Text = textblock_CaptureLocation.Tag + folderBrowserDialog.SelectedPath;
                     }
                 }
@@ -44,7 +44,7 @@ namespace ScreenCapture
             try
             {
                 //Check screenshot location
-                string screenshotSaveFolder = SettingLoad(vConfiguration, "CaptureLocation", typeof(string));
+                string screenshotSaveFolder = SettingLoad(vConfigurationScreenCaptureTool, "CaptureLocation", typeof(string));
                 if (!Directory.Exists(screenshotSaveFolder))
                 {
                     //Check captures folder in app directory
