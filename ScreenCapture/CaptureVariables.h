@@ -25,7 +25,6 @@ namespace
 	CaptureDetails vCaptureDetails;
 
 	//Timings
-	UINT vReferenceTimeFrameDuration = 100000;
 	UINT vReferenceTimeToSeconds = 10000000;
 	UINT vReferenceTimeToMilliseconds = 10000;
 	UINT vReferenceTimeToMicroseconds = 1000;
@@ -47,6 +46,13 @@ namespace
 		DXGI_FORMAT_R16G16B16A16_FLOAT
 	};
 	UINT iDxgiFormatsCount = ARRAYSIZE(iDxgiFormatsArray);
+
+	D3DKMT_SCHEDULINGPRIORITYCLASS D3DKMTSchedulingPriorityClassArray[] =
+	{
+		D3DKMT_SCHEDULINGPRIORITYCLASS_REALTIME,
+		D3DKMT_SCHEDULINGPRIORITYCLASS_HIGH
+	};
+	UINT D3DKMTSchedulingPriorityClassCount = ARRAYSIZE(D3DKMTSchedulingPriorityClassArray);
 
 	D3D11_INPUT_ELEMENT_DESC InputElementsArray[] =
 	{

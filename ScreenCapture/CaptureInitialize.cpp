@@ -74,16 +74,30 @@ namespace
 		}
 	}
 
+	BOOL InitializeDirectXSetKMT()
+	{
+		try
+		{
+			for (int arrayCount = 0; arrayCount < D3DKMTSchedulingPriorityClassCount; arrayCount++)
+			{
+				ntStatus = D3DKMTSetProcessSchedulingPriorityClass(GetCurrentProcess(), D3DKMTSchedulingPriorityClassArray[arrayCount]);
+				if (NT_SUCCESS(ntStatus))
+				{
+					AVDebugWriteLine("Set D3DKMT ProcessSchedulingPriorityClass: " << D3DKMTSchedulingPriorityClassArray[arrayCount]);
+					return true;
+				}
+			}
+		}
+		catch (...) {}
+		return false;
+	}
+
 	BOOL InitializeDirectXTweaks()
 	{
 		try
 		{
 			//Set process scheduler priority
-			ntStatus = D3DKMTSetProcessSchedulingPriorityClass(GetCurrentProcess(), D3DKMT_SCHEDULINGPRIORITYCLASS_REALTIME);
-			if (NT_ERROR(ntStatus))
-			{
-				return false;
-			}
+			InitializeDirectXSetKMT();
 
 			//Set maximum queue back buffer frames
 			hResult = vDirectXInstance.iDxgiDevice4->SetMaximumFrameLatency(16);
