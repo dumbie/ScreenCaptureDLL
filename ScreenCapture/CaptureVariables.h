@@ -4,6 +4,7 @@
 namespace
 {
 	//Results
+	BOOL bResult;
 	HRESULT hResult;
 	NTSTATUS ntStatus;
 
@@ -35,6 +36,9 @@ namespace
 
 	D3D_FEATURE_LEVEL D3DFeatureLevelsArray[] =
 	{
+		D3D_FEATURE_LEVEL_12_2,
+		D3D_FEATURE_LEVEL_12_1,
+		D3D_FEATURE_LEVEL_12_0,
 		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_11_0
 	};
@@ -42,8 +46,8 @@ namespace
 
 	DXGI_FORMAT iDxgiFormatsArray[] =
 	{
-		DXGI_FORMAT_B8G8R8A8_UNORM,
-		DXGI_FORMAT_R16G16B16A16_FLOAT
+		DXGI_FORMAT_R16G16B16A16_FLOAT,
+		DXGI_FORMAT_B8G8R8A8_UNORM
 	};
 	UINT iDxgiFormatsCount = ARRAYSIZE(iDxgiFormatsArray);
 

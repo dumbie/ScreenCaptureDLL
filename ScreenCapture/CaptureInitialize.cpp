@@ -9,15 +9,34 @@
 
 namespace
 {
+	BOOL InitializeDirectXCreateDevice()
+	{
+		try
+		{
+			for (int arrayCount = 0; arrayCount < D3DFeatureLevelsCount; arrayCount++)
+			{
+				D3D_FEATURE_LEVEL iD3DFeatureLevel;
+				D3D_FEATURE_LEVEL iD3DFeatureLevels[] = { D3DFeatureLevelsArray[arrayCount] };
+				UINT iD3DCreateFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+				hResult = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, iD3DCreateFlags, iD3DFeatureLevels, 1, D3D11_SDK_VERSION, (ID3D11Device**)&vDirectXInstance.iD3D11Device5, &iD3DFeatureLevel, (ID3D11DeviceContext**)&vDirectXInstance.iD3D11DeviceContext4);
+				if (SUCCEEDED(hResult))
+				{
+					AVDebugWriteLine("Created DirectX device with feature level: " << D3DFeatureLevelsArray[arrayCount]);
+					return true;
+				}
+			}
+		}
+		catch (...) {}
+		return false;
+	}
+
 	BOOL InitializeDirectXCreate(UINT monitorId)
 	{
 		try
 		{
-			//Create D3D11 Device
-			D3D_FEATURE_LEVEL iD3DFeatureLevel;
-			UINT iD3DCreateFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-			hResult = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, iD3DCreateFlags, D3DFeatureLevelsArray, D3DFeatureLevelsCount, D3D11_SDK_VERSION, (ID3D11Device**)&vDirectXInstance.iD3D11Device5, &iD3DFeatureLevel, (ID3D11DeviceContext**)&vDirectXInstance.iD3D11DeviceContext4);
-			if (FAILED(hResult))
+			//Create DirectX device
+			bResult = InitializeDirectXCreateDevice();
+			if (!bResult)
 			{
 				return false;
 			}
@@ -64,7 +83,7 @@ namespace
 				return false;
 			}
 
-			AVDebugWriteLine("DirectX initialized for monitor: " << monitorId);
+			AVDebugWriteLine("DirectX initialized successfully for monitor: " << monitorId);
 			return true;
 		}
 		catch (...)
@@ -97,7 +116,11 @@ namespace
 		try
 		{
 			//Set process scheduler priority
-			InitializeDirectXSetKMT();
+			bResult = InitializeDirectXSetKMT();
+			if (!bResult)
+			{
+				return false;
+			}
 
 			//Set maximum queue back buffer frames
 			hResult = vDirectXInstance.iDxgiDevice4->SetMaximumFrameLatency(16);
