@@ -46,12 +46,12 @@ namespace
 	{
 		AudioFormats AudioFormat = AudioFormats::AAC;
 		UINT AudioChannels = 2;
-		UINT AudioBitRate = 256;
+		UINT AudioBitRate = 192;
 		UINT AudioBitDepth = 16;
 		UINT AudioSampleRate = 48000;
-		VideoFormats VideoFormat = VideoFormats::HEVC;
+		VideoFormats VideoFormat = VideoFormats::H264;
 		VideoRateControls VideoRateControl = VideoRateControls::VBR;
-		UINT VideoBitRate = 25000;
+		UINT VideoBitRate = 35000;
 		UINT VideoFrameRate = 60;
 	};
 
