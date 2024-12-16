@@ -131,6 +131,7 @@ namespace
 			}
 
 			//Set encoding settings
+			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonQualityVsSpeed, 100);
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonLowLatency, 1);
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncCommonRealTime, 1);
 			imfAttributesEncoding->SetUINT32(CODECAPI_AVEncMPVGOPSize, targetVideoFrameRate * 2);
