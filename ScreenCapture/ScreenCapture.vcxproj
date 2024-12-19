@@ -37,6 +37,7 @@
     <ClCompile Include="CaptureInitMedia.cpp" />
     <ClCompile Include="CaptureReset.cpp" />
     <ClCompile Include="CaptureMain.cpp" />
+    <ClCompile Include="CaptureMonitorInfo.cpp" />
     <ClCompile Include="CaptureScreen.cpp" />
     <ClCompile Include="CaptureTexture.cpp" />
     <ClCompile Include="CaptureVideoStart.cpp" />

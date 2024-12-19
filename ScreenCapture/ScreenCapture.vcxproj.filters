@@ -18,6 +18,9 @@
     <ClCompile Include="CaptureMain.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="CaptureMonitorInfo.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
     <ClCompile Include="CaptureInitialize.cpp">
       <Filter>Source files</Filter>
     </ClCompile>

@@ -153,18 +153,20 @@ namespace
 	{
 		try
 		{
+			//Fix find a way to get current ColorSpace (full or limited)
 			//Fix iDxgiOutputDescription1 returning wrong ColorSpace
 			//Fix convert enum to string and check for _STUDIO_
-			return vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
-				|| vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020
-				|| vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
-				|| vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G24_NONE_P709
-				|| vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G24_NONE_P2020;
+			//return vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
+			//	|| vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020
+			//	|| vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
+			//	|| vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G24_NONE_P709
+			//	|| vDirectXInstance.iDxgiOutputDescription1.ColorSpace == DXGI_COLOR_SPACE_RGB_STUDIO_G24_NONE_P2020;
+			return true;
 		}
 		catch (...)
 		{
 			AVDebugWriteLine("Failed to get monitor color range.");
-			return false;
+			return true;
 		}
 	}
 };
