@@ -50,7 +50,7 @@ namespace
 		}
 	}
 
-	BOOL CaptureResetVariablesAll()
+	BOOL CaptureInstanceResetVariablesAll()
 	{
 		try
 		{
@@ -67,8 +67,9 @@ namespace
 
 			//Status
 			vCaptureInstance.vInstanceInitialized = false;
+			vCaptureInstance.vInstanceInitializing = false;
 
-			AVDebugWriteLine("Reset all Capture variables.");
+			AVDebugWriteLine("Reset all Capture instance variables.");
 			return true;
 		}
 		catch (...)
@@ -145,7 +146,6 @@ namespace
 			vMediaFoundationInstance.iAudioDeviceRender.Release();
 			vMediaFoundationInstance.iAudioClientCapture.Release();
 			vMediaFoundationInstance.iAudioClientRender.Release();
-			vMediaFoundationInstance.iAudioWaveFormatExCapture.Free();
 			vMediaFoundationInstance.iAudioWaveFormatExRender.Free();
 
 			//Status
@@ -237,8 +237,8 @@ namespace
 	{
 		try
 		{
-			//Capture
-			CaptureResetVariablesAll();
+			//Capture Instance
+			CaptureInstanceResetVariablesAll();
 
 			//Windows Graphics Capture
 			WgcResetVariablesAll();

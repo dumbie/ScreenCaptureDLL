@@ -44,12 +44,12 @@
         public MediaSettings() { }
         public AudioFormats AudioFormat { get; set; } = AudioFormats.AAC;
         public int AudioChannels { get; set; } = 2;
-        public int AudioBitRate { get; set; } = 256;
+        public int AudioBitRate { get; set; } = 192;
         public int AudioBitDepth { get; set; } = 16;
         public int AudioSampleRate { get; set; } = 48000;
-        public VideoFormats VideoFormat { get; set; } = VideoFormats.HEVC;
+        public VideoFormats VideoFormat { get; set; } = VideoFormats.H264;
         public VideoRateControls VideoRateControl { get; set; } = VideoRateControls.VBR;
-        public int VideoBitRate { get; set; } = 25000;
+        public int VideoBitRate { get; set; } = 35000;
         public int VideoFrameRate { get; set; } = 60;
     };
 
