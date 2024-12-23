@@ -9,28 +9,6 @@ namespace ScreenCapture
 {
     partial class SocketServer
     {
-        //Handle received pipe string
-        public static void ReceivedPipesHandler(string receivedString)
-        {
-            try
-            {
-                async void TaskAction()
-                {
-                    try
-                    {
-                        Debug.WriteLine("Received pipe string: " + receivedString);
-                        if (receivedString == "-videostop")
-                        {
-                            await AppExit.Exit();
-                        }
-                    }
-                    catch { }
-                }
-                AVActions.TaskStartBackground(TaskAction);
-            }
-            catch { }
-        }
-
         //Handle received socket data
         public static void ReceivedSocketHandler(TcpClient tcpClient, UdpEndPointDetails endPoint, byte[] receivedBytes)
         {

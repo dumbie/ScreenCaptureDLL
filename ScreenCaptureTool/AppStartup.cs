@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static ArnoldVinkCode.AVProcess;
 using static ArnoldVinkCode.AVSettings;
+using static ArnoldVinkCode.Styles.MainColors;
 using static ScreenCapture.AppClasses;
 using static ScreenCapture.AppVariables;
 
@@ -59,7 +60,7 @@ namespace ScreenCapture
                     bool captureResult = CaptureScreen.CaptureImageToFile();
 
                     //Show capture overlay window
-                    if (SettingLoad(vConfiguration, "OverlayShowScreenshot", typeof(bool)))
+                    if (SettingLoad(vConfigurationScreenCaptureTool, "OverlayShowScreenshot", typeof(bool)))
                     {
                         vWindowOverlay.ShowOverlay(captureResult ? CaptureTypes.Image : CaptureTypes.Failed);
                         await Task.Delay(2500);
@@ -88,7 +89,7 @@ namespace ScreenCapture
                     if (captureResult)
                     {
                         //Show capture overlay window
-                        if (SettingLoad(vConfiguration, "OverlayShowRecording", typeof(bool)))
+                        if (SettingLoad(vConfigurationScreenCaptureTool, "OverlayShowRecording", typeof(bool)))
                         {
                             vWindowOverlay.ShowOverlay(CaptureTypes.Video);
                         }
@@ -96,13 +97,17 @@ namespace ScreenCapture
                         //Create application tray menu
                         AppTrayMenuCapture.Application_CreateTrayMenu();
 
-                        //Start pipes server
-                        SocketServer.EnablePipesServer();
+                        //Start keyboard hotkeys
+                        AVInputOutputHotkeyHook.Start();
+                        AVInputOutputHotkeyHook.EventHotkeyPressedList += AppHotkeys.EventHotkeyPressed;
+
+                        //Enable socket server
+                        await SocketServer.EnableSocketServer();
                     }
                     else
                     {
                         //Show capture overlay window
-                        if (SettingLoad(vConfiguration, "OverlayShowRecording", typeof(bool)))
+                        if (SettingLoad(vConfigurationScreenCaptureTool, "OverlayShowRecording", typeof(bool)))
                         {
                             vWindowOverlay.ShowOverlay(CaptureTypes.Failed);
                             await Task.Delay(2500);
@@ -134,19 +139,23 @@ namespace ScreenCapture
                     vWindowMain.Shortcuts_Load();
                     vWindowMain.Shortcuts_Save();
 
+                    //Change application accent color
+                    string colorLightHex = SettingLoad(vConfigurationCtrlUI, "ColorAccentLight", typeof(string));
+                    ChangeApplicationAccentColor(colorLightHex);
+
                     //Create application tray menu
                     AppTrayMenuTool.Application_CreateTrayMenu();
 
                     //Check settings if window needs to be shown
-                    if (SettingLoad(vConfiguration, "AppFirstLaunch", typeof(bool)))
+                    if (SettingLoad(vConfigurationScreenCaptureTool, "AppFirstLaunch", typeof(bool)))
                     {
                         Debug.WriteLine("First launch showing the window.");
                         vWindowMain.Application_ShowWindow();
                     }
 
                     //Start keyboard hotkeys
-                    AVInputOutputHotkey.Start();
-                    AVInputOutputHotkey.EventHotkeyPressedList += AppHotkeys.EventHotkeyPressed;
+                    AVInputOutputHotkeyHook.Start();
+                    AVInputOutputHotkeyHook.EventHotkeyPressedList += AppHotkeys.EventHotkeyPressed;
 
                     //Enable socket server
                     await SocketServer.EnableSocketServer();

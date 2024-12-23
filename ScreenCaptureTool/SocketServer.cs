@@ -12,23 +12,11 @@ namespace ScreenCapture
         {
             try
             {
-                int SocketServerPort = SettingLoad(vConfiguration, "ServerPort", typeof(int));
-                vArnoldVinkSockets = new ArnoldVinkSockets("127.0.0.1", SocketServerPort, false, true);
+                int socketServerPort = SettingLoad(vConfigurationCtrlUI, "ServerPort", typeof(int)) + 3;
+                vArnoldVinkSockets = new ArnoldVinkSockets("127.0.0.1", socketServerPort, false, true);
                 vArnoldVinkSockets.vSocketTimeout = 250;
                 vArnoldVinkSockets.EventBytesReceived += ReceivedSocketHandler;
                 await vArnoldVinkSockets.SocketServerEnable();
-            }
-            catch { }
-        }
-
-        //Enable the pipes server
-        public static void EnablePipesServer()
-        {
-            try
-            {
-                vArnoldVinkPipes = new ArnoldVinkPipes("ScreenCaptureTool");
-                vArnoldVinkPipes.PipeServerEnable();
-                vArnoldVinkPipes.EventStringReceived += ReceivedPipesHandler;
             }
             catch { }
         }

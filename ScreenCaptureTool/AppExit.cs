@@ -38,19 +38,26 @@ namespace ScreenCapture
                 CaptureScreen.StopCaptureVideoToFile();
 
                 //Reset screen capture resources
-                CaptureImport.CaptureReset();
+                try
+                {
+                    CaptureImport.CaptureReset();
+                }
+                catch { }
 
                 //Hide the visible tray icons
                 AppTrayMenuTool.TrayNotifyIcon.Visible = false;
                 AppTrayMenuCapture.TrayNotifyIcon.Visible = false;
 
                 //Stop keyboard hotkeys
-                await AVInputOutputHotkey.Stop();
+                await AVInputOutputHotkeyHook.Stop();
 
                 //Close the application
                 Environment.Exit(0);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Failed to exit application: " + ex.Message);
+            }
         }
     }
 }

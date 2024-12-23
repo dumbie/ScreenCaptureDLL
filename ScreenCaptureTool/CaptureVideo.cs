@@ -1,14 +1,13 @@
 ﻿using ArnoldVinkCode;
 using ScreenCaptureImport;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using static ArnoldVinkCode.AVInteropDll;
 using static ArnoldVinkCode.AVProcess;
 using static ArnoldVinkCode.AVSettings;
 using static ScreenCapture.AppVariables;
@@ -21,14 +20,14 @@ namespace ScreenCapture
         {
             try
             {
+                //Capture start stop delay
                 await Task.Delay(captureDelay);
-                //Check if capture process is running
-                List<ProcessMulti> screenCaptureProcess = Get_ProcessesMultiByName("ScreenCaptureTool", true);
-                bool processRunningVideo = screenCaptureProcess.Any(x => x.Argument.ToLower() == "-video");
-                if (processRunningVideo)
+
+                //Check active video capture
+                if (CaptureImport.CaptureVideoIsRecording())
                 {
                     Debug.WriteLine("Video capture process is running, stopping video capture.");
-                    await ArnoldVinkPipes.PipeClientSendString("ScreenCaptureTool", 1000, "-videostop");
+                    await AppExit.Exit();
                 }
                 else
                 {
@@ -108,22 +107,22 @@ namespace ScreenCapture
                 CaptureImport.CaptureEventDeviceChangeDetected(CaptureEventDeviceChangeDetected);
 
                 //Capture tool settings
-                VideoFormats VideoSaveFormat = (VideoFormats)SettingLoad(vConfiguration, "VideoSaveFormat", typeof(int));
-                VideoRateControls VideoRateControl = (VideoRateControls)SettingLoad(vConfiguration, "VideoRateControl", typeof(int));
-                int VideoBitRate = SettingLoad(vConfiguration, "VideoBitRate", typeof(int));
-                int VideoFrameRate = SettingLoad(vConfiguration, "VideoFrameRate", typeof(int));
-                int VideoMaxPixelDimension = SettingLoad(vConfiguration, "VideoMaxPixelDimension", typeof(int));
+                VideoFormats VideoSaveFormat = (VideoFormats)SettingLoad(vConfigurationScreenCaptureTool, "VideoSaveFormat", typeof(int));
+                VideoRateControls VideoRateControl = (VideoRateControls)SettingLoad(vConfigurationScreenCaptureTool, "VideoRateControl", typeof(int));
+                int VideoBitRate = SettingLoad(vConfigurationScreenCaptureTool, "VideoBitRate", typeof(int));
+                int VideoFrameRate = SettingLoad(vConfigurationScreenCaptureTool, "VideoFrameRate", typeof(int));
+                int VideoMaxPixelDimension = SettingLoad(vConfigurationScreenCaptureTool, "VideoMaxPixelDimension", typeof(int));
 
-                AudioFormats AudioSaveFormat = (AudioFormats)SettingLoad(vConfiguration, "AudioSaveFormat", typeof(int));
-                int AudioChannels = SettingLoad(vConfiguration, "AudioChannels", typeof(int));
-                int AudioBitRate = SettingLoad(vConfiguration, "AudioBitRate", typeof(int));
-                int AudioBitDepth = SettingLoad(vConfiguration, "AudioBitDepth", typeof(int));
-                int AudioSampleRate = SettingLoad(vConfiguration, "AudioSampleRate", typeof(int));
+                AudioFormats AudioSaveFormat = (AudioFormats)SettingLoad(vConfigurationScreenCaptureTool, "AudioSaveFormat", typeof(int));
+                int AudioChannels = SettingLoad(vConfigurationScreenCaptureTool, "AudioChannels", typeof(int));
+                int AudioBitRate = SettingLoad(vConfigurationScreenCaptureTool, "AudioBitRate", typeof(int));
+                int AudioBitDepth = SettingLoad(vConfigurationScreenCaptureTool, "AudioBitDepth", typeof(int));
+                int AudioSampleRate = SettingLoad(vConfigurationScreenCaptureTool, "AudioSampleRate", typeof(int));
 
-                int CaptureMonitorId = SettingLoad(vConfiguration, "CaptureMonitorId", typeof(int)) - 1;
-                bool CaptureSoundEffect = SettingLoad(vConfiguration, "CaptureSoundEffect", typeof(bool));
-                bool CaptureDrawBorder = SettingLoad(vConfiguration, "CaptureDrawBorder", typeof(bool));
-                bool CaptureDrawMouseCursor = SettingLoad(vConfiguration, "CaptureDrawMouseCursor", typeof(bool));
+                int CaptureMonitorId = SettingLoad(vConfigurationScreenCaptureTool, "CaptureMonitorId", typeof(int)) - 1;
+                bool CaptureSoundEffect = SettingLoad(vConfigurationScreenCaptureTool, "CaptureSoundEffect", typeof(bool));
+                bool CaptureDrawBorder = SettingLoad(vConfigurationScreenCaptureTool, "CaptureDrawBorder", typeof(bool));
+                bool CaptureDrawMouseCursor = SettingLoad(vConfigurationScreenCaptureTool, "CaptureDrawMouseCursor", typeof(bool));
 
                 //Screen capture settings
                 CaptureSettings captureSettings = new CaptureSettings();
@@ -163,28 +162,40 @@ namespace ScreenCapture
                     return false;
                 }
 
-                //Set screenshot name
-                string fileSaveName = "(" + DateTime.Now.ToShortDateString() + ") " + DateTime.Now.ToString("HH.mm.ss.ffff");
+                //Set save name
+                string fileSaveName = "Video";
+                if (SettingLoad(vConfigurationScreenCaptureTool, "SaveWindowTitle", typeof(bool)))
+                {
+                    fileSaveName = Detail_WindowTitleByWindowHandle(GetForegroundWindow());
+                    fileSaveName = AVFunctions.StringCut(fileSaveName, 150, string.Empty);
+                }
+
+                //Set save date
+                string fileSaveDate = " (" + DateTime.Now.ToShortDateString() + ") " + DateTime.Now.ToString("HH.mm.ss.ffff");
+
+                //Set save details
+                string fileSaveDetails = string.Empty;
                 if (vCaptureDetails.HDREnabled)
                 {
                     if (vCaptureDetails.HDRtoSDR)
                     {
-                        fileSaveName += " (HDRtoSDR)";
+                        fileSaveDetails = " (HDRtoSDR)";
                     }
                     else
                     {
-                        fileSaveName += " (HDR)";
+                        fileSaveDetails = " (HDR)";
                     }
                 }
                 else
                 {
-                    fileSaveName += " (SDR)";
+                    fileSaveDetails = " (SDR)";
                 }
-                fileSaveName = "Video " + AVFiles.FileNameReplaceInvalidChars(fileSaveName, "-");
-                vCaptureFileName = fileSaveName;
+
+                //Replace invalid characters
+                vCaptureFileName = AVFiles.FileNameReplaceInvalidChars(fileSaveName + fileSaveDate + fileSaveDetails, "-");
 
                 //Check capture location
-                string fileSaveFolder = SettingLoad(vConfiguration, "CaptureLocation", typeof(string));
+                string fileSaveFolder = SettingLoad(vConfigurationScreenCaptureTool, "CaptureLocation", typeof(string));
                 if (string.IsNullOrWhiteSpace(fileSaveFolder) || !Directory.Exists(fileSaveFolder))
                 {
                     //Check captures folder in app directory
@@ -198,7 +209,7 @@ namespace ScreenCapture
                 }
 
                 //Combine save path
-                string fileSavePath = fileSaveFolder + "\\" + fileSaveName + ".mp4";
+                string fileSavePath = fileSaveFolder + "\\" + vCaptureFileName + ".mp4";
 
                 //Start video capture
                 bool captureStarted = CaptureImport.CaptureVideoStart(fileSavePath, mediaSettings);
