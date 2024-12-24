@@ -130,6 +130,7 @@ namespace ScreenCapture
         {
             try
             {
+                int previousTickcount = Environment.TickCount;
                 while (await AVActions.TaskCheckLoop(vTask_CaptureScreen, vCaptureUpdateRateMs))
                 {
                     try
@@ -149,11 +150,13 @@ namespace ScreenCapture
                         }
 
                         //Update screen capture preview
+                        int currentTickcount = Environment.TickCount;
                         AVActions.DispatcherInvoke(delegate
                         {
-                            textblock_FrameCount.Text = Environment.TickCount.ToString();
+                            textblock_FrameCount.Text = currentTickcount.ToString() + " (" + (currentTickcount - previousTickcount) + "ms)";
                             image_DebugPreview.Source = CaptureBitmap.BitmapIntPtrToBitmapSource(bitmapIntPtr, vCaptureDetails);
                         });
+                        previousTickcount = currentTickcount;
                     }
                     catch (Exception ex)
                     {
