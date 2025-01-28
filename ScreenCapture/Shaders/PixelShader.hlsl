@@ -207,7 +207,7 @@ float4 AdjustGamma(float4 color)
 	{
 		return color;
 	}
-	float adjustGamma = Gamma / 1.0F;
+	float adjustGamma = 1.0F / Gamma;
 	return pow(color, adjustGamma);
 }
 
