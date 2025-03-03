@@ -6,7 +6,7 @@ namespace
 	//Enumerators
 	enum CaptureStatus
 	{
-		Initialized = 0,
+		Success = 0,
 		Failed = 1,
 		Busy = 2
 	};
@@ -150,6 +150,8 @@ namespace
 		//Shaders
 		CComPtr<ID3D11Buffer> iD3D11BufferVertex0;
 		CComPtr<ID3D11Buffer> iD3D11BufferPixel0;
+		CComPtr<ID3DBlob> iD3DBlobShaderVertex0;
+		CComPtr<ID3DBlob> iD3DBlobShaderPixel0;
 		CComPtr<ID3D11VertexShader> iD3D11ShaderVertex0;
 		CComPtr<ID3D11PixelShader> iD3D11ShaderPixel0;
 	};
@@ -220,8 +222,11 @@ namespace
 		//Status
 		CaptureStatus Status;
 
+		//HResult
+		HRESULT hResult;
+
 		//Message
-		std::string Message;
+		BSTR Message;
 	};
 
 	struct CaptureDataScreen

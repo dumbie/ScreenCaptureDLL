@@ -7,6 +7,7 @@ namespace
 	BOOL bResult;
 	HRESULT hResult;
 	NTSTATUS ntStatus;
+	CaptureResult capResult;
 
 	//Events
 	typedef void(*CaptureEvent)();

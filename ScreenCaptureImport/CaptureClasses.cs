@@ -1,9 +1,11 @@
-﻿namespace ScreenCaptureImport
+﻿using System.Runtime.InteropServices;
+
+namespace ScreenCaptureImport
 {
     //Enumerators
     public enum CaptureStatus : int
     {
-        Initialized = 0,
+        Success = 0,
         Failed = 1,
         Busy = 2
     }
@@ -87,5 +89,13 @@
         public int PixelByteSize { get; set; }
         public int WidthByteSize { get; set; }
         public int TotalByteSize { get; set; }
+    }
+
+    public struct CaptureResult
+    {
+        public CaptureStatus Status { get; set; }
+        public int hResult { get; set; }
+        [field: MarshalAs(UnmanagedType.BStr)]
+        public string Message { get; set; }
     }
 }

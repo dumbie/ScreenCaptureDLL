@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CaptureVariables.h"
 #include "CaptureInitialize.cpp"
 #include "CaptureImage.cpp"
@@ -9,7 +9,7 @@ namespace
 {
 	extern "C"
 	{
-		__declspec(dllexport) CaptureStatus CaptureInitialize(CaptureSettings captureSettings, BOOL forceInitialize)
+		__declspec(dllexport) CaptureResult CaptureInitialize(CaptureSettings captureSettings, BOOL forceInitialize)
 		{
 			try
 			{
@@ -17,7 +17,7 @@ namespace
 			}
 			catch (...)
 			{
-				return CaptureStatus::Failed;
+				return { .Status = CaptureStatus::Failed };
 			}
 		}
 
@@ -31,14 +31,14 @@ namespace
 			return vCaptureSettings;
 		}
 
-		__declspec(dllexport) BOOL CaptureUpdateSettings(CaptureSettings captureSettings)
+		__declspec(dllexport) CaptureResult CaptureUpdateSettings(CaptureSettings captureSettings)
 		{
 			try
 			{
 				//Check if initialized
 				if (!vCaptureInstance.vInstanceInitialized)
 				{
-					return false;
+					return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Capture is not initialized") };
 				}
 
 				//Update capture settings
@@ -49,11 +49,11 @@ namespace
 			}
 			catch (...)
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed };
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureReset()
+		__declspec(dllexport) CaptureResult CaptureReset()
 		{
 			try
 			{
@@ -61,7 +61,7 @@ namespace
 			}
 			catch (...)
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed };
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureImage(WCHAR* filePath, UINT imageQuality, ImageFormats imageFormat)
+		__declspec(dllexport) CaptureResult CaptureImage(const WCHAR* filePath, UINT imageQuality, ImageFormats imageFormat)
 		{
 			try
 			{
@@ -92,11 +92,11 @@ namespace
 			}
 			catch (...)
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed };
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureVideoStart(WCHAR* filePath, MediaSettings mediaSettings)
+		__declspec(dllexport) CaptureResult CaptureVideoStart(const WCHAR* filePath, MediaSettings mediaSettings)
 		{
 			try
 			{
@@ -104,11 +104,11 @@ namespace
 			}
 			catch (...)
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed };
 			}
 		}
 
-		__declspec(dllexport) BOOL CaptureVideoStop()
+		__declspec(dllexport) CaptureResult CaptureVideoStop()
 		{
 			try
 			{
@@ -116,7 +116,7 @@ namespace
 			}
 			catch (...)
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed };
 			}
 		}
 

@@ -8,7 +8,7 @@ namespace ScreenCaptureImport
     public class CaptureImport
     {
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern CaptureStatus CaptureInitialize(CaptureSettings captureSettings, bool forceInitialize);
+        public static extern CaptureResult CaptureInitialize(CaptureSettings captureSettings, bool forceInitialize);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern CaptureDetails CaptureGetDetails();
@@ -17,22 +17,22 @@ namespace ScreenCaptureImport
         public static extern CaptureSettings CaptureGetSettings();
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureUpdateSettings(CaptureSettings captureSettings);
+        public static extern CaptureResult CaptureUpdateSettings(CaptureSettings captureSettings);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureReset();
+        public static extern CaptureResult CaptureReset();
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr CaptureScreenBytes();
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureImage([MarshalAs(UnmanagedType.LPWStr)] string filePath, int imageQuality, ImageFormats imageFormat);
+        public static extern CaptureResult CaptureImage([MarshalAs(UnmanagedType.LPWStr)] string filePath, int imageQuality, ImageFormats imageFormat);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureVideoStart([MarshalAs(UnmanagedType.LPWStr)] string filePath, MediaSettings mediaSettings);
+        public static extern CaptureResult CaptureVideoStart([MarshalAs(UnmanagedType.LPWStr)] string filePath, MediaSettings mediaSettings);
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool CaptureVideoStop();
+        public static extern CaptureResult CaptureVideoStop();
 
         [DllImport("Resources\\ScreenCapture.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern bool CaptureVideoIsRecording();
