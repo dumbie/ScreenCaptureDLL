@@ -4,12 +4,10 @@
 #include "CaptureDetails.cpp"
 #include "CaptureLoop.cpp"
 #include "PlayAudio.cpp"
-#include "Shaders\PixelShader.h"
-#include "Shaders\VertexShader.h"
 
 namespace
 {
-	BOOL InitializeDirectXCreateDevice()
+	CaptureResult InitializeDirectXCreateDevice()
 	{
 		try
 		{
@@ -22,146 +20,150 @@ namespace
 				if (SUCCEEDED(hResult))
 				{
 					AVDebugWriteLine("Created DirectX device with feature level: " << D3DFeatureLevelsArray[arrayCount]);
-					return true;
+					return { .Status = CaptureStatus::Success };
 				}
 			}
 		}
 		catch (...) {}
-		return false;
+		return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"InitializeDirectXCreateDevice failed") };
 	}
 
-	BOOL InitializeDirectXCreate(UINT monitorId)
+	CaptureResult InitializeDirectXCreate(UINT monitorId)
 	{
 		try
 		{
 			//Create DirectX device
-			bResult = InitializeDirectXCreateDevice();
-			if (!bResult)
+			capResult = InitializeDirectXCreateDevice();
+			if (capResult.Status != CaptureStatus::Success)
 			{
-				return false;
+				return capResult;
 			}
 
 			//Convert variables
 			hResult = vDirectXInstance.iD3D11Device5->QueryInterface(&vDirectXInstance.iDxgiDevice4);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed converting iDxgiDevice4") };
 			}
 
 			//Convert variables
 			hResult = vDirectXInstance.iD3D11Device5->QueryInterface(&vDirectXInstance.iD3D11Multithread0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed converting iD3D11Multithread0") };
 			}
 
 			//Get DXGI Adapter
 			hResult = vDirectXInstance.iDxgiDevice4->GetParent(IID_PPV_ARGS(&vDirectXInstance.iDxgiAdapter4));
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed getting DXGI adapter") };
 			}
 
 			//Get DXGI Output
 			hResult = vDirectXInstance.iDxgiAdapter4->EnumOutputs(monitorId, (IDXGIOutput**)&vDirectXInstance.iDxgiOutput6);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed getting DXGI output") };
 			}
 
 			//Get DXGI Factory
 			hResult = vDirectXInstance.iDxgiAdapter4->GetParent(IID_PPV_ARGS(&vDirectXInstance.iDxgiFactory7));
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed getting DXGI factory") };
 			}
 
 			//Get output description
 			hResult = vDirectXInstance.iDxgiOutput6->GetDesc1(&vDirectXInstance.iDxgiOutputDescription1);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed getting output description") };
 			}
 
+			//Return result
 			AVDebugWriteLine("DirectX initialized successfully for monitor: " << monitorId);
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("InitializeDirectX for monitor " << monitorId << " failed: " << hResult);
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"InitializeDirectXCreate failed") };
 		}
 	}
 
-	BOOL InitializeDirectXSetKMT()
+	CaptureResult InitializeDirectXSetKMT()
 	{
 		try
 		{
+			HANDLE currentProcess = GetCurrentProcess();
 			for (int arrayCount = 0; arrayCount < D3DKMTSchedulingPriorityClassCount; arrayCount++)
 			{
-				ntStatus = D3DKMTSetProcessSchedulingPriorityClass(GetCurrentProcess(), D3DKMTSchedulingPriorityClassArray[arrayCount]);
+				ntStatus = D3DKMTSetProcessSchedulingPriorityClass(currentProcess, D3DKMTSchedulingPriorityClassArray[arrayCount]);
 				if (NT_SUCCESS(ntStatus))
 				{
 					AVDebugWriteLine("Set D3DKMT ProcessSchedulingPriorityClass: " << D3DKMTSchedulingPriorityClassArray[arrayCount]);
-					return true;
+					return { .Status = CaptureStatus::Success };
 				}
 			}
 		}
 		catch (...) {}
-		return false;
+		return { .Status = CaptureStatus::Failed, .ResultCode = ntStatus, .Message = SysAllocString(L"InitializeDirectXSetKMT failed") };
 	}
 
-	BOOL InitializeDirectXTweaks()
+	CaptureResult InitializeDirectXTweaks()
 	{
 		try
 		{
 			//Set process scheduler priority
-			bResult = InitializeDirectXSetKMT();
-			if (!bResult)
+			capResult = InitializeDirectXSetKMT();
+			if (capResult.Status != CaptureStatus::Success)
 			{
-				return false;
+				return capResult;
 			}
 
 			//Set maximum queue back buffer frames
 			hResult = vDirectXInstance.iDxgiDevice4->SetMaximumFrameLatency(16);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetMaximumFrameLatency failed") };
 			}
 
 			//Set gpu thread scheduler priority
 			hResult = vDirectXInstance.iDxgiDevice4->SetGPUThreadPriority(0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetGPUThreadPriority failed") };
 			}
 
 			//Set multithread protection
 			hResult = vDirectXInstance.iD3D11Multithread0->SetMultithreadProtected(true);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetMultithreadProtected failed") };
 			}
 
+			//Return result
 			AVDebugWriteLine("DirectX performance tweaks applied.");
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("InitializeDirectXTweaks failed: " << hResult);
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"InitializeDirectXTweaks failed") };
 		}
 	}
 
-	BOOL InitializeDirectXLoop(UINT monitorId)
+	CaptureResult InitializeDirectXLoop(UINT monitorId)
 	{
 		try
 		{
 			for (int retryCount = 0; retryCount < 6; retryCount++)
 			{
-				if (InitializeDirectXCreate(monitorId))
+				capResult = InitializeDirectXCreate(monitorId);
+				if (capResult.Status == CaptureStatus::Success)
 				{
-					return true;
+					return capResult;
 				}
 				else
 				{
@@ -171,10 +173,10 @@ namespace
 			}
 		}
 		catch (...) {}
-		return false;
+		return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"InitializeDirectXLoop failed") };
 	}
 
-	BOOL InitializeSamplerState()
+	CaptureResult InitializeSamplerState()
 	{
 		try
 		{
@@ -198,22 +200,23 @@ namespace
 			hResult = vDirectXInstance.iD3D11Device5->CreateSamplerState(&iD3DSamplerDescription, &vDirectXInstance.iD3D11SamplerState0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateSamplerState failed") };
 			}
 
 			//Set sampler state
 			vDirectXInstance.iD3D11DeviceContext4->PSSetSamplers(0, 1, &vDirectXInstance.iD3D11SamplerState0);
 
-			return true;
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("InitializeSamplerState failed: " << hResult);
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"InitializeSamplerState failed") };
 		}
 	}
 
-	BOOL InitializeWgc()
+	CaptureResult InitializeWgc()
 	{
 		try
 		{
@@ -222,8 +225,7 @@ namespace
 			hResult = CreateDirect3D11DeviceFromDXGIDevice(vDirectXInstance.iDxgiDevice4, inspectable.put());
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("CreateDirect3D11DeviceFromDXGIDevice failed.");
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateDirect3D11DeviceFromDXGIDevice failed") };
 			}
 			vWgcInstance.vGraphicsD3D11Device = inspectable.as<winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice>();
 
@@ -249,16 +251,14 @@ namespace
 			//hResult = interop_factory->CreateForWindow(GetForegroundWindow(), interop_uuid, (void**)&vWgcInstance.vGraphicsCaptureItem);
 			//if (FAILED(hResult))
 			//{
-			//	AVDebugWriteLine("CreateForWindow failed.");
-			//	return false;
+			//	return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateForWindow failed") };
 			//}
 
 			//Create capture item for monitor
 			hResult = interop_factory->CreateForMonitor(vDirectXInstance.iDxgiOutputDescription1.Monitor, interop_uuid, (void**)&vWgcInstance.vGraphicsCaptureItem);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("CreateForMonitor failed.");
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateForMonitor failed") };
 			}
 
 			//Create capture session
@@ -281,17 +281,18 @@ namespace
 			//Start capture session
 			vWgcInstance.vGraphicsCaptureSession.StartCapture();
 
+			//Return result
 			AVDebugWriteLine("Windows Graphics Capture initialized.");
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("InitializeWgc failed: " << hResult);
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"InitializeWgc failed") };
 		}
 	}
 
-	BOOL InitializeRenderTargetView()
+	CaptureResult InitializeRenderTargetView()
 	{
 		try
 		{
@@ -311,30 +312,31 @@ namespace
 			hResult = vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescRenderTargetView, NULL, &vCaptureInstance.iD3D11Texture2D0RenderTargetView);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateTexture2D RenderTargetView failed") };
 			}
 
 			//Create and set render target view
 			hResult = vDirectXInstance.iD3D11Device5->CreateRenderTargetView(vCaptureInstance.iD3D11Texture2D0RenderTargetView, NULL, &vDirectXInstance.iD3D11RenderTargetView0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateRenderTargetView failed") };
 			}
 			vDirectXInstance.iD3D11DeviceContext4->OMSetRenderTargets(1, &vDirectXInstance.iD3D11RenderTargetView0, NULL);
 
 			//Clear render target view
 			vDirectXInstance.iD3D11DeviceContext4->ClearRenderTargetView(vDirectXInstance.iD3D11RenderTargetView0, ColorRgbaBlack);
 
-			return true;
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("InitializeRenderTargetView failed: " << hResult);
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"InitializeRenderTargetView failed") };
 		}
 	}
 
-	BOOL InitializeViewPort()
+	CaptureResult InitializeViewPort()
 	{
 		try
 		{
@@ -344,38 +346,49 @@ namespace
 			iD3D11ViewPort.Height = vCaptureDetails.OutputHeight;
 			vDirectXInstance.iD3D11DeviceContext4->RSSetViewports(1, &iD3D11ViewPort);
 
-			return true;
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("InitializeViewPort failed: " << hResult);
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"InitializeViewPort failed") };
 		}
 	}
 
-	BOOL InitializeShaders()
+	CaptureResult InitializeShaders()
 	{
 		try
 		{
-			//Load shaders from bytes
-			hResult = vDirectXInstance.iD3D11Device5->CreateVertexShader(VertexShaderBytesVar, sizeof(VertexShaderBytesVar), NULL, &vDirectXInstance.iD3D11ShaderVertex0);
+			//Load shaders from file
+			hResult = D3DCompileFromFile(L"Shaders\\VertexShader.hlsl", 0, 0, "main", "vs_5_0", 0, 0, &vDirectXInstance.iD3DBlobShaderVertex0, 0);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("CreateVertexShader failed: " << hResult);
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed loading vertex shader") };
 			}
-			hResult = vDirectXInstance.iD3D11Device5->CreatePixelShader(PixelShaderBytesVar, sizeof(PixelShaderBytesVar), NULL, &vDirectXInstance.iD3D11ShaderPixel0);
+			hResult = D3DCompileFromFile(L"Shaders\\PixelShader.hlsl", 0, 0, "main", "ps_5_0", 0, 0, &vDirectXInstance.iD3DBlobShaderPixel0, 0);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("CreatePixelShader failed: " << hResult);
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed loading pixel shader") };
+			}
+
+			//Create shaders from blob
+			hResult = vDirectXInstance.iD3D11Device5->CreateVertexShader(vDirectXInstance.iD3DBlobShaderVertex0->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderVertex0->GetBufferSize(), NULL, &vDirectXInstance.iD3D11ShaderVertex0);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating vertex shader") };
+			}
+			hResult = vDirectXInstance.iD3D11Device5->CreatePixelShader(vDirectXInstance.iD3DBlobShaderPixel0->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderPixel0->GetBufferSize(), NULL, &vDirectXInstance.iD3D11ShaderPixel0);
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating pixel shader") };
 			}
 
 			//Create and set input layout
-			hResult = vDirectXInstance.iD3D11Device5->CreateInputLayout(InputElementsArray, InputElementsCount, VertexShaderBytesVar, sizeof(VertexShaderBytesVar), &vDirectXInstance.iD3D11InputLayout0);
+			hResult = vDirectXInstance.iD3D11Device5->CreateInputLayout(InputElementsArray, InputElementsCount, vDirectXInstance.iD3DBlobShaderVertex0->GetBufferPointer(), vDirectXInstance.iD3DBlobShaderVertex0->GetBufferSize(), &vDirectXInstance.iD3D11InputLayout0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating input layout") };
 			}
 			vDirectXInstance.iD3D11DeviceContext4->IASetInputLayout(vDirectXInstance.iD3D11InputLayout0);
 
@@ -383,16 +396,17 @@ namespace
 			vDirectXInstance.iD3D11DeviceContext4->VSSetShader(vDirectXInstance.iD3D11ShaderVertex0, NULL, 0);
 			vDirectXInstance.iD3D11DeviceContext4->PSSetShader(vDirectXInstance.iD3D11ShaderPixel0, NULL, 0);
 
-			return true;
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("InitializeShaders failed: " << hResult);
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"InitializeShaders failed") };
 		}
 	}
 
-	BOOL SetShaderVariables()
+	CaptureResult SetShaderVariables()
 	{
 		try
 		{
@@ -429,22 +443,23 @@ namespace
 			hResult = vDirectXInstance.iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &vDirectXInstance.iD3D11BufferPixel0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating shader variables buffer") };
 			}
 
 			//Set shader variables
 			vDirectXInstance.iD3D11DeviceContext4->PSSetConstantBuffers(0, 1, &vDirectXInstance.iD3D11BufferPixel0);
 
-			return true;
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("SetShaderVariables failed: " << hResult);
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetShaderVariables failed") };
 		}
 	}
 
-	CaptureStatus CaptureInitializeCode(CaptureSettings captureSettings, BOOL forceInitialize)
+	CaptureResult CaptureInitializeCode(CaptureSettings captureSettings, BOOL forceInitialize)
 	{
 		try
 		{
@@ -453,13 +468,13 @@ namespace
 			{
 				//Return result
 				AVDebugWriteLine("Capture is currently initializing.");
-				return CaptureStatus::Busy;
+				return { .Status = CaptureStatus::Busy, .Message = SysAllocString(L"Currently initializing") };
 			}
 			else if (!forceInitialize && vCaptureInstance.vInstanceInitialized)
 			{
 				//Return result
 				AVDebugWriteLine("Capture is already initialized.");
-				return CaptureStatus::Initialized;
+				return { .Status = CaptureStatus::Success, .Message = SysAllocString(L"Already initialized") };
 			}
 
 			//Update instance status
@@ -480,7 +495,8 @@ namespace
 			vCaptureSettings = captureSettings;
 
 			//Initialize DirectX
-			if (!InitializeDirectXLoop(vCaptureSettings.MonitorId))
+			capResult = InitializeDirectXLoop(vCaptureSettings.MonitorId);
+			if (capResult.Status != CaptureStatus::Success)
 			{
 				//Reset all used variables
 				ResetVariablesAll();
@@ -488,16 +504,13 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				//Update instance status
-				vCaptureInstance.vInstanceInitializing = false;
-
 				//Return result
-				AVDebugWriteLine("Capture InitializeDirectX failed.");
-				return CaptureStatus::Failed;
+				return capResult;
 			}
 
 			//Apply DirectX performance tweaks
-			if (!InitializeDirectXTweaks())
+			capResult = InitializeDirectXTweaks();
+			if (capResult.Status != CaptureStatus::Success)
 			{
 				//Reset all used variables
 				ResetVariablesAll();
@@ -505,16 +518,13 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				//Update instance status
-				vCaptureInstance.vInstanceInitializing = false;
-
 				//Return result
-				AVDebugWriteLine("Capture InitializeDirectXTweaks failed.");
-				return CaptureStatus::Failed;
+				return capResult;
 			}
 
 			//Set capture details
-			if (!SetCaptureDetails())
+			capResult = SetCaptureDetails();
+			if (capResult.Status != CaptureStatus::Success)
 			{
 				//Reset all used variables
 				ResetVariablesAll();
@@ -522,16 +532,13 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				//Update instance status
-				vCaptureInstance.vInstanceInitializing = false;
-
 				//Return result
-				AVDebugWriteLine("Capture SetCaptureDetails failed.");
-				return CaptureStatus::Failed;
+				return capResult;
 			}
 
 			//Initialize sampler state
-			if (!InitializeSamplerState())
+			capResult = InitializeSamplerState();
+			if (capResult.Status != CaptureStatus::Success)
 			{
 				//Reset all used variables
 				ResetVariablesAll();
@@ -539,16 +546,13 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				//Update instance status
-				vCaptureInstance.vInstanceInitializing = false;
-
 				//Return result
-				AVDebugWriteLine("Capture InitializeSamplerState failed.");
-				return CaptureStatus::Failed;
+				return capResult;
 			}
 
 			//Initialize Windows Graphics Capture
-			if (!InitializeWgc())
+			capResult = InitializeWgc();
+			if (capResult.Status != CaptureStatus::Success)
 			{
 				//Reset all used variables
 				ResetVariablesAll();
@@ -556,16 +560,13 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				//Update instance status
-				vCaptureInstance.vInstanceInitializing = false;
-
 				//Return result
-				AVDebugWriteLine("Capture InitializeWgc failed.");
-				return CaptureStatus::Failed;
+				return capResult;
 			}
 
 			//Initialize shaders
-			if (!InitializeShaders())
+			capResult = InitializeShaders();
+			if (capResult.Status != CaptureStatus::Success)
 			{
 				//Reset all used variables
 				ResetVariablesAll();
@@ -573,16 +574,13 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				//Update instance status
-				vCaptureInstance.vInstanceInitializing = false;
-
 				//Return result
-				AVDebugWriteLine("Capture InitializeShaders failed.");
-				return CaptureStatus::Failed;
+				return capResult;
 			}
 
 			//Initialize render target view
-			if (!InitializeRenderTargetView())
+			capResult = InitializeRenderTargetView();
+			if (capResult.Status != CaptureStatus::Success)
 			{
 				//Reset all used variables
 				ResetVariablesAll();
@@ -590,16 +588,13 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				//Update instance status
-				vCaptureInstance.vInstanceInitializing = false;
-
 				//Return result
-				AVDebugWriteLine("Capture InitializeRenderTargetView failed.");
-				return CaptureStatus::Failed;
+				return capResult;
 			}
 
 			//Initialize view port
-			if (!InitializeViewPort())
+			capResult = InitializeViewPort();
+			if (capResult.Status != CaptureStatus::Success)
 			{
 				//Reset all used variables
 				ResetVariablesAll();
@@ -607,16 +602,13 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				//Update instance status
-				vCaptureInstance.vInstanceInitializing = false;
-
 				//Return result
-				AVDebugWriteLine("Capture InitializeViewPort failed.");
-				return CaptureStatus::Failed;
+				return capResult;
 			}
 
 			//Set shader variables
-			if (!SetShaderVariables())
+			capResult = SetShaderVariables();
+			if (capResult.Status != CaptureStatus::Success)
 			{
 				//Reset all used variables
 				ResetVariablesAll();
@@ -624,16 +616,13 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				//Update instance status
-				vCaptureInstance.vInstanceInitializing = false;
-
 				//Return result
-				AVDebugWriteLine("Capture SetShaderVariables failed.");
-				return CaptureStatus::Failed;
+				return capResult;
 			}
 
 			//Update vertex vertices
-			if (!RenderUpdateVertex(VertexVerticesArrayScreen, VertexVerticesCountScreen))
+			capResult = RenderUpdateVertex(VertexVerticesArrayScreen, VertexVerticesCountScreen);
+			if (capResult.Status != CaptureStatus::Success)
 			{
 				//Reset all used variables
 				ResetVariablesAll();
@@ -641,12 +630,8 @@ namespace
 				//Play audio effect
 				PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-				//Update instance status
-				vCaptureInstance.vInstanceInitializing = false;
-
 				//Return result
-				AVDebugWriteLine("Capture RenderUpdateVertex failed.");
-				return CaptureStatus::Failed;
+				return capResult;
 			}
 
 			//Update thread variables
@@ -666,7 +651,7 @@ namespace
 
 			//Return result
 			AVDebugWriteLine("Capture initialized successfully.");
-			return CaptureStatus::Initialized;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
@@ -676,12 +661,8 @@ namespace
 			//Play audio effect
 			PlayAudio(L"Assets\\Capture\\CaptureFailed.mp3");
 
-			//Update instance status
-			vCaptureInstance.vInstanceInitializing = false;
-
 			//Return result
-			AVDebugWriteLine("Capture initialize failed.");
-			return CaptureStatus::Failed;
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"CaptureInitializeCode failed") };
 		}
 	}
 }
