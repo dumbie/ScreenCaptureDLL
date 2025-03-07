@@ -54,8 +54,6 @@ namespace
 			//Check media frames read
 			if (mediaFramesRead >= mediaFramesTarget)
 			{
-				//AVDebugWriteLine("Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags);
-
 				//Calculate media size
 				UINT audioBytesSize = mediaFramesRead * vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nBlockAlign;
 
@@ -66,12 +64,11 @@ namespace
 				memcpy(dataAudio.AudioBytes.data(), mediaBuffer, audioBytesSize);
 
 				//Return result
+				//AVDebugWriteLine("Writing read audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags);
 				return dataAudio;
 			}
 			else if (dataAudio.Silent)
 			{
-				//AVDebugWriteLine("Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags);
-
 				//Calculate media size
 				UINT audioBytesSize = mediaFramesRead * vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nBlockAlign;
 
@@ -82,17 +79,20 @@ namespace
 				memset(dataAudio.AudioBytes.data(), 0, audioBytesSize);
 
 				//Return result
+				//AVDebugWriteLine("Writing silenced audio bytes: " << mediaFramesRead << "/" << devicePosition << "/" << qpcPosition << "/" << mediaFlags);
 				return dataAudio;
 			}
 			else
 			{
+				//Return result
 				//AVDebugWriteLine("No audio bytes read.");
 				return dataAudio;
 			}
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("GetAudioBytes failed.");
+			//Return result
+			AVDebugWriteLine("GetAudioData failed.");
 			return dataAudio;
 		}
 	}

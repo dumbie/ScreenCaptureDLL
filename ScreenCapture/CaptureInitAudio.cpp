@@ -3,7 +3,7 @@
 
 namespace
 {
-	BOOL SetAudioDeviceRender()
+	CaptureResult SetAudioDeviceRender()
 	{
 		try
 		{
@@ -12,28 +12,28 @@ namespace
 			hResult = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (LPVOID*)&deviceEnumerator);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating device enumerator") };
 			}
 
 			//Get default audio device
 			hResult = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &vMediaFoundationInstance.iDevice);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed getting default audio device") };
 			}
 
 			//Activate default audio device
 			hResult = vMediaFoundationInstance.iDevice->Activate(__uuidof(IAudioClient3), CLSCTX_ALL, NULL, (LPVOID*)&vMediaFoundationInstance.iAudioDeviceRender);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed activating default audio device") };
 			}
 
 			//Get audio wave format information
 			hResult = vMediaFoundationInstance.iAudioDeviceRender->GetMixFormat((WAVEFORMATEX**)&vMediaFoundationInstance.iAudioWaveFormatExRender);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed getting audio wave format information") };
 			}
 
 			//Initialize default audio device
@@ -43,35 +43,35 @@ namespace
 			hResult = vMediaFoundationInstance.iAudioDeviceRender->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, (WAVEFORMATEX*)vMediaFoundationInstance.iAudioWaveFormatExRender.m_pData, 0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed initializing default audio device") };
 			}
 
 			//Get audio device service
 			hResult = vMediaFoundationInstance.iAudioDeviceRender->GetService(IID_PPV_ARGS(&vMediaFoundationInstance.iAudioClientRender));
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed getting audio device service") };
 			}
 
 			//Start audio device
 			hResult = vMediaFoundationInstance.iAudioDeviceRender->Start();
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed starting audio device") };
 			}
 
 			//Return result
 			AVDebugWriteLine("Audio render device started.");
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("SetAudioDeviceRender failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetAudioDeviceRender failed") };
 		}
 	}
 
-	BOOL SetAudioDeviceCapture()
+	CaptureResult SetAudioDeviceCapture()
 	{
 		try
 		{
@@ -80,21 +80,21 @@ namespace
 			hResult = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (LPVOID*)&deviceEnumerator);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating device enumerator") };
 			}
 
 			//Get default audio device
 			hResult = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &vMediaFoundationInstance.iDevice);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed getting default audio device") };
 			}
 
 			//Activate default audio device
 			hResult = vMediaFoundationInstance.iDevice->Activate(__uuidof(IAudioClient3), CLSCTX_ALL, NULL, (LPVOID*)&vMediaFoundationInstance.iAudioDeviceCapture);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed activating default audio device") };
 			}
 
 			//Set audio wave format information
@@ -118,35 +118,35 @@ namespace
 			hResult = vMediaFoundationInstance.iAudioDeviceCapture->Initialize(AUDCLNT_SHAREMODE_SHARED, initFlags, initBufferDuration, initPeriodicity, &vMediaFoundationInstance.iAudioWaveFormatExCapture.Format, 0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed initializing default audio device") };
 			}
 
 			//Get audio device service
 			hResult = vMediaFoundationInstance.iAudioDeviceCapture->GetService(IID_PPV_ARGS(&vMediaFoundationInstance.iAudioClientCapture));
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed getting audio device service") };
 			}
 
 			//Start audio device
 			hResult = vMediaFoundationInstance.iAudioDeviceCapture->Start();
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed starting audio device") };
 			}
 
 			//Return result
 			AVDebugWriteLine("Audio capture device started.");
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("SetAudioDeviceCapture failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetAudioDeviceCapture failed") };
 		}
 	}
 
-	BOOL SetAudioMediaTypeOut()
+	CaptureResult SetAudioMediaTypeOut()
 	{
 		try
 		{
@@ -155,8 +155,7 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeAudioOut);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("MFCreateMediaType audio out failed.");
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType audio out failed") };
 			}
 
 			//MP3
@@ -179,6 +178,7 @@ namespace
 				imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.wBitsPerSample);
 			}
 
+			//Add audio stream
 			imfMediaTypeAudioOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
 			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nChannels);
 			imfMediaTypeAudioOut->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, vMediaFoundationInstance.iAudioWaveFormatExCapture.Format.nSamplesPerSec);
@@ -187,20 +187,20 @@ namespace
 			hResult = vMediaFoundationInstance.imfSinkWriter->AddStream(imfMediaTypeAudioOut, &vMediaFoundationInstance.vOutAudioStreamIndex);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("AddStream audio failed.");
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"AddStream audio out failed") };
 			}
 
-			return true;
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("SetAudioMediaTypeOut failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetAudioMediaTypeOut failed") };
 		}
 	}
 
-	BOOL SetAudioMediaTypeIn()
+	CaptureResult SetAudioMediaTypeIn()
 	{
 		try
 		{
@@ -209,30 +209,28 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeAudioIn);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("MFCreateMediaType audio in failed.");
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType audio in failed") };
 			}
 
 			hResult = MFInitMediaTypeFromWaveFormatEx(imfMediaTypeAudioIn, &vMediaFoundationInstance.iAudioWaveFormatExCapture.Format, sizeof(vMediaFoundationInstance.iAudioWaveFormatExCapture));
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("MFInitMediaTypeFromWaveFormatEx audio failed.");
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFInitMediaTypeFromWaveFormatEx audio in failed") };
 			}
 
 			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutAudioStreamIndex, imfMediaTypeAudioIn, NULL);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("SetInputMediaType audio failed.");
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetInputMediaType audio in failed") };
 			}
 
-			return true;
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("SetAudioMediaTypeIn failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetAudioMediaTypeIn failed") };
 		}
 	}
 }

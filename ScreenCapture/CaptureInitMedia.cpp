@@ -5,7 +5,7 @@
 
 namespace
 {
-	BOOL InitializeDxgiDeviceManager()
+	CaptureResult InitializeDxgiDeviceManager()
 	{
 		try
 		{
@@ -14,28 +14,28 @@ namespace
 			hResult = MFCreateDXGIDeviceManager(&resetToken, &vMediaFoundationInstance.imfDXGIDeviceManager);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating DXGI device manager") };
 			}
 
 			//Reset DXGI device manager
 			hResult = vMediaFoundationInstance.imfDXGIDeviceManager->ResetDevice(vDirectXInstance.iD3D11Device5, resetToken);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed resetting DXGI device manager") };
 			}
 
 			//Return result
 			AVDebugWriteLine("DXGI device manager initialized.");
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("InitializeDxgiDeviceManager failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"InitializeDxgiDeviceManager failed") };
 		}
 	}
 
-	BOOL InitializeMediaFoundation(WCHAR* filePath)
+	CaptureResult InitializeMediaFoundation(const WCHAR* filePath)
 	{
 		try
 		{
@@ -43,7 +43,7 @@ namespace
 			hResult = MFStartup(MFSTARTUP_LITE);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed starting media foundation") };
 			}
 
 			//Create IMF attributes
@@ -51,7 +51,7 @@ namespace
 			hResult = MFCreateAttributes(&imfAttributes, 0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating imf attributes") };
 			}
 
 			//Set IMF attributes
@@ -62,43 +62,63 @@ namespace
 			imfAttributes->SetGUID(MF_TRANSCODE_CONTAINERTYPE, MFTranscodeContainerType_MPEG4);
 
 			//Create IMF sink writer
-			CComPtr<IMFSinkWriter> imfSinkWriterNormal;
-			hResult = MFCreateSinkWriterFromURL(filePath, NULL, imfAttributes, &imfSinkWriterNormal);
+			CComPtr<IMFSinkWriter> imfSinkWriter;
+			hResult = MFCreateSinkWriterFromURL(filePath, NULL, imfAttributes, &imfSinkWriter);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating sink writer") };
 			}
 
 			//Convert variables
-			hResult = imfSinkWriterNormal->QueryInterface(&vMediaFoundationInstance.imfSinkWriter);
+			hResult = imfSinkWriter->QueryInterface(&vMediaFoundationInstance.imfSinkWriter);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed converting imfSinkWriter") };
 			}
 
 			//Set video media type
-			if (!SetVideoMediaType()) { return false; }
+			capResult = SetVideoMediaType();
+			if (capResult.Status != CaptureStatus::Success)
+			{
+				return capResult;
+			}
 
 			//Set audio device capture (reads buffer)
-			if (!SetAudioDeviceCapture()) { return false; }
+			capResult = SetAudioDeviceCapture();
+			if (capResult.Status != CaptureStatus::Success)
+			{
+				return capResult;
+			}
 
 			//Set audio device render (fills buffer)
-			if (!SetAudioDeviceRender()) { return false; }
+			capResult = SetAudioDeviceRender();
+			if (capResult.Status != CaptureStatus::Success)
+			{
+				return capResult;
+			}
 
 			//Set audio out media type
-			if (!SetAudioMediaTypeOut()) { return false; }
+			capResult = SetAudioMediaTypeOut();
+			if (capResult.Status != CaptureStatus::Success)
+			{
+				return capResult;
+			}
 
 			//Set audio in media type
-			if (!SetAudioMediaTypeIn()) { return false; }
+			capResult = SetAudioMediaTypeIn();
+			if (capResult.Status != CaptureStatus::Success)
+			{
+				return capResult;
+			}
 
 			//Return result
 			AVDebugWriteLine("Media foundation initialized.");
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("InitializeMediaFoundation failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"InitializeMediaFoundation failed") };
 		}
 	}
 }

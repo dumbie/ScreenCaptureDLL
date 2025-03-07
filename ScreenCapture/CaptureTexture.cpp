@@ -49,6 +49,7 @@ namespace
 		}
 		catch (...)
 		{
+			//Return result
 			return {};
 		}
 	}
@@ -77,10 +78,12 @@ namespace
 			//Copy target to cpu texture
 			vDirectXInstance.iD3D11DeviceContext4->CopySubresourceRegion(vCaptureInstance.iD3D11Texture2D0CpuRead, 0, 0, 0, 0, textureTarget, 0, NULL);
 
+			//Return result
 			return true;
 		}
 		catch (...)
 		{
+			//Return result
 			return false;
 		}
 	}

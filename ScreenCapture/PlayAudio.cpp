@@ -3,7 +3,7 @@
 
 namespace
 {
-	VOID PlayAudio(WCHAR* audioFile)
+	VOID PlayAudio(const WCHAR* audioFile)
 	{
 		//Check settings
 		if (!vCaptureSettings.SoundEffect)
@@ -16,6 +16,7 @@ namespace
 		CComPtr<IMediaControl> iMediaControl;
 		CComPtr<IMediaSeeking> iMediaSeeking;
 		CComPtr<IMediaEvent> iMediaEvent;
+
 		try
 		{
 			//Create graph builder

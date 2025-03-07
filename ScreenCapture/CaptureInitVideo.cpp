@@ -4,7 +4,7 @@
 
 namespace
 {
-	BOOL SetVideoMediaType()
+	CaptureResult SetVideoMediaType()
 	{
 		try
 		{
@@ -13,8 +13,7 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeVideoOut);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("MFCreateMediaType video out failed.");
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType video out failed") };
 			}
 
 			//Set video format
@@ -99,6 +98,7 @@ namespace
 			}
 			MFSetAttributeRatio(imfMediaTypeVideoOut, MF_MT_FRAME_RATE, targetVideoFrameRate, 1);
 
+			//Add video stream
 			imfMediaTypeVideoOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_ALL_SAMPLES_INDEPENDENT, 1);
 			imfMediaTypeVideoOut->SetUINT32(MF_MT_INTERLACE_MODE, MFVideoInterlace_Progressive);
@@ -107,8 +107,7 @@ namespace
 			hResult = vMediaFoundationInstance.imfSinkWriter->AddStream(imfMediaTypeVideoOut, &vMediaFoundationInstance.vOutVideoStreamIndex);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("AddStream video failed.");
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"AddStream video out failed") };
 			}
 
 			//Create video encoding parameters
@@ -142,8 +141,7 @@ namespace
 			hResult = MFCreateMediaType(&imfMediaTypeVideoIn);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("MFCreateMediaType video in failed.");
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"MFCreateMediaType video in failed") };
 			}
 
 			imfMediaTypeVideoIn->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
@@ -165,16 +163,16 @@ namespace
 			hResult = vMediaFoundationInstance.imfSinkWriter->SetInputMediaType(vMediaFoundationInstance.vOutVideoStreamIndex, imfMediaTypeVideoIn, imfAttributesEncoding);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("SetInputMediaType video failed: " << hResult);
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"SetInputMediaType video in failed") };
 			}
 
-			return true;
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("SetVideoMediaType failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetVideoMediaType failed") };
 		}
 	}
 }

@@ -3,7 +3,7 @@
 
 namespace
 {
-	BOOL RenderUpdateVertex(VertexVertice* vertexVerticesArray, UINT vertexVerticesCount)
+	CaptureResult RenderUpdateVertex(VertexVertice* vertexVerticesArray, UINT vertexVerticesCount)
 	{
 		try
 		{
@@ -16,7 +16,7 @@ namespace
 			bufferDescription.MiscFlags = 0;
 			bufferDescription.StructureByteStride = 0;
 
-			//Create subresource data
+			//Create sub resource data
 			D3D11_SUBRESOURCE_DATA subResourceData{};
 			subResourceData.pSysMem = vertexVerticesArray;
 
@@ -24,7 +24,7 @@ namespace
 			hResult = vDirectXInstance.iD3D11Device5->CreateBuffer(&bufferDescription, &subResourceData, &vDirectXInstance.iD3D11BufferVertex0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating vertex buffer") };
 			}
 
 			//Set vertex buffer
@@ -34,16 +34,16 @@ namespace
 			vDirectXInstance.iD3D11DeviceContext4->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 			//Return result
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("RenderUpdateVertex failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"RenderUpdateVertex failed") };
 		}
 	}
 
-	BOOL RenderDrawTexture2D(CComPtr<ID3D11Texture2D>& textureTarget, UINT vertexVerticesCount)
+	CaptureResult RenderDrawTexture2D(CComPtr<ID3D11Texture2D>& textureTarget, UINT vertexVerticesCount)
 	{
 		try
 		{
@@ -51,7 +51,7 @@ namespace
 			hResult = vDirectXInstance.iD3D11Device5->CreateShaderResourceView(textureTarget, NULL, &vDirectXInstance.iD3D11ShaderResourceView0);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating shader resource view") };
 			}
 
 			//Set shader resource view
@@ -60,12 +60,13 @@ namespace
 			//Draw texture with shaders
 			vDirectXInstance.iD3D11DeviceContext4->Draw(vertexVerticesCount, 0);
 
-			return true;
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("RenderDrawTexture2D failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"RenderDrawTexture2D failed") };
 		}
 	}
 }

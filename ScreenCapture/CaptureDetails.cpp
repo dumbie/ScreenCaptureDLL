@@ -4,7 +4,7 @@
 
 namespace
 {
-	BOOL SetCaptureDetails()
+	CaptureResult SetCaptureDetails()
 	{
 		try
 		{
@@ -68,17 +68,18 @@ namespace
 				vCaptureDetails.OutputWidth = vCaptureDetails.OriginalWidth;
 				vCaptureDetails.OutputHeight = vCaptureDetails.OriginalHeight;
 			}
-			AVDebugWriteLine("Screen capture output, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight);
 			vCaptureDetails.WidthByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.PixelByteSize;
 			vCaptureDetails.TotalByteSize = vCaptureDetails.OutputWidth * vCaptureDetails.OutputHeight * vCaptureDetails.PixelByteSize;
 			vCaptureInstance.vCaptureTextureMipLevels = 1 + log2(max(vCaptureDetails.OutputWidth, vCaptureDetails.OutputHeight));
 
-			return true;
+			//Return result
+			AVDebugWriteLine("Screen capture output, Width: " << vCaptureDetails.OutputWidth << " Height: " << vCaptureDetails.OutputHeight);
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("SetCaptureDetails failed: " << hResult);
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"SetCaptureDetails failed") };
 		}
 	}
 };
