@@ -3,22 +3,22 @@
 
 namespace
 {
-	VOID PlayAudio(const WCHAR* audioFile)
+	CaptureResult PlayAudio(const WCHAR* audioFile)
 	{
-		//Check settings
-		if (!vCaptureSettings.SoundEffect)
-		{
-			return;
-		}
-
-		//Set resources
-		CComPtr<IGraphBuilder> iGraphBuilder;
-		CComPtr<IMediaControl> iMediaControl;
-		CComPtr<IMediaSeeking> iMediaSeeking;
-		CComPtr<IMediaEvent> iMediaEvent;
-
 		try
 		{
+			//Check settings
+			if (!vCaptureSettings.SoundEffect)
+			{
+				return { .Status = CaptureStatus::Success };
+			}
+
+			//Set resources
+			CComPtr<IGraphBuilder> iGraphBuilder;
+			CComPtr<IMediaControl> iMediaControl;
+			CComPtr<IMediaSeeking> iMediaSeeking;
+			CComPtr<IMediaEvent> iMediaEvent;
+
 			//Create graph builder
 			HRESULT hResult = CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_ALL, IID_IGraphBuilder, (LPVOID*)&iGraphBuilder);
 
@@ -31,16 +31,14 @@ namespace
 			hResult = iGraphBuilder->RenderFile(audioFile, NULL);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("Render audio file failed: " << audioFile);
-				return;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Render audio file failed") };
 			}
 
 			//Play audio file
 			hResult = iMediaControl->Run();
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("Run audio file failed: " << audioFile);
-				return;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Run audio file failed") };
 			}
 
 			//Get audio duration
@@ -55,15 +53,14 @@ namespace
 			//Wait for completion
 			long eventCode;
 			iMediaEvent->WaitForCompletion(audioDurationMs, &eventCode);
+
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("Failed to play audio file: " << audioFile);
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"PlayAudio failed") };
 		}
-		//Release resources
-		iGraphBuilder.Release();
-		iMediaControl.Release();
-		iMediaSeeking.Release();
-		iMediaEvent.Release();
 	}
 }

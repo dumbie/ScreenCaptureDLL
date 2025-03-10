@@ -54,7 +54,7 @@ namespace
 		}
 	}
 
-	BOOL Texture2DConvertToCpuRead(CComPtr<ID3D11Texture2D>& textureTarget)
+	CaptureResult Texture2DConvertToCpuRead(CComPtr<ID3D11Texture2D>& textureTarget)
 	{
 		try
 		{
@@ -72,19 +72,19 @@ namespace
 			hResult = vDirectXInstance.iD3D11Device5->CreateTexture2D(&iD3DTexture2D0DescCpuRead, NULL, &vCaptureInstance.iD3D11Texture2D0CpuRead);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"CreateTexture2D CpuRead failed") };
 			}
 
 			//Copy target to cpu texture
 			vDirectXInstance.iD3D11DeviceContext4->CopySubresourceRegion(vCaptureInstance.iD3D11Texture2D0CpuRead, 0, 0, 0, 0, textureTarget, 0, NULL);
 
 			//Return result
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
 			//Return result
-			return false;
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Texture2DConvertToCpuRead failed") };
 		}
 	}
 }

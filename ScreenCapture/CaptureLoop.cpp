@@ -70,7 +70,8 @@ namespace
 					ULONGLONG mediaTimeStart = qpcTimeCurrent.QuadPart - vMediaFoundationInstance.vMediaTimeStartLoop;
 
 					//Update screen texture
-					if (UpdateScreenTexture())
+					capResult = UpdateScreenTexture();
+					if (capResult.Status == CaptureStatus::Success)
 					{
 						//Write media bytes to sink
 						std::thread threadWriteSample(WriteMediaTexture2D, vCaptureInstance.iD3D11Texture2D0RenderTargetView, vCaptureDetails.TotalByteSize, false, vMediaFoundationInstance.vOutVideoStreamIndex, mediaTimeStart, mediaTimeDuration);

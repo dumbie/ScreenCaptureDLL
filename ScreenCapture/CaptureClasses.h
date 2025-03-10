@@ -222,8 +222,8 @@ namespace
 		//Status
 		CaptureStatus Status;
 
-		//HResult
-		HRESULT hResult;
+		//Result Code
+		LONG ResultCode;
 
 		//Message
 		BSTR Message;

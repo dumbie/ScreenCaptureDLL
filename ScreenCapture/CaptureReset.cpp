@@ -3,27 +3,36 @@
 
 namespace
 {
-	BOOL TextureResetVariablesLoop()
+	CaptureResult MediaFoundationLoopStop()
 	{
 		try
 		{
-			//Textures
-			vCaptureInstance.iD3D11Texture2D0CpuRead.Release();
-			vCaptureInstance.iD3D11Texture2D0Screen.Release();
+			if (vMediaFoundationInstance.vMediaWriteLoopAllowed)
+			{
+				//Status
+				vMediaFoundationInstance.vMediaWriteLoopAllowed = false;
 
-			//Views
-			vDirectXInstance.iD3D11ShaderResourceView0.Release();
+				//Wait for loop to finish
+				while (!vMediaFoundationInstance.vMediaWriteLoopFinishedScreen && !vMediaFoundationInstance.vMediaWriteLoopFinishedAudio)
+				{
+					AVDebugWriteLine("Waiting for capture media loop to stop...");
+					AVHighResDelay(100);
+				}
 
-			//AVDebugWriteLine("Reset loop Texture variables.");
-			return true;
+				AVDebugWriteLine("Capture media loop has stopped.");
+			}
+
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"MediaFoundationLoopStop failed") };
 		}
 	}
 
-	BOOL CaptureStatusLoopStop()
+	CaptureResult CaptureStatusLoopStop()
 	{
 		try
 		{
@@ -42,15 +51,40 @@ namespace
 				AVDebugWriteLine("Capture status loop has stopped.");
 			}
 
-			return true;
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"CaptureStatusLoopStop failed") };
 		}
 	}
 
-	BOOL CaptureInstanceResetVariablesAll()
+	CaptureResult TextureResetVariablesLoop()
+	{
+		try
+		{
+			//Textures
+			vCaptureInstance.iD3D11Texture2D0CpuRead.Release();
+			vCaptureInstance.iD3D11Texture2D0Screen.Release();
+
+			//Views
+			vDirectXInstance.iD3D11ShaderResourceView0.Release();
+
+			//AVDebugWriteLine("Reset loop Texture variables.");
+
+			//Return result
+			return { .Status = CaptureStatus::Success };
+		}
+		catch (...)
+		{
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"TextureResetVariablesLoop failed") };
+		}
+	}
+
+	CaptureResult CaptureInstanceResetVariablesAll()
 	{
 		try
 		{
@@ -70,15 +104,18 @@ namespace
 			vCaptureInstance.vInstanceInitializing = false;
 
 			AVDebugWriteLine("Reset all Capture instance variables.");
-			return true;
+
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"CaptureInstanceResetVariablesAll failed") };
 		}
 	}
 
-	BOOL BitmapImageResetVariablesAll()
+	CaptureResult BitmapImageResetVariablesAll()
 	{
 		try
 		{
@@ -94,42 +131,18 @@ namespace
 			vBitmapImageInstance.iWICBitmap.Release();
 
 			AVDebugWriteLine("Reset all Bitmap Image variables.");
-			return true;
+
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"BitmapImageResetVariablesAll failed") };
 		}
 	}
 
-	BOOL MediaFoundationLoopStop()
-	{
-		try
-		{
-			if (vMediaFoundationInstance.vMediaWriteLoopAllowed)
-			{
-				//Status
-				vMediaFoundationInstance.vMediaWriteLoopAllowed = false;
-
-				//Wait for loop to finish
-				while (!vMediaFoundationInstance.vMediaWriteLoopFinishedScreen && !vMediaFoundationInstance.vMediaWriteLoopFinishedAudio)
-				{
-					AVDebugWriteLine("Waiting for capture media loop to stop...");
-					AVHighResDelay(100);
-				}
-
-				AVDebugWriteLine("Capture media loop has stopped.");
-			}
-
-			return true;
-		}
-		catch (...)
-		{
-			return false;
-		}
-	}
-
-	BOOL MediaFoundationResetVariablesAll()
+	CaptureResult MediaFoundationResetVariablesAll()
 	{
 		try
 		{
@@ -152,15 +165,18 @@ namespace
 			vMediaFoundationInstance.vMediaCapturing = false;
 
 			AVDebugWriteLine("Reset all Media Foundation variables.");
-			return true;
+
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"MediaFoundationResetVariablesAll failed") };
 		}
 	}
 
-	BOOL WgcResetVariablesAll()
+	CaptureResult WgcResetVariablesAll()
 	{
 		try
 		{
@@ -189,15 +205,18 @@ namespace
 			vWgcInstance.vGraphicsCaptureFramePool = NULL;
 
 			AVDebugWriteLine("Reset all Windows Graphics Capture variables.");
-			return true;
+
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"WgcResetVariablesAll failed") };
 		}
 	}
 
-	BOOL DirectXResetVariablesAll()
+	CaptureResult DirectXResetVariablesAll()
 	{
 		try
 		{
@@ -227,11 +246,14 @@ namespace
 			vDirectXInstance.iD3D11ShaderPixel0.Release();
 
 			AVDebugWriteLine("Reset all DirectX variables.");
-			return true;
+
+			//Return result
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"DirectXResetVariablesAll failed") };
 		}
 	}
 

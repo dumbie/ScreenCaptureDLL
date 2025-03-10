@@ -3,14 +3,14 @@
 
 namespace
 {
-	BOOL WriteMediaTexture2D(CComPtr<ID3D11Texture2D> mediaTexture, UINT mediaSize, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
+	CaptureResult WriteMediaTexture2D(CComPtr<ID3D11Texture2D> mediaTexture, UINT mediaSize, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
 	{
 		try
 		{
 			//Check media texture
 			if (mediaTexture == NULL)
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Media texture is null") };
 			}
 
 			//Create media buffer
@@ -18,10 +18,10 @@ namespace
 			hResult = MFCreateDXGISurfaceBuffer(__uuidof(ID3D11Texture2D), mediaTexture, 0, false, &imfMediaBuffer);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating media buffer") };
 			}
 
-			//Set buffer length
+			//Set media buffer length
 			if (mediaSize == 0)
 			{
 				DWORD imf2DBufferLength;
@@ -36,7 +36,7 @@ namespace
 			}
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed setting media buffer length") };
 			}
 
 			//Create media sample
@@ -44,7 +44,7 @@ namespace
 			hResult = MFCreateSample(&imfMediaSample);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating media sample") };
 			}
 
 			//Set media sample discontinuity
@@ -57,56 +57,51 @@ namespace
 			hResult = imfMediaSample->AddBuffer(imfMediaBuffer);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed adding media sample buffer") };
 			}
 
 			//Set media start time
 			hResult = imfMediaSample->SetSampleTime(mediaTimeStart);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed setting media start time") };
 			}
 
 			//Set media duration time
 			hResult = imfMediaSample->SetSampleDuration(mediaTimeDuration);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed setting sample duration") };
 			}
 
 			//Write media to sample
 			hResult = vMediaFoundationInstance.imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("Write texture sample failed: " << hResult);
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed writing media sample") };
 			}
 
 			//Console debug output
 			//AVDebugWriteLine("Written media texture sample: " << (mediaTimeStart / vReferenceTimeToSeconds) << "s/" << mediaTimeStart << " duration: " << mediaTimeDuration << " index: " << mediaIndex);
 
-			//Release resources
-			imfMediaSample.Release();
-			imfMediaBuffer.Release();
-
 			//Return result
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("WriteMediaTexture2D failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"WriteMediaTexture2D failed") };
 		}
 	}
 
-	BOOL WriteMediaDataBytes(std::vector<BYTE> mediaBytes, BOOL releaseBytes, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
+	CaptureResult WriteMediaDataBytes(std::vector<BYTE> mediaBytes, BOOL releaseBytes, BOOL mediaDiscontinuity, UINT mediaIndex, ULONGLONG mediaTimeStart, ULONGLONG mediaTimeDuration)
 	{
 		try
 		{
 			//Check media bytes
 			if (mediaBytes.empty())
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Media bytes are null") };
 			}
 
 			//Create media buffer
@@ -114,7 +109,7 @@ namespace
 			hResult = MFCreateMemoryBuffer(mediaBytes.size(), &imfMediaBuffer);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating media buffer") };
 			}
 
 			//Lock media bytes
@@ -122,7 +117,7 @@ namespace
 			hResult = imfMediaBuffer->Lock(&mediaBufferBytes, NULL, NULL);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed locking media buffer") };
 			}
 
 			//Set media bytes
@@ -132,14 +127,14 @@ namespace
 			hResult = imfMediaBuffer->Unlock();
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed unlocking media buffer") };
 			}
 
-			//Set media length
+			//Set media buffer length
 			hResult = imfMediaBuffer->SetCurrentLength(mediaBytes.size());
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed setting media buffer length") };
 			}
 
 			//Create media sample
@@ -147,7 +142,7 @@ namespace
 			hResult = MFCreateSample(&imfMediaSample);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed creating media sample") };
 			}
 
 			//Set media sample discontinuity
@@ -160,29 +155,28 @@ namespace
 			hResult = imfMediaSample->AddBuffer(imfMediaBuffer);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed adding media sample buffer") };
 			}
 
 			//Set media start time
 			hResult = imfMediaSample->SetSampleTime(mediaTimeStart);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed setting media start time") };
 			}
 
 			//Set media duration time
 			hResult = imfMediaSample->SetSampleDuration(mediaTimeDuration);
 			if (FAILED(hResult))
 			{
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed setting sample duration") };
 			}
 
 			//Write media to sample
 			hResult = vMediaFoundationInstance.imfSinkWriter->WriteSample(mediaIndex, imfMediaSample);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("Write bytes sample failed: " << hResult);
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed writing media sample") };
 			}
 
 			//Console debug output
@@ -194,17 +188,13 @@ namespace
 				mediaBytes.clear();
 			}
 
-			//Release resources
-			imfMediaSample.Release();
-			imfMediaBuffer.Release();
-
 			//Return result
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("WriteMediaDataBytes failed.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"WriteMediaDataBytes failed") };
 		}
 	}
 }
