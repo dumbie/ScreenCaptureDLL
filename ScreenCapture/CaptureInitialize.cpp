@@ -361,12 +361,12 @@ namespace
 		try
 		{
 			//Load shaders from file
-			hResult = D3DCompileFromFile(L"Shaders\\VertexShader.hlsl", 0, 0, "main", "vs_5_0", 0, 0, &vDirectXInstance.iD3DBlobShaderVertex0, 0);
+			hResult = D3DCompileFromFile(L"Shaders\\VertexShader.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", NULL, NULL, &vDirectXInstance.iD3DBlobShaderVertex0, NULL);
 			if (FAILED(hResult))
 			{
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed loading vertex shader") };
 			}
-			hResult = D3DCompileFromFile(L"Shaders\\PixelShader.hlsl", 0, 0, "main", "ps_5_0", 0, 0, &vDirectXInstance.iD3DBlobShaderPixel0, 0);
+			hResult = D3DCompileFromFile(L"Shaders\\PixelShader.hlsl", NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", NULL, NULL, &vDirectXInstance.iD3DBlobShaderPixel0, NULL);
 			if (FAILED(hResult))
 			{
 				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed loading pixel shader") };
