@@ -1,6 +1,7 @@
 #pragma once
 #include "CaptureVariables.h"
 #include "CaptureMonitorInfo.cpp"
+#include "CaptureCodecCheck.cpp"
 
 namespace
 {
@@ -32,6 +33,12 @@ namespace
 			{
 				videoFormat = MFVideoFormat_AV1;
 				AVDebugWriteLine("Set video output format to AV1.");
+			}
+
+			//Check if video format is supported
+			if (!CodecCheckVideoEncoder(videoFormat))
+			{
+				return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Video format is not supported") };
 			}
 
 			//Check if HDR is enabled
