@@ -13,6 +13,7 @@
 
 //Arnold Vink Code
 #include "..\..\ArnoldVinkCode\CPP\AVDebug.h"
+#include "..\..\ArnoldVinkCode\CPP\AVFinally.h"
 #include "..\..\ArnoldVinkCode\CPP\AVHighResDelay.h"
 
 //General

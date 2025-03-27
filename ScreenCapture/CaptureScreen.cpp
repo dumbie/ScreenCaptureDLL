@@ -7,8 +7,13 @@
 
 namespace
 {
-	BOOL UpdateScreenTexture()
+	CaptureResult UpdateScreenTexture()
 	{
+		AVFinally(
+			{
+				//Release resources
+				TextureResetVariablesLoop();
+			});
 		try
 		{
 			//Get frame from capture pool
@@ -17,9 +22,7 @@ namespace
 			//Check if screen capture failed
 			if (frame == NULL)
 			{
-				//AVDebugWriteLine("Frame is empty skipping convert.");
-				TextureResetVariablesLoop();
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Frame is empty skipping convert") };
 			}
 
 			//Convert frame capture to texture
@@ -27,69 +30,65 @@ namespace
 			hResult = access->GetInterface(winrt::guid_of<ID3D11Texture2D>(), (void**)&vCaptureInstance.iD3D11Texture2D0Screen);
 			if (FAILED(hResult))
 			{
-				TextureResetVariablesLoop();
-				return false;
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed converting frame capture to texture") };
 			}
 
 			//Draw screen capture texture
-			if (!RenderDrawTexture2D(vCaptureInstance.iD3D11Texture2D0Screen, VertexVerticesCountScreen))
+			capResult = RenderDrawTexture2D(vCaptureInstance.iD3D11Texture2D0Screen, VertexVerticesCountScreen);
+			if (capResult.Status != CaptureStatus::Success)
 			{
-				TextureResetVariablesLoop();
-				return false;
+				return capResult;
 			}
 
-			//Release resources
-			TextureResetVariablesLoop();
-
 			//Return result
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			AVDebugWriteLine("UpdateScreenTexture failed.");
-			TextureResetVariablesLoop();
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"UpdateScreenTexture failed") };
 		}
 	}
 
 	std::vector<BYTE> GetScreenBytes(BOOL flipScreen)
 	{
+		AVFinally(
+			{
+				//Release resources
+				TextureResetVariablesLoop();
+			});
 		try
 		{
 			//Check if initialized
 			if (!vCaptureInstance.vInstanceInitialized)
 			{
-				TextureResetVariablesLoop();
 				return {};
 			}
 
 			//Update screen texture
-			if (!UpdateScreenTexture())
+			capResult = UpdateScreenTexture();
+			if (capResult.Status != CaptureStatus::Success)
 			{
-				TextureResetVariablesLoop();
 				return {};
 			}
 
 			//Convert to cpu read texture
-			if (!Texture2DConvertToCpuRead(vCaptureInstance.iD3D11Texture2D0RenderTargetView))
+			capResult = Texture2DConvertToCpuRead(vCaptureInstance.iD3D11Texture2D0RenderTargetView);
+			if (capResult.Status != CaptureStatus::Success)
 			{
-				TextureResetVariablesLoop();
 				return {};
 			}
 
 			//Convert texture to screen bytes
 			std::vector<BYTE> screenBytes = Texture2DConvertToScreenBytes(vCaptureInstance.iD3D11Texture2D0CpuRead, flipScreen);
 
-			//Release resources
-			TextureResetVariablesLoop();
-
 			//Return result
 			return screenBytes;
 		}
 		catch (...)
 		{
+			//Return result
 			AVDebugWriteLine("GetScreenBytes failed.");
-			TextureResetVariablesLoop();
 			return {};
 		}
 	}
