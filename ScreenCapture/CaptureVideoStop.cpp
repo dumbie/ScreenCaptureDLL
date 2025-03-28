@@ -5,8 +5,21 @@
 
 namespace
 {
-	BOOL CaptureVideoStopCode()
+	CaptureResult CaptureVideoStopCode()
 	{
+		AVFinally(
+			{
+				//Release resources
+				TextureResetVariablesLoop();
+				MediaFoundationResetVariablesAll();
+
+				//Trigger capture event
+				if (vCaptureEventVideoCaptureStopped)
+				{
+					std::thread threadEvent(vCaptureEventVideoCaptureStopped);
+					threadEvent.detach();
+				}
+			});
 		try
 		{
 			//Stop media capture loop
@@ -16,44 +29,34 @@ namespace
 			hResult = vMediaFoundationInstance.imfSinkWriter->Flush(vMediaFoundationInstance.vImfSinkWriterIndex);
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("Failed to flush media capture...");
+				return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Failed flushing media capture") };
 			}
 
 			//Finalize media capture
 			hResult = vMediaFoundationInstance.imfSinkWriter->Finalize();
 			if (FAILED(hResult))
 			{
-				AVDebugWriteLine("Failed to finalize media capture...");
+				return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Failed finalizing media capture") };
 			}
 
-			//Shutdown media foundation
-			MFShutdown();
-
-			//Release resources
-			TextureResetVariablesLoop();
-			MediaFoundationResetVariablesAll();
+			//Stop media foundation
+			hResult = MFShutdown();
+			if (FAILED(hResult))
+			{
+				return { .Status = CaptureStatus::Failed, .ResultCode = hResult, .Message = SysAllocString(L"Failed stopping media foundation") };
+			}
 
 			//Play audio effect
 			PlayAudio(L"Assets\\Capture\\CaptureVideoStop.mp3");
 
-			//Trigger capture event
-			if (vCaptureEventVideoCaptureStopped)
-			{
-				std::thread threadEvent(vCaptureEventVideoCaptureStopped);
-				threadEvent.detach();
-			}
-
+			//Return result
 			AVDebugWriteLine("Stopped media capture successfully.");
-			return true;
+			return { .Status = CaptureStatus::Success };
 		}
 		catch (...)
 		{
-			//Release resources
-			TextureResetVariablesLoop();
-			MediaFoundationResetVariablesAll();
-
-			AVDebugWriteLine("Failed stopping media capture.");
-			return false;
+			//Return result
+			return { .Status = CaptureStatus::Failed, .Message = SysAllocString(L"Failed stopping media capture") };
 		}
 	}
 }
