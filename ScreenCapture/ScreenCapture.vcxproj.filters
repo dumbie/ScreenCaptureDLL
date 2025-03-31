@@ -72,6 +72,9 @@
     <ClCompile Include="CaptureVideoStop.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="CaptureCodecCheck.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AssemblyInfo.rc">
@@ -85,19 +88,19 @@
     <ClInclude Include="CaptureIncludes.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="Shaders\PixelShader.h">
-      <Filter>Shader files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders\VertexShader.h">
-      <Filter>Shader files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\VertexShader.hlsl">
+    <CopyFileToFolders Include="Shaders\BlurShader.hlsl">
       <Filter>Shader files</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\PixelShader.hlsl">
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\FilterShader.hlsl">
       <Filter>Shader files</Filter>
-    </FxCompile>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\PixelShader.hlsl">
+      <Filter>Shader files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\VertexShader.hlsl">
+      <Filter>Shader files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
