@@ -38,9 +38,8 @@ namespace ScreenCapture
         }
 
         //Initialize screen capture
-        private CaptureStatus InitializeScreenCapture()
+        private void InitializeScreenCapture()
         {
-            CaptureStatus captureInitialized = CaptureStatus.Failed;
             try
             {
                 AVActions.DispatcherInvoke(delegate
@@ -69,8 +68,9 @@ namespace ScreenCapture
                     };
 
                     //Initialize screen capture
-                    captureInitialized = CaptureImport.CaptureInitialize(vCaptureSettings, true);
-                    if (captureInitialized == CaptureStatus.Initialized)
+                    CaptureResult captureResult = CaptureImport.CaptureInitialize(vCaptureSettings, true);
+                    Debug.WriteLine("Capture initialize result: " + captureResult.Status + " / " + captureResult.ResultCode + " / " + captureResult.Message);
+                    if (captureResult.Status == CaptureStatus.Success)
                     {
                         //Get capture details
                         vCaptureDetails = CaptureImport.CaptureGetDetails();
@@ -89,30 +89,21 @@ namespace ScreenCapture
                         //Update interface details
                         textblock_CaptureDetails.Text = captureDetailsString;
                     }
-                    else if (captureInitialized == CaptureStatus.Busy)
-                    {
-                        //Update interface details
-                        textblock_CaptureDetails.Text = "Already initializing capture.";
-                    }
                     else
                     {
                         //Update interface details
-                        textblock_CaptureDetails.Text = "Failed to initialize capture.";
+                        textblock_CaptureDetails.Text = captureResult.Message;
                     }
                 });
-
-                //Return result
-                return captureInitialized;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Failed to initialize screen capture: " + ex.Message);
-                return captureInitialized;
             }
         }
 
         //Handle window initialized event
-        protected override void OnSourceInitialized(EventArgs e)
+        protected override async void OnSourceInitialized(EventArgs e)
         {
             try
             {
@@ -120,6 +111,7 @@ namespace ScreenCapture
                 InitializeScreenCapture();
 
                 //Start screen capture loop
+                await Task.Delay(500);
                 AVActions.TaskStartLoop(ScreenCaptureLoop, vTask_CaptureScreen);
             }
             catch { }
@@ -226,8 +218,8 @@ namespace ScreenCapture
                     Blur = (float)slider_Blur.Value,
                 };
 
-                bool settingsUpdated = CaptureImport.CaptureUpdateSettings(vCaptureSettings);
-                Debug.WriteLine("Capture settings updated: " + settingsUpdated);
+                CaptureResult captureResult = CaptureImport.CaptureUpdateSettings(vCaptureSettings);
+                Debug.WriteLine("Capture settings updated: " + captureResult.Status + " / " + captureResult.ResultCode + " / " + captureResult.Message);
             }
             catch { }
         }
@@ -237,8 +229,7 @@ namespace ScreenCapture
             try
             {
                 //Initialize screen capture
-                CaptureStatus captureResult = InitializeScreenCapture();
-                Debug.WriteLine("Capture restart: " + captureResult);
+                InitializeScreenCapture();
             }
             catch { }
         }
@@ -248,8 +239,8 @@ namespace ScreenCapture
             try
             {
                 //Reset screen capture
-                bool captureResult = CaptureImport.CaptureReset();
-                Debug.WriteLine("Capture stopped: " + captureResult);
+                CaptureResult captureResult = CaptureImport.CaptureReset();
+                Debug.WriteLine("Capture stopped: " + captureResult.Status + " / " + captureResult.ResultCode + " / " + captureResult.Message);
             }
             catch { }
         }

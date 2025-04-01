@@ -94,7 +94,7 @@ namespace ScreenCaptureImport
     public struct CaptureResult
     {
         public CaptureStatus Status { get; set; }
-        public int hResult { get; set; }
+        public int ResultCode { get; set; }
         [field: MarshalAs(UnmanagedType.BStr)]
         public string Message { get; set; }
     }
