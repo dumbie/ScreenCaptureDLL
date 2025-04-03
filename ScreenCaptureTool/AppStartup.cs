@@ -1,4 +1,5 @@
 ﻿using ArnoldVinkCode;
+using ScreenCaptureImport;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -51,18 +52,34 @@ namespace ScreenCapture
                     }
                 }
 
+                //Debug launch actions
+                //launchAction = CaptureTypes.Video;
+                //launchAction = CaptureTypes.Image;
+
                 //Check launch action
                 if (launchAction == CaptureTypes.Image)
                 {
                     Debug.WriteLine("Screen Capture Tool image.");
 
                     //Capture image to file
-                    bool captureResult = CaptureScreen.CaptureImageToFile();
+                    CaptureResult captureResult = CaptureScreen.CaptureImageToFile();
+                    Debug.WriteLine("Capture image result: " + captureResult.Status + " / " + captureResult.ResultCode + " / " + captureResult.Message);
 
-                    //Show capture overlay window
-                    if (SettingLoad(vConfigurationScreenCaptureTool, "OverlayShowScreenshot", typeof(bool)))
+                    //Check capture result
+                    if (captureResult.Status == CaptureStatus.Success)
                     {
-                        vWindowOverlay.ShowOverlay(captureResult ? CaptureTypes.Image : CaptureTypes.Failed);
+                        //Show capture overlay window
+                        if (SettingLoad(vConfigurationScreenCaptureTool, "OverlayShowScreenshot", typeof(bool)))
+                        {
+                            vWindowOverlay.ShowOverlay(CaptureTypes.Image, captureResult.Message);
+                            await Task.Delay(2500);
+                            vWindowOverlay.Hide();
+                        }
+                    }
+                    else
+                    {
+                        //Show capture overlay window
+                        vWindowOverlay.ShowOverlay(CaptureTypes.Failed, captureResult.Message);
                         await Task.Delay(2500);
                         vWindowOverlay.Hide();
                     }
@@ -83,15 +100,16 @@ namespace ScreenCapture
                     Debug.WriteLine("Screen Capture Tool video.");
 
                     //Capture video to file
-                    bool captureResult = CaptureScreen.StartCaptureVideoToFile();
+                    CaptureResult captureResult = CaptureScreen.StartCaptureVideoToFile();
+                    Debug.WriteLine("Capture video result: " + captureResult.Status + " / " + captureResult.ResultCode + " / " + captureResult.Message);
 
                     //Check capture result
-                    if (captureResult)
+                    if (captureResult.Status == CaptureStatus.Success)
                     {
                         //Show capture overlay window
                         if (SettingLoad(vConfigurationScreenCaptureTool, "OverlayShowRecording", typeof(bool)))
                         {
-                            vWindowOverlay.ShowOverlay(CaptureTypes.Video);
+                            vWindowOverlay.ShowOverlay(CaptureTypes.Video, captureResult.Message);
                         }
 
                         //Create application tray menu
@@ -107,12 +125,9 @@ namespace ScreenCapture
                     else
                     {
                         //Show capture overlay window
-                        if (SettingLoad(vConfigurationScreenCaptureTool, "OverlayShowRecording", typeof(bool)))
-                        {
-                            vWindowOverlay.ShowOverlay(CaptureTypes.Failed);
-                            await Task.Delay(2500);
-                            vWindowOverlay.Hide();
-                        }
+                        vWindowOverlay.ShowOverlay(CaptureTypes.Failed, captureResult.Message);
+                        await Task.Delay(2500);
+                        vWindowOverlay.Hide();
 
                         //Close application
                         await AppExit.Exit();

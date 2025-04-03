@@ -36,7 +36,7 @@ namespace ScreenCapture
             }
         }
 
-        public static bool CaptureImageToFile()
+        public static CaptureResult CaptureImageToFile()
         {
             try
             {
@@ -64,20 +64,15 @@ namespace ScreenCapture
                 }
 
                 //Initialize screen capture
-                CaptureStatus captureInitialized = CaptureImport.CaptureInitialize(captureSettings, true);
-                if (captureInitialized == CaptureStatus.Initialized)
+                CaptureResult captureResult = CaptureImport.CaptureInitialize(captureSettings, true);
+                Debug.WriteLine("Capture initialize result: " + captureResult.Status + " / " + captureResult.ResultCode + " / " + captureResult.Message);
+                if (captureResult.Status == CaptureStatus.Success)
                 {
                     vCaptureDetails = CaptureImport.CaptureGetDetails();
                 }
-                else if (captureInitialized == CaptureStatus.Busy)
-                {
-                    Debug.WriteLine("Already initializing screen capture.");
-                    return false;
-                }
                 else
                 {
-                    Debug.WriteLine("Failed to initialize screen capture.");
-                    return false;
+                    return captureResult;
                 }
 
                 //Set save name
@@ -129,44 +124,42 @@ namespace ScreenCapture
                 //Combine save path
                 string fileSavePath = fileSaveFolder + "\\" + vCaptureFileName;
 
-                //Save screenshot to file
-                bool screenshotSaved = false;
+                //Set file extension
+                string fileExtension = string.Empty;
                 if (ScreenshotSaveFormat == ImageFormats.JPG)
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".jpg", ScreenshotSaveQuality, ScreenshotSaveFormat);
-                    Debug.WriteLine("Screenshot JPG export succeeded: " + screenshotSaved);
+                    fileExtension = ".jpg";
                 }
                 else if (ScreenshotSaveFormat == ImageFormats.PNG)
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".png", 100, ScreenshotSaveFormat);
-                    Debug.WriteLine("Screenshot PNG export succeeded: " + screenshotSaved);
+                    fileExtension = ".png";
                 }
                 else if (ScreenshotSaveFormat == ImageFormats.BMP)
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".bmp", 100, ScreenshotSaveFormat);
-                    Debug.WriteLine("Screenshot BMP export succeeded: " + screenshotSaved);
+                    fileExtension = ".bmp";
                 }
                 else if (ScreenshotSaveFormat == ImageFormats.TIF)
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".tif", 100, ScreenshotSaveFormat);
-                    Debug.WriteLine("Screenshot TIF export succeeded: " + screenshotSaved);
+                    fileExtension = ".tif";
                 }
                 else if (ScreenshotSaveFormat == ImageFormats.HEIF)
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".heif", ScreenshotSaveQuality, ScreenshotSaveFormat);
-                    Debug.WriteLine("Screenshot HEIF export succeeded: " + screenshotSaved);
+                    fileExtension = ".heif";
                 }
                 else
                 {
-                    screenshotSaved = CaptureImport.CaptureImage(fileSavePath + ".jxr", ScreenshotSaveQuality, ScreenshotSaveFormat);
-                    Debug.WriteLine("Screenshot JXR export succeeded: " + screenshotSaved);
+                    fileExtension = ".jxr";
                 }
-                return screenshotSaved;
+
+                //Save screenshot to file
+                CaptureResult imageResult = CaptureImport.CaptureImage(fileSavePath + fileExtension, ScreenshotSaveQuality, ScreenshotSaveFormat);
+                Debug.WriteLine("Capture " + ScreenshotSaveFormat + " image result: " + imageResult.Status + " / " + imageResult.Message);
+                return imageResult;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Screen image capture failed: " + ex.Message);
-                return false;
+                return new CaptureResult() { Status = CaptureStatus.Failed, Message = "Failed: " + ex.Message };
             }
         }
     }

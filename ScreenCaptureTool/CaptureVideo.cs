@@ -44,7 +44,7 @@ namespace ScreenCapture
             }
         }
 
-        public static void StopCaptureVideoToFile()
+        public static CaptureResult StopCaptureVideoToFile()
         {
             try
             {
@@ -62,13 +62,19 @@ namespace ScreenCapture
                     });
 
                     //Request to stop video capture
-                    bool captureResultStop = CaptureImport.CaptureVideoStop();
-                    Debug.WriteLine("Stopped video capturing: " + captureResultStop);
+                    CaptureResult videoResult = CaptureImport.CaptureVideoStop();
+                    Debug.WriteLine("Capture video stop result: " + videoResult.Status + " / " + videoResult.Message);
+                    return videoResult;
+                }
+                else
+                {
+                    return new CaptureResult() { Status = CaptureStatus.Failed, Message = "No video capture active" };
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Failed stopping video capture: " + ex.Message);
+                Debug.WriteLine("Screen video capture stop failed: " + ex.Message);
+                return new CaptureResult() { Status = CaptureStatus.Failed, Message = "Failed: " + ex.Message };
             }
         }
 
@@ -92,14 +98,14 @@ namespace ScreenCapture
             catch { }
         }
 
-        public static bool StartCaptureVideoToFile()
+        public static CaptureResult StartCaptureVideoToFile()
         {
             try
             {
                 //Check video capture
                 if (CaptureImport.CaptureVideoIsRecording())
                 {
-                    return false;
+                    return new CaptureResult() { Status = CaptureStatus.Busy, Message = "Already recording video" };
                 }
 
                 //Register capture events
@@ -146,20 +152,15 @@ namespace ScreenCapture
                 mediaSettings.AudioSampleRate = AudioSampleRate;
 
                 //Initialize screen capture
-                CaptureStatus captureInitialized = CaptureImport.CaptureInitialize(captureSettings, true);
-                if (captureInitialized == CaptureStatus.Initialized)
+                CaptureResult captureResult = CaptureImport.CaptureInitialize(captureSettings, true);
+                Debug.WriteLine("Capture initialize result: " + captureResult.Status + " / " + captureResult.ResultCode + " / " + captureResult.Message);
+                if (captureResult.Status == CaptureStatus.Success)
                 {
                     vCaptureDetails = CaptureImport.CaptureGetDetails();
                 }
-                else if (captureInitialized == CaptureStatus.Busy)
-                {
-                    Debug.WriteLine("Already initializing screen capture.");
-                    return false;
-                }
                 else
                 {
-                    Debug.WriteLine("Failed to initialize screen capture.");
-                    return false;
+                    return captureResult;
                 }
 
                 //Set save name
@@ -212,24 +213,14 @@ namespace ScreenCapture
                 string fileSavePath = fileSaveFolder + "\\" + vCaptureFileName + ".mp4";
 
                 //Start video capture
-                bool captureStarted = CaptureImport.CaptureVideoStart(fileSavePath, mediaSettings);
-                if (captureStarted)
-                {
-                    //Return result
-                    Debug.WriteLine("Successfully started video screen capture.");
-                    return true;
-                }
-                else
-                {
-                    //Return result
-                    Debug.WriteLine("Failed starting video screen capture.");
-                    return false;
-                }
+                CaptureResult videoResult = CaptureImport.CaptureVideoStart(fileSavePath, mediaSettings);
+                Debug.WriteLine("Capture video start result: " + videoResult.Status + " / " + videoResult.ResultCode + " / " + videoResult.Message);
+                return videoResult;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Screen video capture failed: " + ex.Message);
-                return false;
+                Debug.WriteLine("Screen video capture start failed: " + ex.Message);
+                return new CaptureResult() { Status = CaptureStatus.Failed, Message = "Failed: " + ex.Message };
             }
         }
     }

@@ -23,6 +23,7 @@
             </Border.Background>
             <StackPanel Orientation="Horizontal">
                 <Image Name="image_Failed" Source="/Assets/Failed.png" Margin="5" Width="20" Height="20"/>
+                <TextBlock Name="textblock_Failed" Margin="0,0,5,0" VerticalAlignment="Center" Style="{StaticResource TextBlockWhiteLight}"/>
             </StackPanel>
         </Border>
         <Border Name="border_Overlay_Image" CornerRadius="10" Opacity="0.8" Margin="0,0,0,30" VerticalAlignment="Bottom" HorizontalAlignment="Center">

@@ -13,6 +13,7 @@ namespace ScreenCapture
         //Application Variables
         public static Configuration vConfigurationScreenCaptureTool = SettingLoadConfig("ScreenCaptureTool.exe.csettings");
         public static Configuration vConfigurationCtrlUI = SettingLoadConfig("CtrlUI.exe.csettings");
+        public static bool vApplicationExiting = false;
 
         //Setting Variables
         public static bool vComboboxSaveEnabled = true;

@@ -27,29 +27,48 @@ namespace ScreenCapture
             catch { }
         }
 
-        //Close the application
+        //Close application
         public static async Task Exit()
         {
             try
             {
-                Debug.WriteLine("Exiting application.");
+                //Check exit status
+                if (AppVariables.vApplicationExiting)
+                {
+                    Debug.WriteLine("Application is already exiting.");
+                    return;
+                }
+                else
+                {
+                    Debug.WriteLine("Exiting application.");
+                    AppVariables.vApplicationExiting = true;
+                }
 
                 //Stop active video capture
-                CaptureScreen.StopCaptureVideoToFile();
+                try
+                {
+                    CaptureResult captureResult = CaptureScreen.StopCaptureVideoToFile();
+                    Debug.WriteLine("Capture stop result: " + captureResult.Status + " / " + captureResult.ResultCode + " / " + captureResult.Message);
+                }
+                catch { }
 
                 //Reset screen capture resources
                 try
                 {
-                    CaptureImport.CaptureReset();
+                    CaptureResult captureResult = CaptureImport.CaptureReset();
+                    Debug.WriteLine("Capture reset result: " + captureResult.Status + " / " + captureResult.ResultCode + " / " + captureResult.Message);
                 }
                 catch { }
 
-                //Hide the visible tray icons
-                AppTrayMenuTool.TrayNotifyIcon.Visible = false;
-                AppTrayMenuCapture.TrayNotifyIcon.Visible = false;
-
                 //Stop keyboard hotkeys
                 await AVInputOutputHotkeyHook.Stop();
+
+                //Hide the visible tray icons
+                AVActions.DispatcherInvoke(delegate
+                {
+                    AppTrayMenuTool.TrayNotifyIcon.Visible = false;
+                    AppTrayMenuCapture.TrayNotifyIcon.Visible = false;
+                });
 
                 //Close the application
                 Environment.Exit(0);

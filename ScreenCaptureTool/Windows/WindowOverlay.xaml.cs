@@ -17,6 +17,7 @@ namespace ScreenCapture
         private IntPtr vInteropWindowHandle = IntPtr.Zero;
         private DispatcherTimer vDispatcherTimerDelay = new DispatcherTimer();
         private CaptureTypes vCaptureType = CaptureTypes.None;
+        private string vCaptureMessage = string.Empty;
         private int vRecordingTime = 0;
 
         //Window Initialize
@@ -26,11 +27,12 @@ namespace ScreenCapture
         }
 
         //Window Show Overlay
-        public void ShowOverlay(CaptureTypes captureType)
+        public void ShowOverlay(CaptureTypes captureType, string captureMessage)
         {
             try
             {
                 vCaptureType = captureType;
+                vCaptureMessage = captureMessage;
                 Show();
             }
             catch { }
@@ -60,6 +62,9 @@ namespace ScreenCapture
 
                 //Update window position
                 UpdateWindowPosition();
+
+                //Update overlay capture message
+                textblock_Failed.Text = vCaptureMessage;
 
                 //Update overlay capture type
                 if (vCaptureType == CaptureTypes.Video)
