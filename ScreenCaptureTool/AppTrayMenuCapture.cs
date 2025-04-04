@@ -27,9 +27,24 @@ namespace ScreenCapture
                 TrayNotifyIcon.Text = AVFunctions.StringCut("Capturing " + vCaptureFileName, 59, "...");
                 TrayNotifyIcon.Icon = new Icon(AVEmbedded.EmbeddedResourceToStream(null, "ScreenCaptureTool.Assets.AppIconRecording.ico"));
 
+                //Handle Single Click event
+                TrayNotifyIcon.MouseUp += NotifyIcon_MouseUp;
+
                 //Add menu to tray icon and show it
                 TrayNotifyIcon.ContextMenuStrip = TrayContextMenu;
                 TrayNotifyIcon.Visible = true;
+            }
+            catch { }
+        }
+
+        private static async void NotifyIcon_MouseUp(object sender, MouseEventArgs args)
+        {
+            try
+            {
+                if (args.Button == MouseButtons.Middle)
+                {
+                    await AppExit.Exit();
+                }
             }
             catch { }
         }
