@@ -70,16 +70,6 @@ namespace ScreenCapture
                     {
                         Text = "60 FPS",
                         Value = "60"
-                    },
-                    new ComboBoxItemValue()
-                    {
-                        Text = "90 FPS",
-                        Value = "90"
-                    },
-                    new ComboBoxItemValue()
-                    {
-                        Text = "120 FPS",
-                        Value = "120"
                     }
                 };
                 combobox_VideoFrameRate.Items.Clear();
