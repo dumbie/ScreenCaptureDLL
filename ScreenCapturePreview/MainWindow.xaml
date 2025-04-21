@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ScreenCapture"
         mc:Ignorable="d"
+        RenderOptions.BitmapScalingMode="HighQuality"
         Title="Screen Capture Preview"
         Height="750"
         Width="1280">
