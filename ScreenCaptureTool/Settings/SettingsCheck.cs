@@ -15,6 +15,9 @@ namespace ScreenCapture
                 //First Launch
                 if (!SettingCheck(vConfigurationScreenCaptureTool, "AppFirstLaunch")) { SettingSave(vConfigurationScreenCaptureTool, "AppFirstLaunch", "True"); }
 
+                //Server settings
+                if (!SettingCheck(vConfigurationScreenCaptureTool, "ServerPort")) { SettingSave(vConfigurationScreenCaptureTool, "ServerPort", "26762"); }
+
                 //General
                 if (!SettingCheck(vConfigurationScreenCaptureTool, "CaptureSoundEffect")) { SettingSave(vConfigurationScreenCaptureTool, "CaptureSoundEffect", "True"); }
                 if (!SettingCheck(vConfigurationScreenCaptureTool, "CaptureMonitorId")) { SettingSave(vConfigurationScreenCaptureTool, "CaptureMonitorId", "1"); }

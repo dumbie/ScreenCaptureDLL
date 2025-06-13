@@ -39,7 +39,7 @@ namespace ScreenCapture
             try
             {
                 //Get the source server ip and port
-                Debug.WriteLine("Received udp socket from: " + endPoint.IPEndPoint.Address.ToString() + ":" + endPoint.IPEndPoint.Port + "/" + receivedBytes.Length + "bytes");
+                //Debug.WriteLine("Received udp socket from: " + endPoint.IPEndPoint.Address.ToString() + ":" + endPoint.IPEndPoint.Port + "/" + receivedBytes.Length + "bytes");
 
                 //Deserialize the received bytes
                 if (DeserializeBytesToObject(receivedBytes, out string deserializedBytes))

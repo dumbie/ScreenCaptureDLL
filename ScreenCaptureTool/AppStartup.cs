@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static ArnoldVinkCode.AVProcess;
 using static ArnoldVinkCode.AVSettings;
-using static ArnoldVinkCode.Styles.MainColors;
+using static ArnoldVinkCode.AVUpdate;
 using static ScreenCapture.AppClasses;
 using static ScreenCapture.AppVariables;
 
@@ -20,6 +20,9 @@ namespace ScreenCapture
             try
             {
                 Debug.WriteLine("Welcome to application.");
+
+                //Application update cleanup
+                await UpdateCleanup();
 
                 //Application initialize settings
                 vWindowMain.Settings_Check();
@@ -153,10 +156,6 @@ namespace ScreenCapture
                     vWindowMain.Shortcuts_Check();
                     vWindowMain.Shortcuts_Load();
                     vWindowMain.Shortcuts_Save();
-
-                    //Change application accent color
-                    string colorLightHex = SettingLoad(vConfigurationCtrlUI, "ColorAccentLight", typeof(string));
-                    ChangeApplicationAccentColor(colorLightHex);
 
                     //Create application tray menu
                     AppTrayMenuTool.Application_CreateTrayMenu();
