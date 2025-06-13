@@ -10,10 +10,9 @@
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-		<EnableUnsafeBinaryFormatterSerialization>True</EnableUnsafeBinaryFormatterSerialization>
 		<AppendTargetFrameworkToOutputPath>False</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>False</AppendRuntimeIdentifierToOutputPath>
-		<OutputPath>$(SolutionDir)Build\$(Configuration)\</OutputPath>
+		<OutputPath>$(SolutionDir)Build\$(Configuration)\$(AssemblyName)</OutputPath>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<Optimize>True</Optimize>

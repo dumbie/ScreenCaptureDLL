@@ -153,19 +153,19 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)Build\$(Configuration)\Resources\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(ProjectName)\Resources\</OutDir>
     <TargetName>ScreenCapture</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)Build\$(Configuration)\Resources\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(ProjectName)\Resources\</OutDir>
     <TargetName>ScreenCapture</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)Build\$(Configuration)\Resources\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(ProjectName)\Resources\</OutDir>
     <TargetName>ScreenCapture</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)Build\$(Configuration)\Resources\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(ProjectName)\Resources\</OutDir>
     <TargetName>ScreenCapture</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
