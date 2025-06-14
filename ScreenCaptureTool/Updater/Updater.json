@@ -1,0 +1,23 @@
+﻿{
+  "UserName": "Dumbie",
+  "RepoName": "ScreenCaptureTool",
+  "FileName": "ScreenCaptureTool.zip",
+  "ExtractName": "ScreenCaptureTool",
+  "ProcessLaunch": [
+    "Launcher.exe"
+  ],
+  "ProcessClose": [
+    "ScreenCaptureTool",
+    "Launcher"
+  ],
+  "FilesIgnore": [
+    ".csettings"
+  ],
+  "FoldersIgnore": [
+    "Profiles/User"
+  ],
+  "FoldersDelete": [
+    "Resources",
+    "Shaders"
+  ]
+}

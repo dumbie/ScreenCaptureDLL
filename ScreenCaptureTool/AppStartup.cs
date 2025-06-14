@@ -21,9 +21,6 @@ namespace ScreenCapture
             {
                 Debug.WriteLine("Welcome to application.");
 
-                //Application update cleanup
-                await UpdateCleanup();
-
                 //Application initialize settings
                 vWindowMain.Settings_Check();
 
@@ -147,6 +144,12 @@ namespace ScreenCapture
                     }
 
                     Debug.WriteLine("Screen Capture Tool launch.");
+
+                    //Clean application update files
+                    await UpdateCleanup();
+
+                    //Check for available application update
+                    await UpdateCheck("dumbie", "ScreenCaptureTool", true);
 
                     //Application initialize settings
                     vWindowMain.Settings_Load();
